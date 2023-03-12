@@ -1,0 +1,69 @@
+package com.lawencon.leaf.community.pojo.user;
+
+public class PojoLoginRes {
+
+	private String token;
+	private String userId;
+	private String fullName;
+	private String roleCode;
+	private String profileId;
+	private String fileId;
+	private Boolean isPremium;
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getRoleCode() {
+		return roleCode;
+	}
+
+	public void setRoleCode(String roleCode) {
+		this.roleCode = roleCode;
+	}
+
+	public String getProfileId() {
+		return profileId;
+	}
+
+	public void setProfileId(String profileId) {
+		this.profileId = profileId;
+	}
+
+	public String getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(String fileId) {
+		this.fileId = fileId;
+	}
+
+	public Boolean getIsPremium() {
+		return isPremium;
+	}
+
+	public void setIsPremium(Boolean isPremium) {
+		this.isPremium = isPremium;
+	}
+
+}
