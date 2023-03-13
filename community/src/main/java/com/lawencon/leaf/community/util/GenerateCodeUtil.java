@@ -17,7 +17,7 @@ public class GenerateCodeUtil {
 
 	public static String generateNumber(final int totalLength) {
 		final int leftLimit = 48;
-		final int rightLimit = 122;
+		final int rightLimit = 57;
 		final Random random = new Random();
 
 		final String generatedNumber = random.ints(leftLimit, rightLimit + 1).limit(totalLength)

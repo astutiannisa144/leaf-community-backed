@@ -129,10 +129,11 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		final User userInsert = saveNoLogin(user, () -> system.getId());
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("anda berhasil masuk " + userInsert.getEmail());
+		pojoRes.setMessage("Registration Completed" + userInsert.getEmail());
 
-		new Thread(() -> emailSenderService.sendMail(data.getEmail(), "sudah teregister ", "Dear," + data.getEmail()
-				+ " \n password Anda : " + data.getPass() + "\n Terimakasih untuk register Terimakasih")).start();
+		new Thread(() -> emailSenderService.sendMail(data.getEmail(), "Welcome to Leaf Community ",
+				"Dear," + data.getProfile().getFullName()
+				+ "\nWelcome to Leaf Community\nThank You")).start();
 		ConnHandler.commit();
 		return pojoRes;
 		
