@@ -129,6 +129,7 @@ CREATE TABLE t_profile(
 	facebook varchar(30),
 	job_id varchar(36),
 	file_id varchar(36),
+	balance decimal(15,0),
 	address text ,
 	created_by varchar(36) NOT NULL,
 	created_at timestamp NOT NULL,
