@@ -22,7 +22,9 @@ import com.lawencon.leaf.community.model.User;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.activity.PojoActivityReq;
 import com.lawencon.leaf.community.pojo.activity.PojoActivityRes;
+import com.lawencon.leaf.community.pojo.activity.type.PojoActivityTypeRes;
 import com.lawencon.leaf.community.pojo.schedule.PojoScheduleRes;
+import com.lawencon.leaf.community.util.DateUtil;
 import com.lawencon.leaf.community.util.GenerateCodeUtil;
 import com.lawencon.security.principal.PrincipalService;
 
@@ -51,6 +53,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 	public PojoActivityRes getById(String id) {
 		Optional<Activity> activity = activityDao.getById(id);
 		PojoActivityRes activitiesRes = new PojoActivityRes();
+		List<Schedule> schedules= scheduleDao.getAll();
 
 		if (activity.isEmpty()) {
 			throw new RuntimeException("This is Emplty or lacking");
@@ -71,29 +74,47 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		activitiesRes.setTimeEnd(activity.get().getTimeStart());
 		activitiesRes.setTimeStart(activity.get().getTimeStart());
 		activitiesRes.setVer(activity.get().getVer());
-
+		activitiesRes.setCreatedAt(DateUtil.dateToStr(activity.get().getCreatedAt()) );
+		List<PojoScheduleRes> scheduleRes = new ArrayList<>();
+		for(int j=0;j<schedules.size();j++) {
+			if(schedules.get(j).getActivity().getId().equals(activity.get().getId()) ) {
+				PojoScheduleRes schedule = new PojoScheduleRes();
+				schedule.setId(schedules.get(j).getId());
+				schedule.setScheduleDate(schedules.get(j).getScheduleDate());
+				schedule.setVer(schedules.get(j).getVer());
+				scheduleRes.add(schedule);
+			}
+		}
+		activitiesRes.setSchedule(scheduleRes);
 		return activitiesRes;
 	}
 
-	public List<PojoActivityRes> getAll(String activityTypeId,String categoryId,String code,int limit,int page) {
+	public List<PojoActivityRes> getAll(String typeCode,String categoryId,String code,int limit,int page) {
 		List<Activity> activities = new ArrayList<>();
 
-		if (categoryId == null&&activityTypeId==null && code==null) {
+		if (categoryId == null&&typeCode==null && code==null) {
 			activities = activityDao.getAll(limit,page);
-		} else if(activityTypeId!=null && categoryId==null && code==null){
-			activities = activityDao.getAllByType(activityTypeId,limit,page);
+		} else if(typeCode!=null && categoryId==null && code==null){
+			activities = activityDao.getAllByType(typeCode,limit,page);
 			
-		} else if(activityTypeId!=null && categoryId!=null && code==null){
-			activities = activityDao.getAllByTypeAndCategory(activityTypeId,categoryId,limit,page);
+		} else if(typeCode!=null && categoryId!=null && code==null){
+			activities = activityDao.getAllByTypeAndCategory(typeCode,categoryId,limit,page);
 		
-		} else if(activityTypeId!=null && categoryId!=null && "profile".equals(code)) {
-			activities = activityDao.getAllByTypeAndMember(activityTypeId,principalService.getAuthPrincipal(),limit,page);
+		} else if(typeCode!=null && categoryId==null && "profile".equals(code)) {
+			activities = activityDao.getAllByTypeAndMember(typeCode,principalService.getAuthPrincipal(),limit,page);
 		
-		} else if(activityTypeId!=null && categoryId!=null && "purchase".equals(code)) {
-			activities = activityDao.getAllByTypeAndPurchased(activityTypeId,principalService.getAuthPrincipal(),limit,page);
+		} else if(typeCode!=null && categoryId==null && "purchase".equals(code)) {
+			activities = activityDao.getAllByTypeAndPurchased(typeCode,principalService.getAuthPrincipal(),limit,page);
 		
-		} else if(categoryId!=null && activityTypeId==null && code==null){
+		} else if(categoryId!=null && typeCode==null && code==null){
 			activities = activityDao.getAllByCategory(categoryId,limit,page);
+			
+		} else if(typeCode!=null && categoryId!=null && "profile".equals(code)) {
+			activities = activityDao.getAllByTypeCategoryAndMember(typeCode,categoryId,principalService.getAuthPrincipal(),limit,page);
+		
+		} else if(typeCode!=null && categoryId!=null && "purchase".equals(code)) {
+			activities = activityDao.getAllByTypeCategoryAndPurchased(typeCode,categoryId,principalService.getAuthPrincipal(),limit,page);
+		
 		}
 		
 		List<Schedule> schedules= scheduleDao.getAll();
@@ -117,6 +138,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 			activity.setTimeEnd(activities.get(i).getTimeStart());
 			activity.setTimeStart(activities.get(i).getTimeStart());
 			activity.setVer(activities.get(i).getVer());
+			activity.setCreatedAt(DateUtil.dateToStr(activities.get(i).getCreatedAt()) );
 			List<PojoScheduleRes> scheduleRes = new ArrayList<>();
 			for(int j=0;j<schedules.size();j++) {
 				if(schedules.get(j).getActivity().getId().equals(activities.get(i).getId()) ) {
@@ -186,7 +208,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		ConnHandler.begin();
 		
 		Activity activity = new Activity();
-		activity = activityDao.getById(data.getId()).get();
+		activity = activityDao.getByIdAndDetach(data.getId()).get();
 		activity.setTitle(data.getTitle());
 		activity.setDescription(data.getDescription());
 		activity.setVer(data.getVer());
@@ -199,7 +221,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		
 		if(data.getSchedule()!=null) {
 			for (int i = 0; i < data.getSchedule().size(); i++) {
-				Schedule schedule = scheduleDao.getById(data.getSchedule().get(i).getId()).get();
+				Schedule schedule = scheduleDao.getByIdAndDetach(data.getSchedule().get(i).getId()).get();
 				schedule.setScheduleDate(data.getSchedule().get(i).getScheduleDate());
 				schedule.setIsActive(true);
 				scheduleDao.save(schedule);
@@ -219,6 +241,18 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		return null;
 	}
 	
+	public List<PojoActivityTypeRes> getAllType() {
+		List<ActivityType> activityTypes = activityTypeDao.getAll();
+		List<PojoActivityTypeRes> activityTypeRes = new ArrayList<>();
+		for(int i=0;i<activityTypes.size();i++) {
+			PojoActivityTypeRes activityType = new PojoActivityTypeRes();
+			activityType.setId(activityTypes.get(i).getId());
+			activityType.setActivityTypeCode(activityTypes.get(i).getActivityTypeCode());
+			activityType.setActivityTypeName(activityTypes.get(i).getActivityTypeName());
+			activityTypeRes.add(activityType);
+		}
+		return activityTypeRes;
+	}
 	public PojoRes delete(String id) {
 		
 		try {
@@ -229,6 +263,19 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		}
 		final PojoRes pojoRes = new PojoRes();
 		pojoRes.setMessage("Succes Delete Activity");
+		return pojoRes;
+	}
+	
+	public PojoRes deleteSchedule(String id) {
+		
+		try {
+			ConnHandler.begin();
+			scheduleDao.deleteById(Schedule.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		final PojoRes pojoRes = new PojoRes();
+		pojoRes.setMessage("Succes Delete Schedule");
 		return pojoRes;
 	}
 }

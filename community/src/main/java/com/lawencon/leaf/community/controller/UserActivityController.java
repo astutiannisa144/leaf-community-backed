@@ -45,8 +45,9 @@ public class UserActivityController {
 		return new ResponseEntity<>(res, HttpStatus.CREATED);
 	}
 	@GetMapping()
-	public ResponseEntity<List<PojoUserActivityRes>> getAll(@RequestParam(required = false) String id) throws Exception {
-		final List<PojoUserActivityRes> result = userActivityService.getAll(id);
+	public ResponseEntity<List<PojoUserActivityRes>> getAll(@RequestParam(required = false) String typeCode,
+			@RequestParam(required = false) String code) throws Exception {
+		final List<PojoUserActivityRes> result = userActivityService.getAll(typeCode,code);
 		return new ResponseEntity<List<PojoUserActivityRes>>(result, HttpStatus.OK);
 	}
 
