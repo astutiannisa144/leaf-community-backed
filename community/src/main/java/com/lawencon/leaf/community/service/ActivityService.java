@@ -75,14 +75,27 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		return activitiesRes;
 	}
 
-	public List<PojoActivityRes> getAll(String categoryId) {
+	public List<PojoActivityRes> getAll(String activityTypeId,String categoryId,String code,int limit,int page) {
 		List<Activity> activities = new ArrayList<>();
 
-		if (categoryId != null) {
-			activities = activityDao.getAllByCategory(categoryId);
-		} else {
-			activities = activityDao.getAll();
+		if (categoryId == null&&activityTypeId==null && code==null) {
+			activities = activityDao.getAll(limit,page);
+		} else if(activityTypeId!=null && categoryId==null && code==null){
+			activities = activityDao.getAllByType(activityTypeId,limit,page);
+			
+		} else if(activityTypeId!=null && categoryId!=null && code==null){
+			activities = activityDao.getAllByTypeAndCategory(activityTypeId,categoryId,limit,page);
+		
+		} else if(activityTypeId!=null && categoryId!=null && "profile".equals(code)) {
+			activities = activityDao.getAllByTypeAndMember(activityTypeId,principalService.getAuthPrincipal(),limit,page);
+		
+		} else if(activityTypeId!=null && categoryId!=null && "purchase".equals(code)) {
+			activities = activityDao.getAllByTypeAndPurchased(activityTypeId,principalService.getAuthPrincipal(),limit,page);
+		
+		} else if(categoryId!=null && activityTypeId==null && code==null){
+			activities = activityDao.getAllByCategory(categoryId,limit,page);
 		}
+		
 		List<Schedule> schedules= scheduleDao.getAll();
 		List<PojoActivityRes> activitiesRes = new ArrayList<>();
 

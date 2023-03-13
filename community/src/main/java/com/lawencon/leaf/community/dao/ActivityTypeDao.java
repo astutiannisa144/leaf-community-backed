@@ -20,7 +20,26 @@ public class ActivityTypeDao extends BaseDao<ActivityType> {
 		final List<ActivityType> activities = ConnHandler.getManager().createNativeQuery(str.toString(), ActivityType.class).getResultList();
 		return activities;
 	}
+	
+	
+	public Optional<ActivityType> getByCode(String code) {
+		ActivityType activityType=null;
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT id ");
+		str.append("FROM t_activity_type a=");
+		str.append("WHERE activity_type_code = :code");
 
+		final Object result = ConnHandler.getManager().createNativeQuery(str.toString())
+				.setParameter("code", code).getSingleResult();
+		if (result != null) {
+			final Object[] objArr = (Object[]) result;
+
+			activityType = new ActivityType();
+			activityType.setId(objArr[0].toString());
+		}
+		return Optional.ofNullable(activityType);
+	}
+	
 	@Override
 	public Optional<ActivityType> getByIdAndDetach(String id) {
 		return Optional.ofNullable(super.getByIdAndDetach(ActivityType.class, id));

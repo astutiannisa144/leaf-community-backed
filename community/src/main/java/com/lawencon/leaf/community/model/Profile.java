@@ -1,5 +1,7 @@
 package com.lawencon.leaf.community.model;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -28,7 +30,11 @@ public class Profile extends BaseEntity {
 	@OneToOne
 	@JoinColumn(name = "file_id")
 	private File file;
-
+	
+	
+	private BigDecimal balance;
+	
+	
 	public String getFullName() {
 		return fullName;
 	}
@@ -67,6 +73,14 @@ public class Profile extends BaseEntity {
 
 	public void setFile(File file) {
 		this.file = file;
+	}
+
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
 	}
 
 }
