@@ -516,6 +516,7 @@ CREATE TABLE t_user_polling(
 	id varchar(36) NOT NULL,
 	member_id varchar(36) NOT NULL,
 	polling_detail_id varchar(36) NOT NULL,
+	polling_id varchar(36) NOT NULL,
 	created_by varchar(36) NOT NULL,
 	created_at timestamp NOT NULL,
 	updated_by varchar(36),
@@ -530,10 +531,13 @@ ALTER TABLE t_user_polling
 	ADD CONSTRAINT polling_detail_id FOREIGN KEY(polling_detail_id)
 	REFERENCES t_polling_detail(id);
 ALTER TABLE t_user_polling 
+	ADD CONSTRAINT polling_id FOREIGN KEY(polling_id)
+	REFERENCES t_polling(id);
+ALTER TABLE t_user_polling 
 	ADD CONSTRAINT member_fk FOREIGN KEY(member_id)
 	REFERENCES t_user(id);
 ALTER TABLE t_user_polling 
-	ADD CONSTRAINT user_polling_ck UNIQUE(member_id,polling_detail_id);
+	ADD CONSTRAINT user_polling_ck UNIQUE(member_id,polling_id);
 
 
 
