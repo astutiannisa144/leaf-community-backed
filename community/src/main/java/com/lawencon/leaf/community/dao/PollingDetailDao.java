@@ -39,5 +39,5 @@ public class PollingDetailDao extends BaseDao<PollingDetail> {
 
 		return postList;
 	}
-
+	
 }

@@ -38,5 +38,28 @@ public class LikeDao extends BaseDao<Like> {
 
 		return count;
 	}
+	
+	public Optional<String> getId(String uid, String pid) {
+		String likeId = null;
+		
+		try {
+			final StringBuilder sql = new StringBuilder();
+			
+			sql.append("SELECT id FROM t_like  ");
+			sql.append("WHERE member_id = :uid ");
+			sql.append("AND post_id = :pid ");
+			
+			likeId = ConnHandler.getManager()
+					.createNativeQuery(sql.toString())
+					.setParameter("uid", uid)
+					.setParameter("pid", pid)
+					.getSingleResult().toString();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return Optional.ofNullable(likeId);
+	}
 
 }

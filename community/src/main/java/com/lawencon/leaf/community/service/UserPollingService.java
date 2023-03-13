@@ -35,6 +35,7 @@ public class UserPollingService {
 		final UserPolling userPolling = new UserPolling();
 		final PollingDetail pollingDetail = pollingDetailDao.getById(PollingDetail.class, data.getPollingDetailId());
 		userPolling.setPollingDetail(pollingDetail);
+		userPolling.setPolling(pollingDetail.getPolling());
 
 		final User user = userDao.getById(principalService.getAuthPrincipal()).get();
 		userPolling.setMember(user);

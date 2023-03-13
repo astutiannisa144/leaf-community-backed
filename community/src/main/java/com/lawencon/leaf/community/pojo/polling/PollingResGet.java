@@ -8,7 +8,17 @@ public class PollingResGet {
 	private String pollingId;
 	private String content;
 	private LocalDateTime expired;
+	private Long totalPolling;
+	private String userPollingId;
 	private List<PollingDetailRes> pollingDetail;
+
+	public String getUserPollingId() {
+		return userPollingId;
+	}
+
+	public void setUserPollingId(String userPollingId) {
+		this.userPollingId = userPollingId;
+	}
 
 	public String getPollingId() {
 		return pollingId;
@@ -40,6 +50,14 @@ public class PollingResGet {
 
 	public void setPollingDetail(List<PollingDetailRes> pollingDetail) {
 		this.pollingDetail = pollingDetail;
+	}
+
+	public Long getTotalPolling() {
+		return totalPolling;
+	}
+
+	public void setTotalPolling(Long totalPolling) {
+		this.totalPolling = totalPolling;
 	}
 
 }
