@@ -1,11 +1,15 @@
 package com.lawencon.leaf.community.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.lawencon.base.ConnHandler;
+import com.lawencon.leaf.community.constant.PostPageType;
+import com.lawencon.leaf.community.dao.BookmarkDao;
 import com.lawencon.leaf.community.dao.CategoryDao;
 import com.lawencon.leaf.community.dao.CommentDao;
 import com.lawencon.leaf.community.dao.FileDao;
@@ -15,6 +19,7 @@ import com.lawencon.leaf.community.dao.PollingDetailDao;
 import com.lawencon.leaf.community.dao.PostDao;
 import com.lawencon.leaf.community.dao.PostFileDao;
 import com.lawencon.leaf.community.dao.UserDao;
+import com.lawencon.leaf.community.dao.UserPollingDao;
 import com.lawencon.leaf.community.model.Category;
 import com.lawencon.leaf.community.model.Comment;
 import com.lawencon.leaf.community.model.File;
@@ -38,30 +43,35 @@ import com.lawencon.security.principal.PrincipalServiceImpl;
 @Service
 public class PostService {
 
-	private final PostDao postDao;
-	private final CategoryDao categoryDao;
-	private final PollingDao pollingDao;
-	private final PollingDetailDao pollingDetailDao;
-	private final UserDao userDao;
 	private final PrincipalService principalService;
-	private final FileDao fileDao;
+	private final PollingDetailDao pollingDetailDao;
+	private final UserPollingDao userPollingDao;
+	private final CategoryDao categoryDao;
 	private final PostFileDao postFileDao;
-	private final LikeDao likeDao;
+	private final BookmarkDao bookmarkDao;
+	private final PollingDao pollingDao;
 	private final CommentDao commentDao;
+	private final PostDao postDao;
+	private final UserDao userDao;
+	private final FileDao fileDao;
+	private final LikeDao likeDao;
 
 	public PostService(PostDao postDao, CategoryDao categoryDao, PollingDao pollingDao,
 			PollingDetailDao pollingDetailDao, UserDao userDao, PrincipalServiceImpl principalServiceImpl,
-			FileDao fileDao, PostFileDao postFileDao, LikeDao likeDao, CommentDao commentDao) {
-		this.postDao = postDao;
-		this.categoryDao = categoryDao;
-		this.pollingDao = pollingDao;
-		this.pollingDetailDao = pollingDetailDao;
-		this.userDao = userDao;
+			FileDao fileDao, PostFileDao postFileDao, LikeDao likeDao, CommentDao commentDao, BookmarkDao bookmarkDao,
+			UserPollingDao userPollingDao) {
 		this.principalService = principalServiceImpl;
-		this.fileDao = fileDao;
+		this.pollingDetailDao = pollingDetailDao;
+		this.userPollingDao = userPollingDao;
+		this.categoryDao = categoryDao;
 		this.postFileDao = postFileDao;
-		this.likeDao = likeDao;
+		this.bookmarkDao = bookmarkDao;
+		this.pollingDao = pollingDao;
 		this.commentDao = commentDao;
+		this.postDao = postDao;
+		this.userDao = userDao;
+		this.fileDao = fileDao;
+		this.likeDao = likeDao;
 	}
 
 	public PojoRes insert(final PojoPostReqInsert data) {
@@ -80,14 +90,14 @@ public class PostService {
 		final User user = userDao.getById(principalService.getAuthPrincipal()).get();
 		postInsert.setMember(user);
 
-		Polling polling = new Polling();
-		polling.setContent(data.getPolling().getContent());
-
-		polling = pollingDao.save(polling);
-
-		postInsert.setPolling(polling);
-
 		if (data.getPolling() != null) {
+			Polling polling = new Polling();
+			polling.setContent(data.getPolling().getContent());
+			polling.setExpired(data.getPolling().getExpired());
+
+			polling = pollingDao.save(polling);
+
+			postInsert.setPolling(polling);
 			for (int i = 0; i < data.getPolling().getPollingDetail().size(); i++) {
 				final PollingDetail pollingDetail = new PollingDetail();
 				pollingDetail.setPolling(polling);
@@ -156,13 +166,13 @@ public class PostService {
 		if (code == null) {
 			postList = postDao.getAll(limit, offset);
 
-		} else if ("profile".equals(code)) {
+		} else if (PostPageType.PROFILE.getCode().equals(code)) {
 			postList = postDao.getAllByUser(limit, offset, principalService.getAuthPrincipal());
 
-		} else if ("like".equals(code)) {
+		} else if (PostPageType.LIKE.getCode().equals(code)) {
 			postList = postDao.getAllByLike(limit, offset, principalService.getAuthPrincipal());
 
-		} else if ("bookmark".equals(code)) {
+		} else if (PostPageType.BOOKMARK.getCode().equals(code)) {
 			postList = postDao.getAllByBookmark(limit, offset, principalService.getAuthPrincipal());
 		}
 
@@ -176,15 +186,33 @@ public class PostService {
 			res.setIsPremium(postList.get(i).getIsPremium());
 			res.setCategoryId(postList.get(i).getCategory().getId());
 			res.setMemberId(postList.get(i).getMember().getId());
+			res.setFileId(postList.get(i).getMember().getProfile().getFile().getId());
+			res.setFullName(postList.get(i).getMember().getProfile().getFullName());
 			res.setCreatedAt(DateUtil.dateToStr(postList.get(i).getCreatedAt()));
 			res.setLikeSum(likeDao.countLike(postList.get(i).getId()));
 			res.setCommentSum(commentDao.countComment(postList.get(i).getId()));
+
+			if (likeDao.getId(principalService.getAuthPrincipal(), postList.get(i).getId()).isPresent()) {
+				res.setLikeId(likeDao.getId(principalService.getAuthPrincipal(), postList.get(i).getId()).get());
+			}
+
+			if (bookmarkDao.getId(principalService.getAuthPrincipal(), postList.get(i).getId()).isPresent()) {
+				res.setBookmarkId(
+						bookmarkDao.getId(principalService.getAuthPrincipal(), postList.get(i).getId()).get());
+			}
 
 			if (postList.get(i).getPolling() != null) {
 				final PollingResGet polling = new PollingResGet();
 				polling.setPollingId(postList.get(i).getPolling().getId());
 				polling.setContent(postList.get(i).getPolling().getContent());
 				polling.setExpired(postList.get(i).getPolling().getExpired());
+
+				final Long totalPolling = userPollingDao.countTotalPolling(postList.get(i).getPolling().getId());
+				polling.setTotalPolling(totalPolling);
+
+				if (userPollingDao.getId(principalService.getAuthPrincipal()).isPresent()) {
+					polling.setUserPollingId(userPollingDao.getId(principalService.getAuthPrincipal()).get());
+				}
 
 				final List<PollingDetailRes> resPollingDetailList = new ArrayList<>();
 				final List<PollingDetail> pollingDetailList = pollingDetailDao
@@ -194,6 +222,12 @@ public class PostService {
 					final PollingDetailRes resPollingDetail = new PollingDetailRes();
 					resPollingDetail.setPollingDetailId(pollingDetailList.get(j).getId());
 					resPollingDetail.setContent(pollingDetailList.get(j).getContent());
+
+					BigDecimal percentage = BigDecimal
+							.valueOf(userPollingDao.countPercentage(pollingDetailList.get(j).getId()) * 100);
+					percentage = percentage.divide(BigDecimal.valueOf(totalPolling), 2, RoundingMode.HALF_UP);
+
+					resPollingDetail.setPercentage(percentage);
 
 					resPollingDetailList.add(resPollingDetail);
 				}

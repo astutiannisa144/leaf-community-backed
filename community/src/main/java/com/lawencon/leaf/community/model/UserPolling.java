@@ -10,7 +10,7 @@ import com.lawencon.base.BaseEntity;
 
 @Entity
 @Table(name = "t_user_polling", uniqueConstraints = {
-		@UniqueConstraint(name = "user_polling_ck", columnNames = { "member_id", "polling_detail_id" }) })
+		@UniqueConstraint(name = "user_polling_ck", columnNames = { "member_id", "polling_id" }) })
 public class UserPolling extends BaseEntity {
 
 	@OneToOne
@@ -20,6 +20,10 @@ public class UserPolling extends BaseEntity {
 	@OneToOne
 	@JoinColumn(name = "polling_detail_id", nullable = false)
 	private PollingDetail pollingDetail;
+
+	@OneToOne
+	@JoinColumn(name = "polling_id", nullable = false)
+	private Polling polling;
 
 	public User getMember() {
 		return member;
@@ -35,6 +39,14 @@ public class UserPolling extends BaseEntity {
 
 	public void setPollingDetail(PollingDetail pollingDetail) {
 		this.pollingDetail = pollingDetail;
+	}
+
+	public Polling getPolling() {
+		return polling;
+	}
+
+	public void setPolling(Polling polling) {
+		this.polling = polling;
 	}
 
 }

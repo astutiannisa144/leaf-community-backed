@@ -1,20 +1,25 @@
 package com.lawencon.leaf.community.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.comment.PojoCommentReqInsert;
 import com.lawencon.leaf.community.pojo.comment.PojoCommentReqUpdate;
+import com.lawencon.leaf.community.pojo.comment.PojoCommentRes;
 import com.lawencon.leaf.community.service.CommentService;
 
 @RestController
@@ -42,6 +47,12 @@ public class CommentController {
 	@PatchMapping()
 	public ResponseEntity<PojoRes> update(final @Valid @RequestBody PojoCommentReqUpdate data) {
 		final PojoRes res = commentService.update(data);
+		return new ResponseEntity<>(res, HttpStatus.OK);
+	}
+
+	@GetMapping()
+	public ResponseEntity<List<PojoCommentRes>> getAll(String id, @RequestParam int limit, @RequestParam int page) {
+		final List<PojoCommentRes> res = commentService.getByPostId(limit, page, id);
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 

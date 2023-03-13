@@ -1,5 +1,8 @@
 package com.lawencon.leaf.community.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.lawencon.base.ConnHandler;
@@ -12,6 +15,7 @@ import com.lawencon.leaf.community.model.User;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.comment.PojoCommentReqInsert;
 import com.lawencon.leaf.community.pojo.comment.PojoCommentReqUpdate;
+import com.lawencon.leaf.community.pojo.comment.PojoCommentRes;
 import com.lawencon.security.principal.PrincipalService;
 
 @Service
@@ -76,6 +80,24 @@ public class CommentService {
 		final PojoRes pojoRes = new PojoRes();
 		pojoRes.setMessage("Comment Deleted");
 		return pojoRes;
+	}
+	
+	public List<PojoCommentRes> getByPostId(int limit, int offset, String id) {
+		final List<PojoCommentRes> resList = new ArrayList<>();
+		final List<Comment> commentList = commentDao.getByPostId(limit, offset, id);
+		
+		for (int i = 0; i < commentList.size(); i++) {
+			final PojoCommentRes res = new PojoCommentRes();
+			res.setCommentId(commentList.get(i).getId());
+			res.setContent(commentList.get(i).getContent());
+			res.setMemberId(commentList.get(i).getMember().getId());
+			res.setFullName(commentList.get(i).getMember().getProfile().getFullName());
+			res.setFileId(commentList.get(i).getMember().getProfile().getFile().getId());
+			
+			resList.add(res);
+		}
+		
+		return resList;
 	}
 
 }

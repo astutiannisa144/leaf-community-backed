@@ -1,9 +1,12 @@
 package com.lawencon.leaf.community.pojo.polling;
 
+import java.math.BigDecimal;
+
 public class PollingDetailRes {
 
 	private String pollingDetailId;
 	private String content;
+	private BigDecimal percentage;
 
 	public String getPollingDetailId() {
 		return pollingDetailId;
@@ -19,6 +22,14 @@ public class PollingDetailRes {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public BigDecimal getPercentage() {
+		return percentage;
+	}
+
+	public void setPercentage(BigDecimal percentage) {
+		this.percentage = percentage;
 	}
 
 }

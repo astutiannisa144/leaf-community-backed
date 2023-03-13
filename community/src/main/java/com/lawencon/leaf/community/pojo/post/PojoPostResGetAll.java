@@ -13,11 +13,31 @@ public class PojoPostResGetAll {
 	private Boolean isPremium;
 	private String categoryId;
 	private String memberId;
+	private String fileId;
+	private String fullName;
 	private Long likeSum;
 	private Long commentSum;
 	private String createdAt;
+	private String likeId;
+	private String bookmarkId;
 	private PollingResGet polling;
 	private List<PojoFileRes> file;
+
+	public String getLikeId() {
+		return likeId;
+	}
+
+	public void setLikeId(String likeId) {
+		this.likeId = likeId;
+	}
+
+	public String getBookmarkId() {
+		return bookmarkId;
+	}
+
+	public void setBookmarkId(String bookmarkId) {
+		this.bookmarkId = bookmarkId;
+	}
 
 	public String getPostId() {
 		return postId;
@@ -105,6 +125,22 @@ public class PojoPostResGetAll {
 
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public String getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(String fileId) {
+		this.fileId = fileId;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 
 }
