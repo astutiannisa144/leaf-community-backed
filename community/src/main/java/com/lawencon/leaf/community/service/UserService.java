@@ -1,5 +1,6 @@
 package com.lawencon.leaf.community.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -93,6 +94,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		profile.setAddress(data.getProfile().getAddress());
 		profile.setFullName(data.getProfile().getFullName());
 		profile.setPhoneNumber(data.getProfile().getPhoneNumber());
+		profile.setBalance(BigDecimal.ZERO);
 		Job job = new Job();
 		job.setCompanyName(data.getProfile().getJob().getCompanyName());
 

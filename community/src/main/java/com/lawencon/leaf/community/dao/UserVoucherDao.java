@@ -10,16 +10,21 @@ import com.lawencon.base.ConnHandler;
 public class UserVoucherDao  {
 	
 	public Optional<String> getRefByMemberAndVoucher(String memberId,String voucherId){
-		
+		String result=null;
 		final StringBuilder str = new StringBuilder();
 		str.append("SELECT id ");
 		str.append("FROM t_user_voucher ");
 		str.append("WHERE member_id=:memberId ");
 		str.append("AND voucher_id=:voucherId ");
-		final String result = (String) ConnHandler.getManager().createNativeQuery(str.toString())
-				.setParameter("memberId", memberId)
-				.setParameter("voucherId", voucherId)
-				.getSingleResult();
+		try {
+			result =  ConnHandler.getManager().createNativeQuery(str.toString())
+					.setParameter("memberId", memberId)
+					.setParameter("voucherId", voucherId)
+					.getSingleResult().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return Optional.ofNullable(result);
 		
 	}

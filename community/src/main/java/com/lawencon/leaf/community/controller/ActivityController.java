@@ -31,8 +31,9 @@ public class ActivityController {
 	}
 
 	@GetMapping()
-	public ResponseEntity<List<PojoActivityRes>> getAll(@RequestParam(required = false) String id) throws Exception {
-		List<PojoActivityRes> result = activityService.getAll(id);
+	public ResponseEntity<List<PojoActivityRes>> getAll(@RequestParam(required = false) String type,
+			@RequestParam(required = false) String category, @RequestParam(required = false) String code, @RequestParam int limit, @RequestParam int page) throws Exception {
+		List<PojoActivityRes> result = activityService.getAll(type,category,code,limit,page);
 
 		return new ResponseEntity<List<PojoActivityRes>>(result, HttpStatus.OK);
 	}
