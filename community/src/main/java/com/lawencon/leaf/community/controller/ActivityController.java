@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.activity.PojoActivityReq;
 import com.lawencon.leaf.community.pojo.activity.PojoActivityRes;
+import com.lawencon.leaf.community.pojo.activity.type.PojoActivityTypeRes;
 import com.lawencon.leaf.community.service.ActivityService;
 
 @RestController
@@ -38,6 +39,12 @@ public class ActivityController {
 		return new ResponseEntity<List<PojoActivityRes>>(result, HttpStatus.OK);
 	}
 	
+	@GetMapping("/type")
+	public ResponseEntity<List<PojoActivityTypeRes>> getAllType() throws Exception {
+		List<PojoActivityTypeRes> result = activityService.getAllType();
+
+		return new ResponseEntity<List<PojoActivityTypeRes>>(result, HttpStatus.OK);
+	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<PojoActivityRes> getById(final @Valid @PathVariable("id") String id)
@@ -63,6 +70,12 @@ public class ActivityController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<PojoRes> delete(final @Valid @PathVariable String id) {
 		final PojoRes res = activityService.delete(id);
+		return new ResponseEntity<>(res, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("schedule/{id}")
+	public ResponseEntity<PojoRes> deleteSchedule(final @Valid @PathVariable String id) {
+		final PojoRes res = activityService.deleteSchedule(id);
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 }

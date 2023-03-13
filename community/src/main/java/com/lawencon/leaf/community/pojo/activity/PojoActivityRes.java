@@ -1,6 +1,7 @@
 package com.lawencon.leaf.community.pojo.activity;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class PojoActivityRes {
 	private String location_address;
 	private LocalTime timeStart;
 	private LocalTime timeEnd;
+	private String createdAt ;
 	private BigDecimal price;
 	private String fileId;
 	private Integer ver;
@@ -129,6 +131,13 @@ public class PojoActivityRes {
 	public void setSchedule(List<PojoScheduleRes> schedule) {
 		this.schedule = schedule;
 	}
+	public String getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
 	
 
 	

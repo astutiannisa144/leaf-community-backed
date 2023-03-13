@@ -2,6 +2,8 @@ package com.lawencon.leaf.community.pojo.user.premium;
 
 import java.time.LocalDate;
 
+import com.lawencon.leaf.community.pojo.file.PojoFileReqInsert;
+
 public class PojoUserPremiumReq {
 	
 	private String id;
@@ -9,7 +11,7 @@ public class PojoUserPremiumReq {
 	private LocalDate expireDate;
 	private Integer ver;
 	private Boolean isActive;
-	
+	private PojoFileReqInsert file;
 	
 	public Integer getVer() {
 		return ver;
@@ -49,6 +51,14 @@ public class PojoUserPremiumReq {
 
 	public void setExpireDate(LocalDate expireDate) {
 		this.expireDate = expireDate;
+	}
+
+	public PojoFileReqInsert getFile() {
+		return file;
+	}
+
+	public void setFile(PojoFileReqInsert file) {
+		this.file = file;
 	}
 	
 	

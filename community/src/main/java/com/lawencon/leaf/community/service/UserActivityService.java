@@ -12,7 +12,6 @@ import com.lawencon.base.ConnHandler;
 import com.lawencon.leaf.community.dao.ActivityDao;
 import com.lawencon.leaf.community.dao.UserActivityDao;
 import com.lawencon.leaf.community.dao.UserDao;
-import com.lawencon.leaf.community.dao.UserVoucherDao;
 import com.lawencon.leaf.community.model.Activity;
 import com.lawencon.leaf.community.model.File;
 import com.lawencon.leaf.community.model.Industry;
@@ -38,8 +37,6 @@ public class UserActivityService extends AbstractJpaDao {
 	private ActivityDao activityDao;
 	@Autowired
 	private final PrincipalService principalService;
-	@Autowired
-	private UserVoucherDao userVoucherDao;
 
 	public UserActivityService(PrincipalServiceImpl principalServiceImpl) {
 		this.principalService = principalServiceImpl;
@@ -120,7 +117,7 @@ public class UserActivityService extends AbstractJpaDao {
 		pojoUserActivityRes.setMemberName(userActivity.getMember().getProfile().getFullName());
 		pojoUserActivityRes.setTotalPrice(userActivity.getTotalPrice());
 		pojoUserActivityRes.setVer(userActivity.getVer());
-		if(userActivity.getUserVoucher()!=null) {			
+		if (userActivity.getUserVoucher() != null) {
 			pojoUserActivityRes.setVoucherCode(userActivity.getUserVoucher().getVoucher().getVoucherCode());
 		}
 		pojoUserActivityRes.setIsActive(userActivity.getIsActive());
@@ -129,15 +126,23 @@ public class UserActivityService extends AbstractJpaDao {
 		return pojoUserActivityRes;
 	}
 
-	public List<PojoUserActivityRes> getAll(String id) {
+	public List<PojoUserActivityRes> getAll(String typeCode, String code) {
 		final List<PojoUserActivityRes> pojoUserActivityRes = new ArrayList<>();
 		List<UserActivity> userActivities = new ArrayList<>();
-		
-		if(id!=null) {
-			userActivities=userActivityDao.getAllByActivityType(id);
-		}else {
+
+		if (typeCode != null) {
+			userActivities = userActivityDao.getAllByActivityType(typeCode);
+		} else if (code.equals("profile") && typeCode == null) {
+
+			userActivities = userActivityDao.getAllByActivityPurchased(principalService.getAuthPrincipal());
+		} else if (code.equals("profile") && typeCode != null) {
+
+			userActivities = userActivityDao.getAllByActivityByTypeAndMember(typeCode,principalService.getAuthPrincipal());
+		} else {
 			userActivities = userActivityDao.getAll();
+
 		}
+
 		for (int i = 0; i < userActivities.size(); i++) {
 			PojoUserActivityRes userActivity = new PojoUserActivityRes();
 			userActivity.setActivityName(userActivities.get(i).getActivity().getTitle());
@@ -147,7 +152,7 @@ public class UserActivityService extends AbstractJpaDao {
 			userActivity.setMemberName(userActivities.get(i).getMember().getProfile().getFullName());
 			userActivity.setTotalPrice(userActivities.get(i).getTotalPrice());
 			userActivity.setVer(userActivities.get(i).getVer());
-			if(userActivities.get(i).getUserVoucher()!=null) {				
+			if (userActivities.get(i).getUserVoucher() != null) {
 				userActivity.setVoucherCode(userActivities.get(i).getUserVoucher().getVoucher().getVoucherCode());
 			}
 			userActivity.setInvoiceCode(userActivities.get(i).getInvoiceCode());
@@ -171,7 +176,5 @@ public class UserActivityService extends AbstractJpaDao {
 		pojoRes.setMessage("Succes Delete User Activity");
 		return pojoRes;
 	}
-
-
 
 }

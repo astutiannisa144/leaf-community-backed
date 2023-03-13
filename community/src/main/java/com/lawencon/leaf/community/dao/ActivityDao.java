@@ -63,7 +63,7 @@ public class ActivityDao extends BaseDao<Activity> {
 	public List<Activity> getAllByTypeAndCategory(String typeCode, String categoryId,int limit, int offset) {
 		final StringBuilder str = new StringBuilder();
 		str.append("SELECT * ");
-		str.append("FROM t_activity a");
+		str.append("FROM t_activity a ");
 		str.append("INNER JOIN t_activity_type b ON a.activity_type_id=b.id ");
 		str.append("WHERE b.activity_type_code = :typeCode ");
 		str.append("AND a.category_id = :categoryId ");
@@ -82,7 +82,7 @@ public class ActivityDao extends BaseDao<Activity> {
 	public List<Activity> getAllByTypeAndMember(String typeCode, String memberId,int limit, int offset) {
 		final StringBuilder str = new StringBuilder();
 		str.append("SELECT * ");
-		str.append("FROM t_activity a");
+		str.append("FROM t_activity a ");
 		str.append("INNER JOIN t_activity_type b ON a.activity_type_id=b.id ");
 		str.append("WHERE b.activity_type_code = :typeCode ");
 		str.append("AND a.member_id = :memberId ");
@@ -102,7 +102,7 @@ public class ActivityDao extends BaseDao<Activity> {
 		final StringBuilder str = new StringBuilder();
 		str.append("SELECT * ");
 		str.append("FROM t_activity a ");
-		str.append("INNER JOIN t_user_activity c ");
+		str.append("INNER JOIN t_user_activity c ON c.activity_id=a.id ");
 		str.append("INNER JOIN t_activity_type b ON a.activity_type_id=b.id ");
 		str.append("WHERE b.activity_type_code = :typeCode ");
 		str.append("AND c.member_id = :memberId ");
@@ -132,6 +132,51 @@ public class ActivityDao extends BaseDao<Activity> {
 	List<Activity> getAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Activity> getAllByTypeCategoryAndMember(String typeCode, String categoryId, String memberId,
+			int limit, int offset) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT * ");
+		str.append("FROM t_activity a ");
+		str.append("INNER JOIN t_activity_type b ON a.activity_type_id=b.id ");
+		str.append("WHERE b.activity_type_code = :typeCode ");
+		str.append("AND a.category_id = :categoryId ");
+		str.append("AND a.member_id = :memberId ");
+		str.append("ORDER BY a.created_at DESC ");
+
+		final List<Activity> activities = ConnHandler.getManager().createNativeQuery(str.toString(), Activity.class)
+				.setParameter("memberId", memberId)
+				.setParameter("categoryId", categoryId)
+				.setParameter("typeCode", typeCode)
+				.setFirstResult((offset - 1) * limit)
+				.setMaxResults(limit)
+				.getResultList();
+		return activities;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Activity> getAllByTypeCategoryAndPurchased(String typeCode, String categoryId,
+			String memberId, int limit, int offset) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT * ");
+		str.append("FROM t_activity a ");
+		str.append("INNER JOIN t_user_activity c ON c.activity_id=a.id ");
+		str.append("INNER JOIN t_activity_type b ON a.activity_type_id=b.id ");
+		str.append("WHERE b.activity_type_code = :typeCode ");
+		str.append("AND a.category_id = :categoryId ");
+		str.append("AND c.member_id = :memberId ");
+		str.append("ORDER BY a.created_at DESC ");
+
+		final List<Activity> activities = ConnHandler.getManager().createNativeQuery(str.toString(), Activity.class)
+				.setParameter("memberId", memberId)
+				.setParameter("categoryId", categoryId)
+				.setParameter("typeCode", typeCode)
+				.setFirstResult((offset - 1) * limit)
+				.setMaxResults(limit)
+				.getResultList();
+		return activities;
 	}
 
 }
