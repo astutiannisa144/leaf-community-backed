@@ -1,59 +1,59 @@
-package com.lawencon.leaf.community.model;
+package com.lawencon.leaf.community.pojo.voucher;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import com.lawencon.base.BaseEntity;
-
-@Entity
-@Table(name = "t_voucher", uniqueConstraints = {
-		@UniqueConstraint(name = "voucher_bk", columnNames = { "voucherCode" }) })
-public class Voucher extends BaseEntity {
-
-	@Column(length = 10, nullable = false)
+public class PojoVoucherRes {
 	private String voucherCode;
-
+	private Integer ver;
+	private String id;
 	private BigDecimal discountPrice;
-
 	private LocalDate expiredDate;
-	
 	private BigDecimal minimumPurchase;
-	
+	private Boolean isActive;
+
 	public String getVoucherCode() {
 		return voucherCode;
 	}
-
 	public void setVoucherCode(String voucherCode) {
 		this.voucherCode = voucherCode;
 	}
-
+	public Integer getVer() {
+		return ver;
+	}
+	public void setVer(Integer ver) {
+		this.ver = ver;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public BigDecimal getDiscountPrice() {
 		return discountPrice;
 	}
-
 	public void setDiscountPrice(BigDecimal discountPrice) {
 		this.discountPrice = discountPrice;
 	}
-
 	public LocalDate getExpiredDate() {
 		return expiredDate;
 	}
-
 	public void setExpiredDate(LocalDate expiredDate) {
 		this.expiredDate = expiredDate;
 	}
-
 	public BigDecimal getMinimumPurchase() {
 		return minimumPurchase;
 	}
-
 	public void setMinimumPurchase(BigDecimal minimumPurchase) {
 		this.minimumPurchase = minimumPurchase;
 	}
-
+	public Boolean getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+	
+	
 }

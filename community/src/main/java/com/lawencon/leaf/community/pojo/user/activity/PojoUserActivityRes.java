@@ -2,12 +2,10 @@ package com.lawencon.leaf.community.pojo.user.activity;
 
 import java.math.BigDecimal;
 
-import com.lawencon.leaf.community.pojo.file.PojoFileReqInsert;
-import com.lawencon.leaf.community.pojo.user.voucher.PojoUserVoucherReq;
-
 public class PojoUserActivityRes {
 	private String id;
 	private String activityName;
+	private String activityId;
 	private String fileId;
 	private String memberName;
 	private String voucherCode;
@@ -76,6 +74,12 @@ public class PojoUserActivityRes {
 	}
 	public void setInvoiceCode(String invoiceCode) {
 		this.invoiceCode = invoiceCode;
+	}
+	public String getActivityId() {
+		return activityId;
+	}
+	public void setActivityId(String activityId) {
+		this.activityId = activityId;
 	}
 	
 }

@@ -3,9 +3,12 @@ package com.lawencon.leaf.community.dao;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Repository;
+
 import com.lawencon.base.ConnHandler;
 import com.lawencon.leaf.community.model.Premium;
 
+@Repository
 public class PremiumDao extends BaseDao<Premium> {
 	@SuppressWarnings("unchecked")
 	@Override

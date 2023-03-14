@@ -6,6 +6,8 @@ public class PojoUserReq {
 	private String id;
 	private String email;
 	private String pass;
+	private String oldPass;	
+	private String newPass;
 	private String verificationCode;
 	private String roleId;
 	private PojoProfileReq profile;
@@ -59,6 +61,18 @@ public class PojoUserReq {
 	}
 	public void setVer(Integer ver) {
 		this.ver = ver;
+	}
+	public String getOldPass() {
+		return oldPass;
+	}
+	public void setOldPass(String oldPass) {
+		this.oldPass = oldPass;
+	}
+	public String getNewPass() {
+		return newPass;
+	}
+	public void setNewPass(String newPass) {
+		this.newPass = newPass;
 	}
 	
 	
