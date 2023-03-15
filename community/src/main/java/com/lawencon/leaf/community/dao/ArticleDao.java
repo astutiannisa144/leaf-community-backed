@@ -22,7 +22,7 @@ public class ArticleDao extends BaseDao<Article> {
 	}
 
 	@Override
-	Optional<Article> getById(String id) {
+	public Optional<Article> getById(String id) {
 		return Optional.ofNullable(super.getById(Article.class, id));
 	}
 

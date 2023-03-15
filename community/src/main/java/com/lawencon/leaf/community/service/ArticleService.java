@@ -14,7 +14,8 @@ import com.lawencon.leaf.community.model.Article;
 import com.lawencon.leaf.community.model.File;
 import com.lawencon.leaf.community.model.User;
 import com.lawencon.leaf.community.pojo.PojoRes;
-import com.lawencon.leaf.community.pojo.article.PojoArticleReq;
+import com.lawencon.leaf.community.pojo.article.PojoArticleReqInsert;
+import com.lawencon.leaf.community.pojo.article.PojoArticleReqUpdate;
 import com.lawencon.leaf.community.pojo.article.PojoArticleRes;
 import com.lawencon.leaf.community.util.GenerateCodeUtil;
 import com.lawencon.security.principal.PrincipalService;
@@ -29,7 +30,7 @@ public class ArticleService extends AbstractJpaDao{
 	@Autowired
 	private PrincipalService principalService;
 
-	public PojoRes insert(PojoArticleReq data) {
+	public PojoRes insert(PojoArticleReqInsert data) {
 		ConnHandler.begin();
 
 		final Article article = new Article();
@@ -60,7 +61,22 @@ public class ArticleService extends AbstractJpaDao{
 		return res;
 
 	}
+	
+	public PojoRes update(PojoArticleReqUpdate data) {
+		ConnHandler.begin();
 
+		final Article articleUpdate = articleDao.getById(data.getArticleId()).get();
+		articleUpdate.setTitle(data.getTitle());
+		articleUpdate.setContent(data.getContent());
+
+		articleDao.save(articleUpdate);
+
+		ConnHandler.commit();
+
+		final PojoRes res = new PojoRes();
+		res.setMessage("Article edited");
+		return res;
+	}
 	
 	public List<PojoArticleRes> getAll() {
 		final List<PojoArticleRes> pojoArticleRes = new ArrayList<>();
@@ -80,6 +96,20 @@ public class ArticleService extends AbstractJpaDao{
 		}
 		
 		return pojoArticleRes;
+	}
+	
+	public PojoRes delete(String id) {
+
+		try {
+			ConnHandler.begin();
+			articleDao.deleteById(Article.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		final PojoRes pojoRes = new PojoRes();
+		pojoRes.setMessage("Comment Deleted");
+		return pojoRes;
 	}
 
 }

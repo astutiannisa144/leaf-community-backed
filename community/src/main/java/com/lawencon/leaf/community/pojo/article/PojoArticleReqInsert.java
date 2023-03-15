@@ -2,7 +2,7 @@ package com.lawencon.leaf.community.pojo.article;
 
 import com.lawencon.leaf.community.pojo.file.PojoFileReqInsert;
 
-public class PojoArticleReq {
+public class PojoArticleReqInsert {
 	private String id;
 	private String articleCode;
 	private PojoFileReqInsert file;
