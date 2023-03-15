@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.lawencon.base.AbstractJpaDao;
 import com.lawencon.base.ConnHandler;
+import com.lawencon.leaf.community.constant.EnumRole;
 import com.lawencon.leaf.community.dao.ActivityDao;
 import com.lawencon.leaf.community.dao.UserActivityDao;
 import com.lawencon.leaf.community.dao.UserDao;
@@ -150,7 +151,7 @@ public class UserActivityService extends AbstractJpaDao {
 		if(userActivity.getVer()>0) {
 			throw new RuntimeException("Anda Sudah Approve Transaksi ini TIdak bisa approve lagi");
 		}
-		final User admin = userDao.getById(User.class, principalService.getAuthPrincipal());
+		User admin =userDao.getUserByRole(EnumRole.SY.getCode()).get();
 		final Activity activity = activityDao.getByIdAndDetach(Activity.class, userActivity.getActivity().getId());
 		final Profile profileAdmin = getByIdAndDetach(Profile.class, admin.getProfile().getId());
 		final User member = userDao.getById(User.class, activity.getMember().getId());
