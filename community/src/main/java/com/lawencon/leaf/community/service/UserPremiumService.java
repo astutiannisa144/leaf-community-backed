@@ -65,7 +65,6 @@ public class UserPremiumService extends BaseService<PojoUserPremiumRes> {
 			 userPremiumRes = new PojoUserPremiumRes();
 			userPremiumRes.setId(userPremium.getId());
 		}catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		return Optional.ofNullable(userPremiumRes);

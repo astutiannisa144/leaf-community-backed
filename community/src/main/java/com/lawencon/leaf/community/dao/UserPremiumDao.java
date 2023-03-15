@@ -72,7 +72,6 @@ public class UserPremiumDao extends BaseDao<UserPremium> {
 				userPremium.setExpireDate(Date.valueOf(objArr[1].toString()).toLocalDate() );
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		return Optional.ofNullable(userPremium);

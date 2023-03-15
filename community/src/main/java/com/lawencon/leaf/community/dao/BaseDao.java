@@ -10,5 +10,5 @@ public abstract class BaseDao<T> extends AbstractJpaDao {
 
 	abstract Optional<T> getById(String id);
 	abstract Optional<T> getByIdAndDetach(String id);
-
+	
 }
