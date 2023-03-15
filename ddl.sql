@@ -462,6 +462,9 @@ ALTER TABLE t_user_activity
 	ADD CONSTRAINT user_activity_pk PRIMARY KEY (id);
 
 ALTER TABLE t_user_activity 
+	ADD CONSTRAINT user_activity_bk UNIQUE (invoice_code);
+	
+ALTER TABLE t_user_activity 
 	ADD CONSTRAINT member_fk FOREIGN KEY(member_id)
 	REFERENCES t_user(id);
 
