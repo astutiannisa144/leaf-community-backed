@@ -119,7 +119,7 @@ INSERT INTO t_user(id,email, pass,verification_code ,role_id,profile_id ,created
 ('bdfe90b0-053e-4df0-a6bc-9f39b8e6b678','aduygans29@gmail.com','$2a$12$iuXEDzWcG74T1qztI3o5F.9WAyFiWmaWpRLMMnp4uilxxiNhd3hla','VER1','f57aa5cb-fa22-4517-a26c-8b715707bfd4','a23b21a1-00c5-4fd2-b0ef-5ce5d9825caf','1',NOW(),0,TRUE),
 ('57f28585-2578-4012-a0e2-c2b2a466ff8a','astuti.annisa144@gmail.com','$2a$12$lRz9WoYgt1mKgWj7VXbb6u6nf.SY2pCTAsT7Y4hECnC6vjxCJTDFO','VER1','e688087c-e316-4351-9fab-ce73fecf6f7c','15a6a11b-2953-4bad-a1f7-fec4639c1ba0','1',NOW(),0,TRUE),
 ('eff1c0db-c60a-4e4b-b8df-f0ecc493eb34','eronwahyu@gmail.com','$2a$12$a6vhUEtcKRH/A6kjkl2zkurZk5NX9VfHedWTPwkcB8BWyJ6b8bXgK','VER1','e688087c-e316-4351-9fab-ce73fecf6f7c','5fa96e72-c272-417c-8cea-3eed1e277814','1',NOW(),0,TRUE),
-('dcf7d6d7-f3fe-4153-825c-570117573061','budigmail.com','$2a$12$QAtrUuIkXruRmTVUAJUk4Om5UtDSpxJGKJ0Ni.D2R3n.//ZYXzzIm','VER1','fa33c4e2-72e8-4f6c-96de-2f0c1daa3425','c4d30767-cec7-4efa-af85-a5be6fd2cb05','1',NOW(),0,TRUE);
+('dcf7d6d7-f3fe-4153-825c-570117573061','system','$2a$12$PX468MVCecgHWKGWn7vrwOkP/005wNMLiOIjG3au78Ze8zluUnIPW','VER1','fa33c4e2-72e8-4f6c-96de-2f0c1daa3425','c4d30767-cec7-4efa-af85-a5be6fd2cb05','1',NOW(),0,TRUE);
 
 INSERT INTO t_profile_social_media  (id,profile_id ,social_media_id ,username, profile_link,created_by,created_at,ver,is_active) VALUES
 ('7f4f6a73-2532-4ed6-b197-12b2e8d27a49','c25d3e4e-16b4-46fb-bb01-c744cc0f09ce','99bdb8f6-d0c3-43cd-9ba5-cbe84b004842','eron_wahyu','https://www.instagram.com/eron_wahyu','1',NOW(),0,TRUE),
