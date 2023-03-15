@@ -37,11 +37,49 @@ public class UserActivityService extends AbstractJpaDao {
 	private ActivityDao activityDao;
 	@Autowired
 	private final PrincipalService principalService;
-
+	
+	private static final BigDecimal percent = new BigDecimal(0.8);
+	
 	public UserActivityService(PrincipalServiceImpl principalServiceImpl) {
 		this.principalService = principalServiceImpl;
 	}
+	
+	private void valIdNull(UserActivity userActivity) {
+		if(userActivity.getId()!=null) {
+			throw new RuntimeException("Id Harus Kosong");
+		}
+	}
 
+	private void valNonBk(UserActivity userActivity) {
+		if(userActivity.getMember()==null) {
+			throw new RuntimeException("Member Tidak Boleh Kosong");
+		}
+		if(userActivity.getTotalPrice()==null) {
+			throw new RuntimeException("Price Tidak Boleh Kosong");
+		}
+		if(userActivity.getActivity()==null) {
+			throw new RuntimeException("Activity Tidak Boleh Kosong");
+		}
+		if((userActivity.getIsActive()==null)) {
+			throw new RuntimeException("Active Tidak Boleh Kosong");
+
+		}
+		
+	}
+	private void valIdNotNull(UserActivity userActivity) {
+		if(userActivity.getId()==null) {
+			throw new RuntimeException("Id Tidak Boleh Kosong");
+		}
+	}
+	
+	private void valIdExist(UserActivity userActivity) {
+		if(userActivityDao.getById(userActivity.getId()).isEmpty()) {
+			throw new RuntimeException("Id Tidak Boleh Kosong");
+		}
+	}
+	
+	
+	
 	public PojoRes insert(PojoUserActivityReq data) {
 		ConnHandler.begin();
 		String code = GenerateCodeUtil.generateCode(10);
@@ -49,12 +87,13 @@ public class UserActivityService extends AbstractJpaDao {
 		final User member = userDao.getByIdRef(User.class, principalService.getAuthPrincipal());
 		final Activity activity = activityDao.getByIdAndDetach(Activity.class, data.getActivityId());
 		if (data.getUserVoucher() != null) {
-//			if (userVoucherDao.getRefByMemberAndVoucher(member.getId(), data.getUserVoucher().getVoucherId()).isPresent()) {
-//				throw new RuntimeException("Voucher Ini Sudah Pernah dipakai");
-//			}
+			Voucher voucher = getById(Voucher.class, data.getUserVoucher().getVoucherId());
+
+			if (voucher.getMinimumPurchase().compareTo(activity.getPrice())==1) {
+				throw new RuntimeException("This Voucher Cant be used for this purchase");
+			}
 			UserVoucher userVoucher = new UserVoucher();
 			userVoucher.setMember(member);
-			Voucher voucher = getById(Voucher.class, data.getUserVoucher().getVoucherId());
 			userVoucher.setVoucher(voucher);
 			UserVoucher userVoucherInsert = save(userVoucher);
 			userActivity.setTotalPrice(activity.getPrice().subtract(voucher.getDiscountPrice()));
@@ -72,6 +111,10 @@ public class UserActivityService extends AbstractJpaDao {
 		userActivity.setActivity(activity);
 		userActivity.setMember(member);
 		userActivity.setIsActive(true);
+		
+		valIdNull(userActivity);
+		valNonBk(userActivity);
+
 		userActivityDao.save(userActivity);
 
 		ConnHandler.commit();
@@ -81,23 +124,35 @@ public class UserActivityService extends AbstractJpaDao {
 		return res;
 	}
 
+	
+
 	public PojoRes update(PojoUserActivityReq data) {
 		ConnHandler.begin();
-
+		
 		final UserActivity userActivity = userActivityDao.getByIdAndDetach(UserActivity.class, data.getId());
+		if(userActivity.getVer()>0) {
+			throw new RuntimeException("Anda Sudah Approve Transaksi ini TIdak bisa approve lagi");
+		}
 		final User admin = userDao.getById(User.class, principalService.getAuthPrincipal());
 		final Activity activity = activityDao.getByIdAndDetach(Activity.class, userActivity.getActivity().getId());
 		final Profile profileAdmin = getByIdAndDetach(Profile.class, admin.getProfile().getId());
 		final User member = userDao.getById(User.class, activity.getMember().getId());
 		final Profile profileMember = getByIdAndDetach(Profile.class, member.getProfile().getId());
-		BigDecimal memberBalance = profileMember.getBalance().add(activity.getPrice().divide(new BigDecimal("0.8")));
-		BigDecimal adminBalance = profileAdmin.getBalance().add(userActivity.getTotalPrice().subtract(memberBalance));
+		BigDecimal priceMember = activity.getPrice().multiply(percent);
+		BigDecimal memberBalance = profileMember.getBalance().add(priceMember);
+		BigDecimal adminBalance = profileAdmin.getBalance().add(userActivity.getTotalPrice().subtract(priceMember));
+		
 		profileMember.setBalance(memberBalance);
 		profileAdmin.setBalance(adminBalance);
 		save(profileAdmin);
 		save(profileMember);
 		userActivity.setIsApproved(true);
 		userActivity.setIsActive(true);
+		
+		valIdExist(userActivity);
+		valIdNotNull(userActivity);
+		valNonBk(userActivity);
+		
 		userActivityDao.save(userActivity);
 
 		ConnHandler.commit();
@@ -130,7 +185,10 @@ public class UserActivityService extends AbstractJpaDao {
 		final List<PojoUserActivityRes> pojoUserActivityRes = new ArrayList<>();
 		List<UserActivity> userActivities = new ArrayList<>();
 
-		if (typeCode != null) {
+		if(code==null && typeCode==null) {
+			userActivities = userActivityDao.getAll();
+		
+		}else if (typeCode != null && code==null) {
 			userActivities = userActivityDao.getAllByActivityType(typeCode);
 		} else if (code.equals("profile") && typeCode == null) {
 
@@ -138,14 +196,12 @@ public class UserActivityService extends AbstractJpaDao {
 		} else if (code.equals("profile") && typeCode != null) {
 
 			userActivities = userActivityDao.getAllByActivityByTypeAndMember(typeCode,principalService.getAuthPrincipal());
-		} else {
-			userActivities = userActivityDao.getAll();
-
-		}
+		} 
 
 		for (int i = 0; i < userActivities.size(); i++) {
 			PojoUserActivityRes userActivity = new PojoUserActivityRes();
 			userActivity.setActivityName(userActivities.get(i).getActivity().getTitle());
+			userActivity.setActivityId(userActivities.get(i).getActivity().getId());
 			userActivity.setFileId(userActivities.get(i).getFile().getId());
 			userActivity.setId(userActivities.get(i).getId());
 			userActivity.setIsApprove(userActivities.get(i).getIsApproved());

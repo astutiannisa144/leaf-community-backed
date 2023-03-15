@@ -17,21 +17,18 @@ import com.lawencon.leaf.community.constant.EnumRole;
 import com.lawencon.leaf.community.dao.IndustryDao;
 import com.lawencon.leaf.community.dao.JobDao;
 import com.lawencon.leaf.community.dao.PositionDao;
-import com.lawencon.leaf.community.dao.ProfileSocialMediaDao;
 import com.lawencon.leaf.community.dao.RoleDao;
-import com.lawencon.leaf.community.dao.SocialMediaDao;
 import com.lawencon.leaf.community.dao.UserDao;
 import com.lawencon.leaf.community.dao.VerificationDao;
 import com.lawencon.leaf.community.model.Industry;
 import com.lawencon.leaf.community.model.Job;
 import com.lawencon.leaf.community.model.Position;
 import com.lawencon.leaf.community.model.Profile;
-import com.lawencon.leaf.community.model.ProfileSocialMedia;
 import com.lawencon.leaf.community.model.Role;
-import com.lawencon.leaf.community.model.SocialMedia;
 import com.lawencon.leaf.community.model.User;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.user.PojoUserReq;
+import com.lawencon.security.principal.PrincipalService;
 
 @Service
 public class UserService extends AbstractJpaDao implements UserDetailsService {
@@ -45,13 +42,11 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 	private final JobDao jobDao;
 	@Autowired
 	private VerificationDao verificationDao;
-	private final ProfileSocialMediaDao profileSocialMediaDao;
-	@Autowired
-	private SocialMediaDao socialMediaDao;
+
+	private final PrincipalService pricipalService;
 
 	public UserService(UserDao userDao, RoleDao roleDao, PasswordEncoder encoder, EmailSenderService emailSenderService,
-			IndustryDao industryDao, PositionDao positionDao, JobDao jobDao,
-			ProfileSocialMediaDao profileSocialMediaDao) {
+			IndustryDao industryDao, PositionDao positionDao, JobDao jobDao,PrincipalService pricipalService) {
 		this.userDao = userDao;
 		this.roleDao = roleDao;
 		this.encoder = encoder;
@@ -59,8 +54,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		this.industryDao = industryDao;
 		this.positionDao = positionDao;
 		this.jobDao = jobDao;
-	
-		this.profileSocialMediaDao = profileSocialMediaDao;
+		this.pricipalService=pricipalService;
 	}
 
 	public Optional<User> login(String email) {
@@ -80,65 +74,117 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 	public PojoRes saveNoLogin(PojoUserReq data) {
 		ConnHandler.begin();
 		final User system = userDao.getUserByRole(EnumRole.SY.getCode()).get();
+		try {
+			pricipalService.getAuthPrincipal();
+			final User user = new User();
+			user.setEmail(data.getEmail());
+			user.setVerificationCode(data.getVerificationCode());
+			user.setPass(encoder.encode(data.getPass()));
+			
+			
+			Profile profile = new Profile();
+			profile.setAddress(data.getProfile().getAddress());
+			profile.setFullName(data.getProfile().getFullName());
+			profile.setPhoneNumber(data.getProfile().getPhoneNumber());
+			profile.setBalance(BigDecimal.ZERO);
+			profile.setIsActive(true);
+			final Profile profileInsert = save(profile);
+			user.setProfile(profileInsert);
 
-		if(verificationDao.getBycode(data.getVerificationCode(),data.getEmail()).isEmpty()) {
-			throw new RuntimeException("Verification anda telah expired / email tidak cocok ");
+			final Role role = roleDao.getBycode(EnumRole.AD.getCode()).get();
+			user.setRole(role);
+			user.setIsActive(true);
+
+			save(user);
+			
+		} catch (Exception e) {
+			if (verificationDao.getBycode(data.getVerificationCode(), data.getEmail()).isEmpty()) {
+				throw new RuntimeException("Verification anda telah expired / email tidak cocok ");
+			}
+			
+			
+			final User user = new User();
+			user.setEmail(data.getEmail());
+			user.setVerificationCode(data.getVerificationCode());
+			user.setPass(encoder.encode(data.getPass()));
+			
+			
+			Profile profile = new Profile();
+			profile.setAddress(data.getProfile().getAddress());
+			profile.setFullName(data.getProfile().getFullName());
+			profile.setPhoneNumber(data.getProfile().getPhoneNumber());
+			profile.setBalance(BigDecimal.ZERO);
+			Job job = new Job();
+			job.setCompanyName(data.getProfile().getJob().getCompanyName());
+
+			Industry industry = industryDao.getById(data.getProfile().getJob().getIndustryId()).get();
+			Position position = positionDao.getById(data.getProfile().getJob().getPositionId()).get();
+			job.setIndustry(industry);
+			job.setPosition(position);
+			job.setIsActive(true);
+			Job jobInsert = jobDao.saveNoLogin(job, () -> system.getId());
+			profile.setJob(jobInsert);
+
+			profile.setIsActive(true);
+			final Profile profileInsert = saveNoLogin(profile, () -> system.getId());
+
+			user.setProfile(profileInsert);
+
+
+			final Role role = roleDao.getBycode(EnumRole.MB.getCode()).get();
+			user.setRole(role);
+			user.setIsActive(true);
+
+			saveNoLogin(user, () -> system.getId());
+
 		}
 		
-		final User user = new User();
-		user.setEmail(data.getEmail());
-		user.setVerificationCode(data.getVerificationCode());
-		user.setPass(encoder.encode(data.getPass()));
-		
-		Profile profile = new Profile();
-		profile.setAddress(data.getProfile().getAddress());
-		profile.setFullName(data.getProfile().getFullName());
-		profile.setPhoneNumber(data.getProfile().getPhoneNumber());
-		profile.setBalance(BigDecimal.ZERO);
-		Job job = new Job();
-		job.setCompanyName(data.getProfile().getJob().getCompanyName());
-
-		Industry industry = industryDao.getById(data.getProfile().getJob().getIndustryId()).get();
-		Position position = positionDao.getById(data.getProfile().getJob().getPositionId()).get();
-		job.setIndustry(industry);
-		job.setPosition(position);
-		job.setIsActive(true);
-		Job jobInsert = jobDao.saveNoLogin(job, () -> system.getId());
-		profile.setJob(jobInsert);
-
-		profile.setIsActive(true);
-		final Profile profileInsert = saveNoLogin(profile, ()-> system.getId());
-		
-		user.setProfile(profileInsert);
-
-		for (int i = 0; i < data.getProfile().getProfileSocialMedia().size(); i++) {
-			ProfileSocialMedia profileSocialMedia = new ProfileSocialMedia();
-			profileSocialMedia.setProfile(profileInsert);
-			SocialMedia socialMedia = socialMediaDao
-					.getById(data.getProfile().getProfileSocialMedia().get(i).getSocialMediaId()).get();
-			profileSocialMedia.setUsername(data.getProfile().getProfileSocialMedia().get(i).getUsername());
-			profileSocialMedia.setSocialMedia(socialMedia);
-			profileSocialMedia.setProfileLink(
-					profileSocialMedia.getSocialMedia().getSocialMediaLink() + profileSocialMedia.getUsername());
-			profileSocialMedia.setIsActive(true);
-			profileSocialMediaDao.saveNoLogin(profileSocialMedia, () -> system.getId());
-		}
-
-		final Role role = roleDao.getById(data.getRoleId()).get();
-		user.setRole(role);
-		user.setIsActive(true);
-	
-		final User userInsert = saveNoLogin(user, () -> system.getId());
-
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Registration Completed" + userInsert.getEmail());
+		pojoRes.setMessage("Registration Completed" + data.getEmail());
 
 		new Thread(() -> emailSenderService.sendMail(data.getEmail(), "Welcome to Leaf Community ",
-				"Dear," + data.getProfile().getFullName()
-				+ "\nWelcome to Leaf Community\nThank You")).start();
+				"Dear," + data.getProfile().getFullName() + "\nWelcome to Leaf Community\nThank You")).start();
 		ConnHandler.commit();
 		return pojoRes;
+
+	}
+
+	public PojoRes update(PojoUserReq data) {
+		ConnHandler.begin();
+		final User user = userDao.getByIdAndDetach(User.class, pricipalService.getAuthPrincipal());
+		if (encoder.matches(data.getOldPass(), user.getPass()) == false) {
+			throw new RuntimeException("Password tidak match");
+		}
+
+		user.setPass(encoder.encode(data.getNewPass()));
+
+		user.setIsActive(true);
+
+		final User userUpdate = userDao.save(user);
+
+		new Thread(() -> emailSenderService.sendMail(userUpdate.getEmail(), "sudah Berhasil Ganti Password ", "Dear,"
+				+ userUpdate.getEmail() + " \n password Anda yang baru : " + data.getNewPass() + "\n Terimakasih "))
+				.start();
+		final PojoRes pojoRes = new PojoRes();
+		pojoRes.setMessage("anda berhasil Mengganti Password ");
+
+		ConnHandler.commit();
+
+		return pojoRes;
+	}
+	
+	public PojoRes delete(String id) {
 		
+		try {
+			ConnHandler.begin();
+			userDao.deleteById(User.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		final PojoRes pojoRes = new PojoRes();
+		pojoRes.setMessage("Succes Delete User");
+		return pojoRes;
 	}
 
 }
