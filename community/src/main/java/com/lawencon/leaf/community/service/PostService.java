@@ -29,7 +29,6 @@ import com.lawencon.leaf.community.model.Post;
 import com.lawencon.leaf.community.model.PostFile;
 import com.lawencon.leaf.community.model.User;
 import com.lawencon.leaf.community.pojo.PojoRes;
-import com.lawencon.leaf.community.pojo.file.PojoFileRes;
 import com.lawencon.leaf.community.pojo.polling.PollingDetailRes;
 import com.lawencon.leaf.community.pojo.polling.PollingResGet;
 import com.lawencon.leaf.community.pojo.post.PojoPostReqInsert;
@@ -236,15 +235,11 @@ public class PostService {
 			}
 
 			if (postFileDao.getAllByPost(postList.get(i).getId()).size() > 0) {
-				final List<PojoFileRes> fileList = new ArrayList<>();
+				final List<String> fileList = new ArrayList<>();
 				final List<PostFile> postFileList = postFileDao.getAllByPost(postList.get(i).getId());
 
 				for (int j = 0; j < postFileList.size(); j++) {
-					final PojoFileRes file = new PojoFileRes();
-					file.setFileId(postFileList.get(j).getFile().getId());
-					file.setFileContent(postFileList.get(j).getFile().getFileContent());
-					file.setFileExtension(postFileList.get(j).getFile().getFileExtension());
-					fileList.add(file);
+					fileList.add(postFileList.get(j).getFile().getId());
 				}
 				res.setFile(fileList);
 			}

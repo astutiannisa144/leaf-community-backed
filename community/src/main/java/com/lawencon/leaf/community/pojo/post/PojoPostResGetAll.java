@@ -2,7 +2,6 @@ package com.lawencon.leaf.community.pojo.post;
 
 import java.util.List;
 
-import com.lawencon.leaf.community.pojo.file.PojoFileRes;
 import com.lawencon.leaf.community.pojo.polling.PollingResGet;
 
 public class PojoPostResGetAll {
@@ -21,7 +20,7 @@ public class PojoPostResGetAll {
 	private String likeId;
 	private String bookmarkId;
 	private PollingResGet polling;
-	private List<PojoFileRes> file;
+	private List<String> file;
 
 	public String getLikeId() {
 		return likeId;
@@ -71,11 +70,11 @@ public class PojoPostResGetAll {
 		this.polling = polling;
 	}
 
-	public List<PojoFileRes> getFile() {
+	public List<String> getFile() {
 		return file;
 	}
 
-	public void setFile(List<PojoFileRes> file) {
+	public void setFile(List<String> file) {
 		this.file = file;
 	}
 
