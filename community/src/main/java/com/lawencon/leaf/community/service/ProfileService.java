@@ -50,7 +50,12 @@ public class ProfileService extends AbstractJpaDao {
 			if (data.getProfileSocialMedia().get(i).getId() != null) {
 				profileSocialMedia.setId(data.getProfileSocialMedia().get(i).getId());
 				if(data.getProfileSocialMedia().get(i).getSocialMediaId()==null) {
-					deleteById(ProfileSocialMedia.class, profileSocialMedia.getId());
+					try {
+						deleteById(ProfileSocialMedia.class, profileSocialMedia.getId());
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			profileSocialMedia.setProfile(profileInsert);
