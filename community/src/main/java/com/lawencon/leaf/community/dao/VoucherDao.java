@@ -34,4 +34,16 @@ public class VoucherDao extends BaseDao<Voucher> {
 		return Optional.ofNullable(super.getById(Voucher.class, id));
 
 	}
+
+	public Voucher getByCode(String code) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT * ");
+		str.append("FROM t_voucher ");
+		str.append("WHERE voucher_code=:code");
+
+		@SuppressWarnings("unchecked")
+		final List<Voucher> vouchers = ConnHandler.getManager().createNativeQuery(str.toString(), Voucher.class)
+				.getResultList();
+		return vouchers.get(0);
+	}
 }

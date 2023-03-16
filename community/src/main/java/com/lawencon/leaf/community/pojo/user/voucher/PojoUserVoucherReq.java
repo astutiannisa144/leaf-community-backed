@@ -1,14 +1,16 @@
 package com.lawencon.leaf.community.pojo.user.voucher;
 
 public class PojoUserVoucherReq {
-	private String voucherId;
+	private String voucherCode;
 
-	public String getVoucherId() {
-		return voucherId;
+	public String getVoucherCode() {
+		return voucherCode;
 	}
 
-	public void setVoucherId(String voucherId) {
-		this.voucherId = voucherId;
+	public void setVoucherCode(String voucherCode) {
+		this.voucherCode = voucherCode;
 	}
+
+
 	
 }

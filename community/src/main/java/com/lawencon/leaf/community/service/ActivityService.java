@@ -58,14 +58,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		}
 	}
 
-	private void valBkNotExist(Activity activity) {
-		if(activity==null) {
-			throw new RuntimeException("Activity Tidak Boleh Kosong");
-		}
-		if(ActivityDao.getByCode(activity.getActivityCode()).isPresent()) {
-			throw new RuntimeException("Invoice Code Already Exist");
-		}
-	}
+
 	
 	private void valBkNotNull(Activity activity) {
 		if(activity==null) {
@@ -75,14 +68,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 			throw new RuntimeException("Invoice Code Tidak Boleh Kosong");
 		}
 	}
-	private void valBkNotChange(Activity activity) {
-		if(activity==null) {
-			throw new RuntimeException("Activity Tidak Boleh Kosong");
-		}
-		if(activityDao.getById(activity.getId()).get().getActivityCode()!=activity.getActivityCode()) {
-			throw new RuntimeException("Invoice Code Cant Change Exist");
-		}
-	}
+
 
 	private void valNonBk(PojoActivityReq activity) {
 		if(activity==null) {
@@ -135,7 +121,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		activitiesRes.setFileId(activity.get().getFile().getId());
 		activitiesRes.setFullName(activity.get().getMember().getProfile().getFullName());
 		activitiesRes.setId(activity.get().getId());
-		activitiesRes.setLocation_address(activity.get().getLocationAddress());
+		activitiesRes.setLocationAddress(activity.get().getLocationAddress());
 		activitiesRes.setPrice(activity.get().getPrice());
 		activitiesRes.setProvider(activity.get().getProvider());
 		activitiesRes.setTimeEnd(activity.get().getTimeStart());
@@ -199,7 +185,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 			activity.setFileId(activities.get(i).getFile().getId());
 			activity.setFullName(activities.get(i).getMember().getProfile().getFullName());
 			activity.setId(activities.get(i).getId());
-			activity.setLocation_address(activities.get(i).getLocationAddress());
+			activity.setLocationAddress(activities.get(i).getLocationAddress());
 			activity.setPrice(activities.get(i).getPrice());
 			activity.setProvider(activities.get(i).getProvider());
 			activity.setTimeEnd(activities.get(i).getTimeStart());

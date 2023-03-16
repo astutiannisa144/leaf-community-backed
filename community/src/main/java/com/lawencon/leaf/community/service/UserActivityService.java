@@ -13,6 +13,7 @@ import com.lawencon.leaf.community.constant.EnumRole;
 import com.lawencon.leaf.community.dao.ActivityDao;
 import com.lawencon.leaf.community.dao.UserActivityDao;
 import com.lawencon.leaf.community.dao.UserDao;
+import com.lawencon.leaf.community.dao.VoucherDao;
 import com.lawencon.leaf.community.model.Activity;
 import com.lawencon.leaf.community.model.File;
 import com.lawencon.leaf.community.model.Industry;
@@ -38,7 +39,8 @@ public class UserActivityService extends AbstractJpaDao {
 	private ActivityDao activityDao;
 	@Autowired
 	private final PrincipalService principalService;
-	
+	@Autowired
+	private VoucherDao voucherDao;
 	private static final BigDecimal percent = new BigDecimal(0.8);
 	
 	public UserActivityService(PrincipalServiceImpl principalServiceImpl) {
@@ -51,11 +53,7 @@ public class UserActivityService extends AbstractJpaDao {
 		}
 	}
 
-	private void valBkNotExist(UserActivity userActivity) {
-		if(userActivityDao.getByCode(userActivity.getInvoiceCode()).isPresent()) {
-			throw new RuntimeException("Invoice Code Already Exist");
-		}
-	}
+
 	private void valBkNotNull(UserActivity userActivity) {
 		if(userActivity.getInvoiceCode()==null) {
 			throw new RuntimeException("Invoice Code Tidak Boleh Kosong");
@@ -103,8 +101,8 @@ public class UserActivityService extends AbstractJpaDao {
 		final UserActivity userActivity = new UserActivity();
 		final User member = userDao.getByIdRef(User.class, principalService.getAuthPrincipal());
 		final Activity activity = activityDao.getByIdAndDetach(Activity.class, data.getActivityId());
-		if (data.getUserVoucher() != null) {
-			Voucher voucher = getById(Voucher.class, data.getUserVoucher().getVoucherId());
+		if (data.getVoucherCode() != null) {
+			Voucher voucher = voucherDao.getByCode(data.getVoucherCode());
 
 			if (voucher.getMinimumPurchase().compareTo(activity.getPrice())==1) {
 				throw new RuntimeException("This Voucher Cant be used for this purchase");
@@ -131,8 +129,7 @@ public class UserActivityService extends AbstractJpaDao {
 		
 		valIdNull(userActivity);
 		valNonBk(userActivity);
-		valBkNotNull(userActivity);
-		valBkNotExist(userActivity);
+
 		userActivityDao.save(userActivity);
 
 		ConnHandler.commit();
