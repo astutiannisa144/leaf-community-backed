@@ -7,6 +7,13 @@ import com.lawencon.leaf.community.pojo.job.PojoJobReq;
 import com.lawencon.leaf.community.pojo.profile.social.media.PojoProfileSocialMediaReq;
 
 public class PojoProfileReq {
+	private String id;
+	
+	private String ver;
+	
+	private String isActive;
+	
+	
 	private String fullName;
 
 	private String phoneNumber;
@@ -67,6 +74,29 @@ public class PojoProfileReq {
 		this.profileSocialMedia = profileSocialMedia;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getVer() {
+		return ver;
+	}
+
+	public void setVer(String ver) {
+		this.ver = ver;
+	}
+
+	public String getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(String isActive) {
+		this.isActive = isActive;
+	}
 
 	
 }

@@ -65,7 +65,6 @@ public class UserPremiumService extends BaseService<PojoUserPremiumRes> {
 			 userPremiumRes = new PojoUserPremiumRes();
 			userPremiumRes.setId(userPremium.getId());
 		}catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		return Optional.ofNullable(userPremiumRes);
@@ -128,7 +127,7 @@ public class UserPremiumService extends BaseService<PojoUserPremiumRes> {
 
 	public PojoRes update(PojoUserPremiumReq data) {
 		ConnHandler.begin();
-		User admin = userDao.getUserByRole(EnumRole.SA.getCode()).get();
+		User admin = userDao.getUserByRole(EnumRole.SY.getCode()).get();
 		Profile profileAdmin = profileDao.getByIdAndDetach(admin.getProfile().getId()).get();
 		UserPremium userPremium = userPremiumDao.getByIdAndDetach(data.getId()).get();
 		if (userPremiumDao.getByUserPurchased(userPremium.getMember().getId()).isPresent()) {

@@ -48,6 +48,73 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		this.scheduleDao = scheduleDao;
 		this.principalService = principalService;
 	}
+	
+	private void valIdNull(PojoActivityReq activity) {
+		if(activity==null) {
+			throw new RuntimeException("Activity Tidak Boleh Kosong");
+		}
+		if(activity.getId()!=null ) {
+			throw new RuntimeException("Id Harus Kosong");
+		}
+	}
+
+	private void valBkNotExist(Activity activity) {
+		if(activity==null) {
+			throw new RuntimeException("Activity Tidak Boleh Kosong");
+		}
+		if(ActivityDao.getByCode(activity.getActivityCode()).isPresent()) {
+			throw new RuntimeException("Invoice Code Already Exist");
+		}
+	}
+	
+	private void valBkNotNull(Activity activity) {
+		if(activity==null) {
+			throw new RuntimeException("Activity Tidak Boleh Kosong");
+		}
+		if(activity.getActivityCode()==null) {
+			throw new RuntimeException("Invoice Code Tidak Boleh Kosong");
+		}
+	}
+	private void valBkNotChange(Activity activity) {
+		if(activity==null) {
+			throw new RuntimeException("Activity Tidak Boleh Kosong");
+		}
+		if(activityDao.getById(activity.getId()).get().getActivityCode()!=activity.getActivityCode()) {
+			throw new RuntimeException("Invoice Code Cant Change Exist");
+		}
+	}
+
+	private void valNonBk(PojoActivityReq activity) {
+		if(activity==null) {
+			throw new RuntimeException("Activity Tidak Boleh Kosong");
+		}
+		if(activity.getCategoryId()==null) {
+			throw new RuntimeException("Member Tidak Boleh Kosong");
+		}
+		if(activity.getActivityTypeId()==null) {
+			throw new RuntimeException("Activity Type Tidak Boleh Kosong");
+		}
+		if(activity.getPrice()==null) {
+			throw new RuntimeException("Price Tidak Boleh Kosong");
+		}
+
+		if((activity.getProvider()==null)) {
+			throw new RuntimeException("Provider Tidak Boleh Kosong");
+
+		}
+		
+	}
+	private void valIdNotNull(PojoActivityReq activity) {
+		if(activity.getId()==null) {
+			throw new RuntimeException("Id Tidak Boleh Kosong");
+		}
+	}
+	
+	private void valIdExist(String id) {
+		if(activityDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id Tidak Boleh Kosong");
+		}
+	}
 
 	@Override
 	public PojoActivityRes getById(String id) {
@@ -157,7 +224,8 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 
 	public PojoRes save(PojoActivityReq data) {
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
 		Activity activity = new Activity();
 
 		activity.setActivityCode(GenerateCodeUtil.generateCode(10));
@@ -186,7 +254,9 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		activity.setTimeEnd(data.getTimeStart());
 		activity.setTimeStart(data.getTimeStart());
 		activity.setIsActive(true);
-
+		
+		
+		valBkNotNull(activity);
 		Activity activityInsert = activityDao.save(activity);
 
 		for (int i = 0; i < data.getSchedule().size(); i++) {
@@ -206,7 +276,10 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 
 	public PojoRes update(PojoActivityReq data) {
 		ConnHandler.begin();
-		
+		valIdExist(data.getId());
+		valIdNotNull(data);
+
+		valNonBk(data);
 		Activity activity = new Activity();
 		activity = activityDao.getByIdAndDetach(data.getId()).get();
 		activity.setTitle(data.getTitle());
@@ -227,6 +300,8 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 				scheduleDao.save(schedule);
 			}
 		}
+		
+		
 		
 		activityDao.save(activity);
 		ConnHandler.commit();
@@ -257,6 +332,8 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
+
 			activityDao.deleteById(Activity.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -270,6 +347,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
 			scheduleDao.deleteById(Schedule.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();

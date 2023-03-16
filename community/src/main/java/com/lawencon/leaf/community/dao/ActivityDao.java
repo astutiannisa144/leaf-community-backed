@@ -179,4 +179,31 @@ public class ActivityDao extends BaseDao<Activity> {
 		return activities;
 	}
 
+	public static Optional<Activity> getByCode(String code) {
+		Activity activity = null;
+
+		try {
+			final StringBuilder sql = new StringBuilder();
+			sql.append("SELECT id, activity_code ");
+			sql.append("FROM t_activity  ");
+			sql.append("WHERE activity_code=:code  ");
+			sql.append("AND is_active = TRUE");
+
+			final Object result = ConnHandler.getManager().createNativeQuery(sql.toString())
+					.setParameter("code", code).getSingleResult();
+
+			if (result != null) {
+				activity = new Activity();
+				final Object[] objArr = (Object[]) result;
+
+				activity.setId(objArr[0].toString());
+				activity.setActivityCode(objArr[1].toString());
+			}
+
+		} catch (Exception e) {
+		}
+
+		return Optional.ofNullable(activity);
+	}
+
 }

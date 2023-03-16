@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.lawencon.base.AbstractJpaDao;
 import com.lawencon.base.ConnHandler;
+import com.lawencon.leaf.community.constant.EnumRole;
 import com.lawencon.leaf.community.dao.ActivityDao;
 import com.lawencon.leaf.community.dao.UserActivityDao;
 import com.lawencon.leaf.community.dao.UserDao;
@@ -50,6 +51,22 @@ public class UserActivityService extends AbstractJpaDao {
 		}
 	}
 
+	private void valBkNotExist(UserActivity userActivity) {
+		if(userActivityDao.getByCode(userActivity.getInvoiceCode()).isPresent()) {
+			throw new RuntimeException("Invoice Code Already Exist");
+		}
+	}
+	private void valBkNotNull(UserActivity userActivity) {
+		if(userActivity.getInvoiceCode()==null) {
+			throw new RuntimeException("Invoice Code Tidak Boleh Kosong");
+		}
+	}
+	private void valBkNotChange(UserActivity userActivity) {
+		if(userActivityDao.getById(userActivity.getId()).get().getInvoiceCode()!=userActivity.getInvoiceCode()) {
+			throw new RuntimeException("Invoice Code Cant Change Exist");
+		}
+	}
+
 	private void valNonBk(UserActivity userActivity) {
 		if(userActivity.getMember()==null) {
 			throw new RuntimeException("Member Tidak Boleh Kosong");
@@ -72,8 +89,8 @@ public class UserActivityService extends AbstractJpaDao {
 		}
 	}
 	
-	private void valIdExist(UserActivity userActivity) {
-		if(userActivityDao.getById(userActivity.getId()).isEmpty()) {
+	private void valIdExist(String id) {
+		if(userActivityDao.getById(id).isEmpty()) {
 			throw new RuntimeException("Id Tidak Boleh Kosong");
 		}
 	}
@@ -114,7 +131,8 @@ public class UserActivityService extends AbstractJpaDao {
 		
 		valIdNull(userActivity);
 		valNonBk(userActivity);
-
+		valBkNotNull(userActivity);
+		valBkNotExist(userActivity);
 		userActivityDao.save(userActivity);
 
 		ConnHandler.commit();
@@ -133,7 +151,7 @@ public class UserActivityService extends AbstractJpaDao {
 		if(userActivity.getVer()>0) {
 			throw new RuntimeException("Anda Sudah Approve Transaksi ini TIdak bisa approve lagi");
 		}
-		final User admin = userDao.getById(User.class, principalService.getAuthPrincipal());
+		User admin =userDao.getUserByRole(EnumRole.SY.getCode()).get();
 		final Activity activity = activityDao.getByIdAndDetach(Activity.class, userActivity.getActivity().getId());
 		final Profile profileAdmin = getByIdAndDetach(Profile.class, admin.getProfile().getId());
 		final User member = userDao.getById(User.class, activity.getMember().getId());
@@ -149,8 +167,10 @@ public class UserActivityService extends AbstractJpaDao {
 		userActivity.setIsApproved(true);
 		userActivity.setIsActive(true);
 		
-		valIdExist(userActivity);
+		valIdExist(userActivity.getId());
 		valIdNotNull(userActivity);
+		valBkNotNull(userActivity);
+		valBkNotChange(userActivity);
 		valNonBk(userActivity);
 		
 		userActivityDao.save(userActivity);
@@ -194,9 +214,11 @@ public class UserActivityService extends AbstractJpaDao {
 
 			userActivities = userActivityDao.getAllByActivityPurchased(principalService.getAuthPrincipal());
 		} else if (code.equals("profile") && typeCode != null) {
-
 			userActivities = userActivityDao.getAllByActivityByTypeAndMember(typeCode,principalService.getAuthPrincipal());
-		} 
+		
+		}  else if (code.equals("non") && typeCode != null) {
+			userActivities = userActivityDao.getAllByActivityTypeNotPurchase(typeCode);
+		}
 
 		for (int i = 0; i < userActivities.size(); i++) {
 			PojoUserActivityRes userActivity = new PojoUserActivityRes();
@@ -223,6 +245,7 @@ public class UserActivityService extends AbstractJpaDao {
 
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
 			userActivityDao.deleteById(Industry.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();
