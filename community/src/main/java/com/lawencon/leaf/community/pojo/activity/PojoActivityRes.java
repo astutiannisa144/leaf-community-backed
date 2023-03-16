@@ -17,7 +17,7 @@ public class PojoActivityRes {
 	private String title;
 	private String description;
 	private String provider;
-	private String location_address;
+	private String locationAddress;
 	private LocalTime timeStart;
 	private LocalTime timeEnd;
 	private String createdAt ;
@@ -75,13 +75,14 @@ public class PojoActivityRes {
 	public void setProvider(String provider) {
 		this.provider = provider;
 	}
-	public String getLocation_address() {
-		return location_address;
-	}
-	public void setLocation_address(String location_address) {
-		this.location_address = location_address;
-	}
 
+
+	public String getLocationAddress() {
+		return locationAddress;
+	}
+	public void setLocationAddress(String locationAddress) {
+		this.locationAddress = locationAddress;
+	}
 	public LocalTime getTimeStart() {
 		return timeStart;
 	}

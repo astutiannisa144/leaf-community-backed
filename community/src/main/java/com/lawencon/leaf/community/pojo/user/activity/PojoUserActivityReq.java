@@ -9,7 +9,7 @@ public class PojoUserActivityReq {
 	private String id;
 	private String activityId;
 	private PojoFileReqInsert file;
-	private PojoUserVoucherReq userVoucher;
+	private String voucherCode;
 	private Boolean isApprove;
 	private BigDecimal totalPrice;
 	private Integer ver;
@@ -57,11 +57,12 @@ public class PojoUserActivityReq {
 	public void setFile(PojoFileReqInsert file) {
 		this.file = file;
 	}
-	public PojoUserVoucherReq getUserVoucher() {
-		return userVoucher;
+
+	public String getVoucherCode() {
+		return voucherCode;
 	}
-	public void setUserVoucher(PojoUserVoucherReq userVoucher) {
-		this.userVoucher = userVoucher;
+	public void setVoucherCode(String voucherCode) {
+		this.voucherCode = voucherCode;
 	}
 	
 }
