@@ -1,5 +1,6 @@
 package com.lawencon.leaf.community.service;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -176,6 +177,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		for (int i = 0; i < activities.size(); i++) {
 			PojoActivityRes activity = new PojoActivityRes();
 			activity.setActivityCode(activities.get(i).getActivityCode());
+			activity.setActivityTypeId(activities.get(i).getActivityType().getId());
 			activity.setActivityTypeCode(activities.get(i).getActivityType().getActivityTypeCode());
 			activity.setActivityTypeName(activities.get(i).getActivityType().getActivityTypeName());
 			activity.setCategoryCode(activities.get(i).getCategory().getCategoryCode());
@@ -237,8 +239,8 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		activity.setLocationAddress(data.getLocationAddress());
 		activity.setPrice(data.getPrice());
 		activity.setProvider(data.getProvider());
-		activity.setTimeEnd(data.getTimeStart());
-		activity.setTimeStart(data.getTimeStart());
+		activity.setTimeEnd(OffsetDateTime.parse(data.getTimeEnd()).toLocalTime() );
+		activity.setTimeStart(OffsetDateTime.parse(data.getTimeStart()).toLocalTime());
 		activity.setIsActive(true);
 		
 		
@@ -275,8 +277,8 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		activity.setLocationAddress(data.getLocationAddress());
 		activity.setPrice(data.getPrice());
 		activity.setProvider(data.getProvider());
-		activity.setTimeEnd(data.getTimeStart());
-		activity.setTimeStart(data.getTimeStart());
+		activity.setTimeEnd(DateUtil.strToTime(data.getTimeEnd()) );
+		activity.setTimeStart(DateUtil.strToTime(data.getTimeStart()));
 		
 		if(data.getSchedule()!=null) {
 			for (int i = 0; i < data.getSchedule().size(); i++) {

@@ -9,6 +9,7 @@ import com.lawencon.leaf.community.pojo.schedule.PojoScheduleRes;
 public class PojoActivityRes {
 	private String id;
 	private String activityCode;
+	private String activityTypeId;
 	private String activityTypeCode;
 	private String activityTypeName;
 	private String categoryCode;
@@ -136,6 +137,12 @@ public class PojoActivityRes {
 	}
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
+	}
+	public String getActivityTypeId() {
+		return activityTypeId;
+	}
+	public void setActivityTypeId(String activityTypeId) {
+		this.activityTypeId = activityTypeId;
 	}
 
 	

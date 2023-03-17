@@ -102,7 +102,7 @@ public class UserActivityService extends AbstractJpaDao {
 		final User member = userDao.getByIdRef(User.class, principalService.getAuthPrincipal());
 		final Activity activity = activityDao.getByIdAndDetach(Activity.class, data.getActivityId());
 		if (data.getVoucherCode() != null) {
-			Voucher voucher = voucherDao.getByCode(data.getVoucherCode());
+			Voucher voucher = voucherDao.getByCode(data.getVoucherCode()).get();
 
 			if (voucher.getMinimumPurchase().compareTo(activity.getPrice())==1) {
 				throw new RuntimeException("This Voucher Cant be used for this purchase");

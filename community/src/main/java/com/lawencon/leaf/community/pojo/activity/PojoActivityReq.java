@@ -16,8 +16,8 @@ public class PojoActivityReq {
 	private String description;
 	private String provider;
 	private String locationAddress;
-	private LocalTime timeStart;
-	private LocalTime timeEnd;
+	private String timeStart;
+	private String timeEnd;
 	private BigDecimal price;
 	private PojoFileReqInsert file;
 	private Integer ver;
@@ -62,16 +62,16 @@ public class PojoActivityReq {
 	}
 
 
-	public LocalTime getTimeStart() {
+	public String getTimeStart() {
 		return timeStart;
 	}
-	public void setTimeStart(LocalTime timeStart) {
+	public void setTimeStart(String timeStart) {
 		this.timeStart = timeStart;
 	}
-	public LocalTime getTimeEnd() {
+	public String getTimeEnd() {
 		return timeEnd;
 	}
-	public void setTimeEnd(LocalTime timeEnd) {
+	public void setTimeEnd(String timeEnd) {
 		this.timeEnd = timeEnd;
 	}
 	public BigDecimal getPrice() {

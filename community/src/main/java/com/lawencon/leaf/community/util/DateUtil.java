@@ -26,4 +26,5 @@ public class DateUtil {
 		final LocalTime time = LocalTime.parse(dateStr, formater);
 		return time;
 	}
+
 }

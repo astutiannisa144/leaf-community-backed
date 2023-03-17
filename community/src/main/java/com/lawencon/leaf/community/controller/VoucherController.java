@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lawencon.leaf.community.pojo.PojoRes;
@@ -44,6 +45,12 @@ public class VoucherController {
 		return new ResponseEntity<PojoVoucherRes>(result, HttpStatus.OK);
 	}
 
+	@GetMapping("/code")
+	public ResponseEntity<PojoVoucherRes> getById(@RequestParam(required = false) String code,
+			@RequestParam(required = false) String activityId) throws Exception {
+		final PojoVoucherRes result = voucherService.getByCode(code,activityId);
+		return new ResponseEntity<PojoVoucherRes>(result, HttpStatus.OK);
+	}
 	@PostMapping()
 	public ResponseEntity<PojoRes> insert(final @Valid @RequestBody PojoVoucherReq data) {
 		final PojoRes res = voucherService.insert(data);

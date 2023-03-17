@@ -75,7 +75,6 @@ public class UserDao extends AbstractJpaDao {
 			sql.append("INNER JOIN t_role r ON r.id = u.role_id ");
 			sql.append("INNER JOIN t_profile p ON p.id = u.profile_id ");
 			sql.append("WHERE r.role_code = :code ");
-			sql.append("AND u.is_active = TRUE");
 
 			final Object result = ConnHandler.getManager().createNativeQuery(sql.toString())
 					.setParameter("code", code).getSingleResult();

@@ -3,7 +3,6 @@ package com.lawencon.leaf.community.pojo.user.activity;
 import java.math.BigDecimal;
 
 import com.lawencon.leaf.community.pojo.file.PojoFileReqInsert;
-import com.lawencon.leaf.community.pojo.user.voucher.PojoUserVoucherReq;
 
 public class PojoUserActivityReq {
 	private String id;

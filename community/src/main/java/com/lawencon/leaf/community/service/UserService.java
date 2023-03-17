@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 import com.lawencon.base.AbstractJpaDao;
 import com.lawencon.base.ConnHandler;
 import com.lawencon.leaf.community.constant.EnumRole;
+import com.lawencon.leaf.community.dao.BankAccountDao;
 import com.lawencon.leaf.community.dao.IndustryDao;
 import com.lawencon.leaf.community.dao.JobDao;
 import com.lawencon.leaf.community.dao.PositionDao;
 import com.lawencon.leaf.community.dao.RoleDao;
 import com.lawencon.leaf.community.dao.UserDao;
 import com.lawencon.leaf.community.dao.VerificationDao;
+import com.lawencon.leaf.community.model.BankAccount;
 import com.lawencon.leaf.community.model.Industry;
 import com.lawencon.leaf.community.model.Job;
 import com.lawencon.leaf.community.model.Position;
@@ -27,6 +29,7 @@ import com.lawencon.leaf.community.model.Profile;
 import com.lawencon.leaf.community.model.Role;
 import com.lawencon.leaf.community.model.User;
 import com.lawencon.leaf.community.pojo.PojoRes;
+import com.lawencon.leaf.community.pojo.bank.account.PojoBankAccountRes;
 import com.lawencon.leaf.community.pojo.user.PojoUserReq;
 import com.lawencon.security.principal.PrincipalService;
 
@@ -42,7 +45,8 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 	private final JobDao jobDao;
 	@Autowired
 	private VerificationDao verificationDao;
-
+	@Autowired
+	private BankAccountDao bankAccountDao;
 	private final PrincipalService pricipalService;
 
 	public UserService(UserDao userDao, RoleDao roleDao, PasswordEncoder encoder, EmailSenderService emailSenderService,
@@ -60,7 +64,20 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 	public Optional<User> login(String email) {
 		return userDao.getEmail(email);
 	}
+	public PojoBankAccountRes getByIdBank() {
+		final User system = userDao.getUserByRole(EnumRole.SY.getCode()).get();
 
+		BankAccount bankAccount = bankAccountDao.getById(system.getId()).get();
+		PojoBankAccountRes res = new PojoBankAccountRes();
+		res.setId(bankAccount.getId());
+		res.setAccountNumber(bankAccount.getAccountNumber());
+		res.setBankName(bankAccount.getBankName());
+		res.setFileId(bankAccount.getFile().getId());
+		res.setUserId(bankAccount.getUser().getId());
+		return res;
+		
+	}
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		final Optional<User> user = userDao.getEmail(username);
