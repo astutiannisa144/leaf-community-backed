@@ -698,3 +698,30 @@ ALTER TABLE t_article
 	ADD CONSTRAINT admin_fk FOREIGN KEY(admin_id)
 	REFERENCES t_user(id);
 
+CREATE TABLE t_bank_account(
+	id varchar(36),
+	bank_name varchar(36) NOT NULL,
+	file_id varchar(36) ,
+	user_id varchar(36) NOT NULL,
+	account_number varchar(20) NOT NULL,
+	created_by varchar(36) NOT NULL,
+	created_at timestamp NOT NULL,
+	updated_by varchar(36),
+	updated_at timestamp,
+	ver int NOT NULL,
+	is_active boolean NOT NULL 
+);
+
+ALTER TABLE t_bank_account 
+	ADD CONSTRAINT bank_account_pk PRIMARY KEY (id);
+ALTER TABLE t_bank_account 
+	ADD CONSTRAINT bank_account_bk UNIQUE (account_number);
+ALTER TABLE t_bank_account 
+	ADD CONSTRAINT file_fk FOREIGN KEY(file_id)
+	REFERENCES t_file(id);
+ALTER TABLE t_bank_account 
+	ADD CONSTRAINT user_fk FOREIGN KEY(user_id)
+	REFERENCES t_user(id);
+	
+	
+	
