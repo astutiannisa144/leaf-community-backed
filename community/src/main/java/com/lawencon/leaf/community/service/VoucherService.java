@@ -7,18 +7,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lawencon.base.ConnHandler;
+import com.lawencon.leaf.community.dao.ActivityDao;
+import com.lawencon.leaf.community.dao.UserVoucherDao;
 import com.lawencon.leaf.community.dao.VoucherDao;
+import com.lawencon.leaf.community.model.Activity;
 import com.lawencon.leaf.community.model.Voucher;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.voucher.PojoVoucherReq;
 import com.lawencon.leaf.community.pojo.voucher.PojoVoucherRes;
+import com.lawencon.security.principal.PrincipalServiceImpl;
 
 @Service
 public class VoucherService extends BaseService<PojoVoucherRes> {
 	
 	@Autowired
 	private VoucherDao voucherDao;
+	@Autowired
+	private ActivityDao activityDao;
+	@Autowired
+	private UserVoucherDao uservoucherDao;
+	private final PrincipalServiceImpl principalService;
 	
+	public VoucherService(PrincipalServiceImpl principalServiceImpl) {
+		this.principalService = principalServiceImpl;
+	}
 	@Override
 	public PojoVoucherRes getById(String id) {
 		final PojoVoucherRes pojoVoucherRes = new PojoVoucherRes();
@@ -33,7 +45,34 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 		
 		return pojoVoucherRes;
 	}
+	
+	public PojoVoucherRes getByCode(String code,String activityId) {
+		final PojoVoucherRes pojoVoucherRes = new PojoVoucherRes();
+		if(voucherDao.getByCode(code).isPresent()) {
+			Voucher voucher = voucherDao.getByCode(code).get();
+			if(uservoucherDao.getRefByMemberAndVoucher(principalService.getAuthPrincipal(), voucher.getId()).isPresent()) {
+				throw new RuntimeException("You Already Used this voucher Before Unable to Purchase this voucher");
 
+			}
+
+			Activity activity = activityDao.getById(activityId).get();
+			if(voucher.getMinimumPurchase().compareTo(activity.getPrice())>0 ) {
+				throw new RuntimeException("Minimum pembelian melewati harga ");
+			}
+			pojoVoucherRes.setVoucherCode(voucher.getVoucherCode());
+			pojoVoucherRes.setDiscountPrice(voucher.getDiscountPrice());
+			pojoVoucherRes.setMinimumPurchase(voucher.getMinimumPurchase());
+			pojoVoucherRes.setExpiredDate(voucher.getExpiredDate());
+			pojoVoucherRes.setId(voucher.getId());
+			pojoVoucherRes.setVer(voucher.getVer());
+			pojoVoucherRes.setIsActive(voucher.getIsActive());
+		}else {
+			throw new RuntimeException("Voucher Tidak Ditemukan ");
+		}
+		
+		
+		return pojoVoucherRes;
+	}
 	@Override
 	public List<PojoVoucherRes> getAll() {
 		final List<PojoVoucherRes> pojoVoucherRes = new ArrayList<>();

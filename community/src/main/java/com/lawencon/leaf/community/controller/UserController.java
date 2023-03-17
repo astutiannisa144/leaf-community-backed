@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lawencon.leaf.community.model.User;
 import com.lawencon.leaf.community.pojo.PojoRes;
+import com.lawencon.leaf.community.pojo.bank.account.PojoBankAccountRes;
 import com.lawencon.leaf.community.pojo.user.PojoLoginReq;
 import com.lawencon.leaf.community.pojo.user.PojoLoginRes;
 import com.lawencon.leaf.community.pojo.user.PojoUserReq;
@@ -102,6 +104,11 @@ public class UserController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<PojoRes> delete(final @Valid @PathVariable String id) {
 		final PojoRes res = userService.delete(id);
+		return new ResponseEntity<>(res, HttpStatus.OK);
+	}
+	@GetMapping("/bank")
+	public ResponseEntity<PojoBankAccountRes> getBank() {
+		final PojoBankAccountRes res = userService.getByIdBank();
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 }
