@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lawencon.base.ConnHandler;
 import com.lawencon.leaf.community.dao.ActivityDao;
 import com.lawencon.leaf.community.dao.UserVoucherDao;
@@ -46,18 +48,21 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 		return pojoVoucherRes;
 	}
 	
-	public PojoVoucherRes getByCode(String code,String activityId) {
+	public PojoVoucherRes getByCode(String code,String activityId) throws JsonProcessingException {
 		final PojoVoucherRes pojoVoucherRes = new PojoVoucherRes();
 		if(voucherDao.getByCode(code).isPresent()) {
 			Voucher voucher = voucherDao.getByCode(code).get();
 			if(uservoucherDao.getRefByMemberAndVoucher(principalService.getAuthPrincipal(), voucher.getId()).isPresent()) {
-				throw new RuntimeException("You Already Used this voucher Before Unable to Purchase this voucher");
-
+				pojoVoucherRes.setCodeWarning("You Already Used this voucher Before Unable to Purchase this voucher");			
+				throw new RuntimeException(new ObjectMapper().writeValueAsString(pojoVoucherRes));
+			
 			}
-
+			
 			Activity activity = activityDao.getById(activityId).get();
 			if(voucher.getMinimumPurchase().compareTo(activity.getPrice())>0 ) {
-				throw new RuntimeException("Minimum pembelian melewati harga ");
+
+				pojoVoucherRes.setCodeWarning("Minimum pembelian melewati harga ");			
+				throw new RuntimeException(new ObjectMapper().writeValueAsString(pojoVoucherRes));
 			}
 			pojoVoucherRes.setVoucherCode(voucher.getVoucherCode());
 			pojoVoucherRes.setDiscountPrice(voucher.getDiscountPrice());
@@ -67,7 +72,8 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 			pojoVoucherRes.setVer(voucher.getVer());
 			pojoVoucherRes.setIsActive(voucher.getIsActive());
 		}else {
-			throw new RuntimeException("Voucher Tidak Ditemukan ");
+			pojoVoucherRes.setCodeWarning("Voucher Tidak Ditemukan");			
+			throw new RuntimeException(new ObjectMapper().writeValueAsString(pojoVoucherRes));
 		}
 		
 		
