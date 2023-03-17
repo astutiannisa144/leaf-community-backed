@@ -90,18 +90,20 @@ public class PostService {
 		postInsert.setMember(user);
 
 		if (data.getPolling() != null) {
-			Polling polling = new Polling();
-			polling.setContent(data.getPolling().getContent());
-			polling.setExpired(data.getPolling().getExpired());
-
-			polling = pollingDao.save(polling);
-
-			postInsert.setPolling(polling);
-			for (int i = 0; i < data.getPolling().getPollingDetail().size(); i++) {
-				final PollingDetail pollingDetail = new PollingDetail();
-				pollingDetail.setPolling(polling);
-				pollingDetail.setContent(data.getPolling().getPollingDetail().get(i).getContent());
-				pollingDetailDao.save(pollingDetail);
+			if (data.getPolling().getContent() != null) {
+				Polling polling = new Polling();
+				polling.setContent(data.getPolling().getContent());
+				polling.setExpired(data.getPolling().getExpired());
+				
+				polling = pollingDao.save(polling);
+				
+				postInsert.setPolling(polling);
+				for (int i = 0; i < data.getPolling().getPollingDetail().size(); i++) {
+					final PollingDetail pollingDetail = new PollingDetail();
+					pollingDetail.setPolling(polling);
+					pollingDetail.setContent(data.getPolling().getPollingDetail().get(i).getContent());
+					pollingDetailDao.save(pollingDetail);
+				}
 			}
 		}
 
@@ -224,8 +226,12 @@ public class PostService {
 
 					BigDecimal percentage = BigDecimal
 							.valueOf(userPollingDao.countPercentage(pollingDetailList.get(j).getId()) * 100);
+					if (totalPolling > 0) {
 					percentage = percentage.divide(BigDecimal.valueOf(totalPolling), 2, RoundingMode.HALF_UP);
-
+					} else {
+						percentage = BigDecimal.valueOf(0);
+					}
+					
 					resPollingDetail.setPercentage(percentage);
 
 					resPollingDetailList.add(resPollingDetail);
