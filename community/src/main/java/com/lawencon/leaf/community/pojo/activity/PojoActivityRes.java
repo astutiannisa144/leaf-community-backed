@@ -12,8 +12,10 @@ public class PojoActivityRes {
 	private String activityTypeId;
 	private String activityTypeCode;
 	private String activityTypeName;
+	private String categoryId;
 	private String categoryCode;
 	private String categoryName;
+	private String memberId;
 	private String fullName;
 	private String title;
 	private String description;
@@ -143,6 +145,18 @@ public class PojoActivityRes {
 	}
 	public void setActivityTypeId(String activityTypeId) {
 		this.activityTypeId = activityTypeId;
+	}
+	public String getMemberId() {
+		return memberId;
+	}
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
+	}
+	public String getCategoryId() {
+		return categoryId;
+	}
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	

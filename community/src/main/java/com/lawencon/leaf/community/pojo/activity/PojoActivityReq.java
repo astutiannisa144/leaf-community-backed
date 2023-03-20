@@ -1,7 +1,6 @@
 package com.lawencon.leaf.community.pojo.activity;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.List;
 
 import com.lawencon.leaf.community.pojo.file.PojoFileReqInsert;
