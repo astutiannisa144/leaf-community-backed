@@ -115,11 +115,13 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		activitiesRes.setActivityCode(activity.get().getActivityCode());
 		activitiesRes.setActivityTypeCode(activity.get().getActivityType().getActivityTypeCode());
 		activitiesRes.setActivityTypeName(activity.get().getActivityType().getActivityTypeName());
+		activitiesRes.setCategoryId(activity.get().getCategory().getId());
 		activitiesRes.setCategoryCode(activity.get().getCategory().getCategoryCode());
 		activitiesRes.setCategoryName(activity.get().getCategory().getCategoryName());
 		activitiesRes.setDescription(activity.get().getDescription());
 		activitiesRes.setTitle(activity.get().getTitle());
 		activitiesRes.setFileId(activity.get().getFile().getId());
+		activitiesRes.setMemberId(activity.get().getMember().getId());
 		activitiesRes.setFullName(activity.get().getMember().getProfile().getFullName());
 		activitiesRes.setId(activity.get().getId());
 		activitiesRes.setLocationAddress(activity.get().getLocationAddress());
@@ -180,11 +182,13 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 			activity.setActivityTypeId(activities.get(i).getActivityType().getId());
 			activity.setActivityTypeCode(activities.get(i).getActivityType().getActivityTypeCode());
 			activity.setActivityTypeName(activities.get(i).getActivityType().getActivityTypeName());
+			activity.setCategoryId(activities.get(i).getCategory().getId());
 			activity.setCategoryCode(activities.get(i).getCategory().getCategoryCode());
 			activity.setCategoryName(activities.get(i).getCategory().getCategoryName());
 			activity.setDescription(activities.get(i).getDescription());
 			activity.setTitle(activities.get(i).getTitle());
 			activity.setFileId(activities.get(i).getFile().getId());
+			activity.setMemberId(activities.get(i).getMember().getId());
 			activity.setFullName(activities.get(i).getMember().getProfile().getFullName());
 			activity.setId(activities.get(i).getId());
 			activity.setLocationAddress(activities.get(i).getLocationAddress());

@@ -11,7 +11,22 @@ public class PojoVoucherRes {
 	private LocalDate expiredDate;
 	private BigDecimal minimumPurchase;
 	private Boolean isActive;
-
+	private String codeWarning;
+	private String message;
+	
+	
+	public String getCodeWarning() {
+		return codeWarning;
+	}
+	public void setCodeWarning(String codeWarning) {
+		this.codeWarning = codeWarning;
+	}
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
 	public String getVoucherCode() {
 		return voucherCode;
 	}
