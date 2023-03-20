@@ -36,7 +36,7 @@ public class CommentService {
 	public PojoRes insert(PojoCommentReqInsert data) {
 		ConnHandler.begin();
 
-		final Comment comment = new Comment();
+		Comment comment = new Comment();
 		final Post post = postDao.getById(Post.class, data.getPostId());
 		comment.setContent(data.getContent());
 		comment.setPost(post);
@@ -44,12 +44,13 @@ public class CommentService {
 		final User user = userDao.getById(principalService.getAuthPrincipal()).get();
 		comment.setMember(user);
 
-		commentDao.save(comment);
+		comment = commentDao.save(comment);
 
 		ConnHandler.commit();
 
 		final PojoRes res = new PojoRes();
 		res.setMessage("Success comment a post");
+		res.setId(comment.getId());
 		return res;
 	}
 

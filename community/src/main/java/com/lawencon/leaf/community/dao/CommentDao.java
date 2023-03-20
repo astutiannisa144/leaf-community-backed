@@ -47,7 +47,7 @@ public class CommentDao extends BaseDao<Comment> {
 
 		final List<Comment> commentList = ConnHandler.getManager()
 				.createNativeQuery(sql.toString(), Comment.class)
-				.setFirstResult((offset - 1) * limit)
+				.setFirstResult(offset)
 				.setMaxResults(limit).setParameter("id", id)
 				.getResultList();
 
