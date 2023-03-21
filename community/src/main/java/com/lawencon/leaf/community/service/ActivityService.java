@@ -113,6 +113,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 			throw new RuntimeException("This is Emplty or lacking");
 		}
 		activitiesRes.setActivityCode(activity.get().getActivityCode());
+		activitiesRes.setActivityTypeId(activity.get().getActivityType().getId());
 		activitiesRes.setActivityTypeCode(activity.get().getActivityType().getActivityTypeCode());
 		activitiesRes.setActivityTypeName(activity.get().getActivityType().getActivityTypeName());
 		activitiesRes.setCategoryId(activity.get().getCategory().getId());
@@ -121,6 +122,8 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		activitiesRes.setDescription(activity.get().getDescription());
 		activitiesRes.setTitle(activity.get().getTitle());
 		activitiesRes.setFileId(activity.get().getFile().getId());
+		activitiesRes.setFileContent(activity.get().getFile().getFileContent());
+		activitiesRes.setFileExtension(activity.get().getFile().getFileExtension());
 		activitiesRes.setMemberId(activity.get().getMember().getId());
 		activitiesRes.setFullName(activity.get().getMember().getProfile().getFullName());
 		activitiesRes.setId(activity.get().getId());
@@ -281,19 +284,36 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		activity.setLocationAddress(data.getLocationAddress());
 		activity.setPrice(data.getPrice());
 		activity.setProvider(data.getProvider());
-		activity.setTimeEnd(DateUtil.strToTime(data.getTimeEnd()) );
-		activity.setTimeStart(DateUtil.strToTime(data.getTimeStart()));
+		activity.setTimeEnd(OffsetDateTime.parse(data.getTimeEnd()).toLocalTime() );
+		activity.setTimeStart(OffsetDateTime.parse(data.getTimeStart()).toLocalTime());
 		
 		if(data.getSchedule()!=null) {
+			
 			for (int i = 0; i < data.getSchedule().size(); i++) {
-				Schedule schedule = scheduleDao.getByIdAndDetach(data.getSchedule().get(i).getId()).get();
-				schedule.setScheduleDate(data.getSchedule().get(i).getScheduleDate());
-				schedule.setIsActive(true);
-				scheduleDao.save(schedule);
+				if(data.getSchedule().get(i).getId()!=null) {
+					Schedule schedule = scheduleDao.getByIdAndDetach(data.getSchedule().get(i).getId()).get();
+					schedule.setScheduleDate(data.getSchedule().get(i).getScheduleDate());
+					schedule.setIsActive(true);
+					scheduleDao.save(schedule);
+				}else {
+					Schedule schedule = new Schedule();
+					schedule.setActivity(activity);
+					schedule.setScheduleDate(data.getSchedule().get(i).getScheduleDate());
+					schedule.setIsActive(true);
+					scheduleDao.save(schedule);
+				}
+				
 			}
 		}
 		
-		
+		if(data.getFile()!=null) {
+			fileDao.deleteById(File.class, activity.getFile().getId());
+			File file =new File();
+			file.setFileContent(data.getFile().getFileContent());
+			file.setFileExtension(data.getFile().getFileExtension());
+			File fileInsert = fileDao.save(file);
+			activity.setFile(fileInsert);
+		}
 		
 		activityDao.save(activity);
 		ConnHandler.commit();
