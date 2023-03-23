@@ -95,17 +95,18 @@ INSERT INTO t_category  (id,category_code , category_name ,created_by,created_at
 ('21a2a719-b7c5-4eb6-bf57-9ea9a8a38b6b','ENG','Engineering','1',NOW(),0,TRUE),
 ('1101ea09-a093-403b-84b0-c4c6f5db9b7e','SCE','Social Science','1',NOW(),0,TRUE);
 
-INSERT INTO t_voucher  (id,voucher_code ,discount_price , expired_date ,created_by,created_at,ver,is_active) VALUES
-('61c2890f-4832-4c9f-8687-1bbad0b012dc','VOUCHER1',10000,'2022-10-22','1',NOW(),0,TRUE),
-('8f09cb7a-3692-44be-aa1a-712259138e06','VOUCHER2',20000,'2022-08-1','1',NOW(),0,TRUE),
-('835a05ae-8d3a-4db1-989b-42266f0db6b7','VOUCHER3',30000,'2022-10-2','1',NOW(),0,TRUE),
-('c8e0cbe3-8d1e-48f0-aaf2-0afe8dff96c9','VOUCHER4',40000,'2022-10-3','1',NOW(),0,TRUE),
-('31a0f684-dc5a-4b7d-8564-3108e0d233f0','VOUCHER5',50000,'2022-10-4','1',NOW(),0,TRUE);
+INSERT INTO t_voucher  (id,voucher_code ,discount_price ,minimum_purchase , expired_date ,created_by,created_at,ver,is_active) VALUES
+('61c2890f-4832-4c9f-8687-1bbad0b012dc','VOUCHER1',10000,60000,'2022-10-22','1',NOW(),0,TRUE),
+('8f09cb7a-3692-44be-aa1a-712259138e06','VOUCHER2',20000,120000,'2022-08-1','1',NOW(),0,TRUE),
+('835a05ae-8d3a-4db1-989b-42266f0db6b7','VOUCHER3',30000,180000,'2022-10-2','1',NOW(),0,TRUE),
+('c8e0cbe3-8d1e-48f0-aaf2-0afe8dff96c9','VOUCHER4',40000,240000,'2022-10-3','1',NOW(),0,TRUE),
+('31a0f684-dc5a-4b7d-8564-3108e0d233f0','VOUCHER5',50000,300000,'2022-10-4','1',NOW(),0,TRUE);
 
-INSERT INTO t_social_media  (id,social_media_code ,social_media_name ,social_media_link,file_id,created_by,created_at,ver,is_active) VALUES
-('524969b4-6840-4fd7-99ef-c60dee3b1e35','TWT','Twitter','https://www.twitter.com/','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE),
-('a5917c8c-c755-4adf-be46-93aea1ed0a6c','FB','FaceBook','https://www.facebook.com/','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE),
-('99bdb8f6-d0c3-43cd-9ba5-cbe84b004842','INS','Instagram','https://www.instagram.com/','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE);
+INSERT INTO t_social_media  (id,social_media_code ,social_media_name ,social_media_link,social_media_icon,file_id,created_by,created_at,ver,is_active) VALUES
+('524969b4-6840-4fd7-99ef-c60dee3b1e31','IN','Linked In','https://www.linkedin.com/','pi-linkedin','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE),
+('524969b4-6840-4fd7-99ef-c60dee3b1e35','TWT','Twitter','https://www.twitter.com/','pi-twitter','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE),
+('a5917c8c-c755-4adf-be46-93aea1ed0a6c','FB','FaceBook','https://www.facebook.com/','pi-facebook','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE),
+('99bdb8f6-d0c3-43cd-9ba5-cbe84b004842','INS','Instagram','https://www.instagram.com/','pi-instagram','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE);
 
 INSERT INTO t_verification  (id,verification_code , email ,expired_time,created_by,created_at,ver,is_active) VALUES
 ('5af61e21-d8e8-4883-ae7d-a6d34917e194','VER1','wahyueron@gmail.com','2023-03-01T20:01:01','1',NOW(),0,TRUE),
@@ -136,25 +137,5 @@ INSERT INTO t_premium  (id,premium_code ,premium_name ,price ,duration ,created_
 INSERT INTO t_user_premium  (id,member_id ,premium_id ,expire_date ,file_id ,created_by,created_at,ver,is_active) VALUES
 ('22f80d55-7b3d-42f9-9864-28304dfa8e60','bdfe90b0-053e-4df0-a6bc-9f39b8e6b678','e65577bc-9fcf-492d-9687-1e1bb34066e7','2023-05-02','1','1',NOW(),0,TRUE),
 ('4e660149-6100-435e-a752-0f7261db0c08','bdfe90b0-053e-4df0-a6bc-9f39b8e6b678','7097b318-99e3-4d23-8df2-a6fbc3727905','2023-05-02','2','1',NOW(),0,TRUE);
-
-
---INSERT INTO t_article  (id,article_code, admin_id , file_id ,title ,'content' ,created_by,created_at,ver,is_active) VALUES
---('','AR1','1','1','hai jugs','gimana kabar nya','1',NOW(),0,TRUE),
---('','AR2','2','2','kemana kalian akan pergi','Baikkkkkkkkkkkkkkkkk','1',NOW(),0,TRUE),
---('','AR3','3','3','halo nama saya belh belh bleh','Tidak BAikkkkkkkkkk','1',NOW(),0,TRUE),
---('','AR4','4','4','Trining camp akan dibuka kembali','Siappppppp','1',NOW(),0,TRUE),
---('','AR5','5','5','Event TI developer ','Okeeeeeeeeeee','1',NOW(),0,TRUE);
---
---SELECT u.id, u.profile_id, p.full_name, p.file_id, r.role_code, u.pass 
---FROM t_user u 
---INNER JOIN t_role r ON r.id = u.role_id 
---INNER JOIN t_profile p ON p.id = u.profile_id 
---WHERE r.role_code = :code 
---AND u.is_active = TRUE
-
 INSERT INTO t_bank_account  (id,account_number, user_id , file_id ,bank_name,created_by,created_at,ver,is_active) VALUES
-('2f2de992-5230-46f3-9ffd-89027dbb5635','62777111851','dcf7d6d7-f3fe-4153-825c-570117573061','09d41b98-1899-4ece-9877-c8a206c214fd','BCA','1',NOW(),0,TRUE)
-
---SELECT id,voucher_code,discount_price,minimum_purchase,expired_date,ver,is_active 
---FROM t_voucher 
---WHERE voucher_code=:code
+('2f2de992-5230-46f3-9ffd-89027dbb5635','62777111851','dcf7d6d7-f3fe-4153-825c-570117573061','09d41b98-1899-4ece-9877-c8a206c214fd','BCA','1',NOW(),0,TRUE);
