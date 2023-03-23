@@ -11,6 +11,16 @@ public class PojoFileRes {
 	@NotNull(message = "Extension for file Required")
 	@Length(max = 10, message = "length for file Extension too long")
 	private String fileExtension;
+	private Integer ver;
+	
+	
+	public Integer getVer() {
+		return ver;
+	}
+
+	public void setVer(Integer ver) {
+		this.ver = ver;
+	}
 
 	public String getFileId() {
 		return fileId;

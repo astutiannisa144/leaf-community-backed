@@ -21,7 +21,18 @@ public class ProfileSocialMediaDao extends BaseDao<ProfileSocialMedia> {
 		final List<ProfileSocialMedia> activities = ConnHandler.getManager().createNativeQuery(str.toString(), ProfileSocialMedia.class).getResultList();
 		return activities;
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public List<ProfileSocialMedia> getAllByProfileId(String id) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT * ");
+		str.append("FROM t_profile_social_media ");
+		str.append("WHERE profile_id =:id");
+		final List<ProfileSocialMedia> activities = ConnHandler.getManager().createNativeQuery(str.toString(), ProfileSocialMedia.class)
+				.setParameter("id", id)
+				.getResultList();
+		return activities;
+	}
 	@Override
 	public Optional<ProfileSocialMedia> getByIdAndDetach(String id) {
 		return Optional.ofNullable(super.getByIdAndDetach(ProfileSocialMedia.class, id));

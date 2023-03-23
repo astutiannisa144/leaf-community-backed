@@ -13,7 +13,6 @@ public class PojoProfileReq {
 	
 	private String isActive;
 	
-	
 	private String fullName;
 
 	private String phoneNumber;

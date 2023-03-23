@@ -73,6 +73,7 @@ public class UserController {
 		loginRes.setFullName(userOptional.get().getProfile().getFullName());
 		loginRes.setRoleCode(userOptional.get().getRole().getRoleCode());
 		loginRes.setProfileId(userOptional.get().getProfile().getId());
+		loginRes.setEmail(user.getEmail());
 		if (userOptional.get().getProfile().getFile() != null) {
 			loginRes.setFileId(userOptional.get().getProfile().getFile().getId());
 		}

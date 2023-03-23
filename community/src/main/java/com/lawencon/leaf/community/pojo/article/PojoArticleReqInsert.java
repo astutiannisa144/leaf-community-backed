@@ -9,6 +9,7 @@ public class PojoArticleReqInsert {
 	private String adminId;
 	private String title;
 	private String content;
+	private Integer ver;
 	public String getId() {
 		return id;
 	}
@@ -45,6 +46,12 @@ public class PojoArticleReqInsert {
 	}
 	public void setFile(PojoFileReqInsert file) {
 		this.file = file;
+	}
+	public Integer getVer() {
+		return ver;
+	}
+	public void setVer(Integer ver) {
+		this.ver = ver;
 	}
 	
 	
