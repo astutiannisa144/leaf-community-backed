@@ -130,7 +130,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		activitiesRes.setLocationAddress(activity.get().getLocationAddress());
 		activitiesRes.setPrice(activity.get().getPrice());
 		activitiesRes.setProvider(activity.get().getProvider());
-		activitiesRes.setTimeEnd(activity.get().getTimeStart());
+		activitiesRes.setTimeEnd(activity.get().getTimeEnd());
 		activitiesRes.setTimeStart(activity.get().getTimeStart());
 		activitiesRes.setVer(activity.get().getVer());
 		activitiesRes.setCreatedAt(DateUtil.dateToStr(activity.get().getCreatedAt()) );
@@ -197,7 +197,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 			activity.setLocationAddress(activities.get(i).getLocationAddress());
 			activity.setPrice(activities.get(i).getPrice());
 			activity.setProvider(activities.get(i).getProvider());
-			activity.setTimeEnd(activities.get(i).getTimeStart());
+			activity.setTimeEnd(activities.get(i).getTimeEnd());
 			activity.setTimeStart(activities.get(i).getTimeStart());
 			activity.setVer(activities.get(i).getVer());
 			activity.setCreatedAt(DateUtil.dateToStr(activities.get(i).getCreatedAt()) );

@@ -1,5 +1,8 @@
 package com.lawencon.leaf.community.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +15,14 @@ import com.lawencon.leaf.community.model.File;
 import com.lawencon.leaf.community.model.Profile;
 import com.lawencon.leaf.community.model.ProfileSocialMedia;
 import com.lawencon.leaf.community.model.SocialMedia;
+import com.lawencon.leaf.community.model.User;
 import com.lawencon.leaf.community.pojo.PojoRes;
+import com.lawencon.leaf.community.pojo.file.PojoFileRes;
+import com.lawencon.leaf.community.pojo.job.PojoJobRes;
 import com.lawencon.leaf.community.pojo.profile.PojoProfileReq;
+import com.lawencon.leaf.community.pojo.profile.PojoProfileRes;
+import com.lawencon.leaf.community.pojo.profile.social.media.PojoProfileSocialMediaRes;
+import com.lawencon.security.principal.PrincipalService;
 
 @Service
 public class ProfileService extends AbstractJpaDao {
@@ -24,7 +33,12 @@ public class ProfileService extends AbstractJpaDao {
 	private SocialMediaDao socialMediaDao;
 	@Autowired
 	private ProfileSocialMediaDao profileSocialMediaDao;
-
+	private final PrincipalService pricipalService;
+	
+	public ProfileService(PrincipalService pricipalService) {
+		this.pricipalService=pricipalService;
+	}
+	
 	public PojoRes update(PojoProfileReq data) {
 		ConnHandler.begin();
 
@@ -76,4 +90,54 @@ public class ProfileService extends AbstractJpaDao {
 		pojoRes.setMessage("Succes Update Profile");
 		return pojoRes;
 	}
+	
+	public PojoProfileRes getById() {
+		ConnHandler.begin();
+		User user =getById(User.class,pricipalService.getAuthPrincipal() );
+		final Profile profile = profileDao.getByIdAndDetach(user.getProfile().getId()).get();
+		final PojoProfileRes profileRes = new PojoProfileRes();
+		
+		profileRes.setId(profile.getId());
+		profileRes.setAddress(profile.getAddress());
+		profileRes.setBalance(profile.getBalance());
+		PojoFileRes file = new PojoFileRes();
+		file.setFileId(profile.getFile().getId());
+		file.setFileContent(profile.getFile().getFileContent());
+		file.setFileExtension(profile.getFile().getFileExtension());
+		file.setVer(profile.getFile().getVer());
+		profileRes.setFile(file);
+		profileRes.setFullName(profile.getFullName());
+		profileRes.setPhoneNumber(profile.getPhoneNumber());
+		
+		List<ProfileSocialMedia> profileSocialMedias = profileSocialMediaDao.getAllByProfileId(user.getProfile().getId());
+		List<PojoProfileSocialMediaRes> profileSocialMediasRes = new ArrayList<>();
+		for (int i = 0; i < profileSocialMedias.size(); i++) {
+			PojoProfileSocialMediaRes pojoProfileSocialMediaRes = new PojoProfileSocialMediaRes();
+			pojoProfileSocialMediaRes.setId(profileSocialMedias.get(i).getId());
+			pojoProfileSocialMediaRes.setVer(profileSocialMedias.get(i).getVer());
+			pojoProfileSocialMediaRes.setProfileLink(profileSocialMedias.get(i).getProfileLink());
+			pojoProfileSocialMediaRes.setSocialMediaId(profileSocialMedias.get(i).getSocialMedia().getId());
+			pojoProfileSocialMediaRes.setProfileId(profileSocialMedias.get(i).getProfile().getId());
+			pojoProfileSocialMediaRes.setUsername(profileSocialMedias.get(i).getUsername());
+			pojoProfileSocialMediaRes.setSocialMediaIcon(profileSocialMedias.get(i).getSocialMedia().getSocialMediaIcon());
+			profileSocialMediasRes.add(pojoProfileSocialMediaRes);
+		}
+		profileRes.setProfileSocialMedia(profileSocialMediasRes);
+		
+		PojoJobRes job = new PojoJobRes();
+		job.setId(profile.getJob().getId());
+		job.setVer(profile.getJob().getVer());
+		job.setCompanyName(profile.getJob().getCompanyName());
+		job.setIndustryId(profile.getJob().getIndustry().getId());
+		job.setIndustryName(profile.getJob().getIndustry().getIndustryName());
+		job.setPositionId(profile.getJob().getPosition().getId());
+		job.setPositionName(profile.getJob().getPosition().getPositionName());
+		profileRes.setJob(job);
+		ConnHandler.commit();
+
+		return profileRes;
+	}
+	
+	
+	
 }

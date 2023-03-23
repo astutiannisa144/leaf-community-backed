@@ -26,6 +26,18 @@ public class SocialMedia extends BaseEntity {
 	@OneToOne
 	@JoinColumn(name="file_id")
 	private File file;
+	
+	@Column(nullable = false, length = 30)
+	private String socialMediaIcon;
+	
+	
+	public String getSocialMediaIcon() {
+		return socialMediaIcon;
+	}
+
+	public void setSocialMediaIcon(String socialMediaIcon) {
+		this.socialMediaIcon = socialMediaIcon;
+	}
 
 	public String getSocialMediaLink() {
 		return socialMediaLink;
