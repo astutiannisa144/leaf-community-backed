@@ -157,6 +157,7 @@ CREATE TABLE t_social_media(
 	social_media_code varchar(10) NOT NULL,
 	social_media_name varchar(30) NOT NULL,
 	social_media_link varchar(30),
+	social_media_icon varchar(36),
 	file_id varchar(36),
 	created_by varchar(36) NOT NULL,
 	created_at timestamp NOT NULL,
@@ -518,6 +519,7 @@ CREATE TABLE t_user_polling(
 	id varchar(36) NOT NULL,
 	member_id varchar(36) NOT NULL,
 	polling_detail_id varchar(36) NOT NULL,
+	polling_id varchar(36) NOT NULL,
 	created_by varchar(36) NOT NULL,
 	created_at timestamp NOT NULL,
 	updated_by varchar(36),
@@ -534,6 +536,9 @@ ALTER TABLE t_user_polling
 ALTER TABLE t_user_polling 
 	ADD CONSTRAINT member_fk FOREIGN KEY(member_id)
 	REFERENCES t_user(id);
+ALTER TABLE t_user_polling 
+	ADD CONSTRAINT polling_fk FOREIGN KEY(polling_id)
+	REFERENCES t_polling(id);
 ALTER TABLE t_user_polling 
 	ADD CONSTRAINT user_polling_ck UNIQUE(member_id,polling_detail_id);
 
