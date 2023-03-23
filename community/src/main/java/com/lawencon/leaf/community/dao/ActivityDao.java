@@ -106,6 +106,7 @@ public class ActivityDao extends BaseDao<Activity> {
 		str.append("INNER JOIN t_activity_type b ON a.activity_type_id=b.id ");
 		str.append("WHERE b.activity_type_code = :typeCode ");
 		str.append("AND c.member_id = :memberId ");
+		str.append("AND c.is_approved = true ");
 		str.append("ORDER BY a.created_at DESC ");
 
 		final List<Activity> activities = ConnHandler.getManager().createNativeQuery(str.toString(), Activity.class)

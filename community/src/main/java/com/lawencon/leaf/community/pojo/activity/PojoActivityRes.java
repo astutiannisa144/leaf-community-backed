@@ -26,9 +26,23 @@ public class PojoActivityRes {
 	private String createdAt ;
 	private BigDecimal price;
 	private String fileId;
+	private String fileContent;
+	private String fileExtension;
 	private Integer ver;
 	private List<PojoScheduleRes> schedule;
 	
+	public String getFileContent() {
+		return fileContent;
+	}
+	public void setFileContent(String fileContent) {
+		this.fileContent = fileContent;
+	}
+	public String getFileExtension() {
+		return fileExtension;
+	}
+	public void setFileExtension(String fileExtension) {
+		this.fileExtension = fileExtension;
+	}
 	public Integer getVer() {
 		return ver;
 	}
