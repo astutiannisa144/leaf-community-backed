@@ -15,6 +15,7 @@
 --DROP TABLE t_activity_type;
 --DROP TABLE t_category;
 --DROP TABLE t_user_premium;
+--DROP TABLE t_bank_account ;
 --DROP TABLE t_user;
 --DROP TABLE t_profile_social_media;
 --DROP TABLE t_social_media;
@@ -129,8 +130,8 @@ CREATE TABLE t_profile(
 	facebook varchar(30),
 	job_id varchar(36),
 	file_id varchar(36),
-	balance decimal(15,0),
 	address text ,
+	balance decimal(15,0),
 	created_by varchar(36) NOT NULL,
 	created_at timestamp NOT NULL,
 	updated_by varchar(36),
@@ -235,7 +236,7 @@ ALTER TABLE t_user
 
 CREATE TABLE t_verification(
 	id varchar(36),
-	verification_code varchar(6) NOT NULL,
+	verification_code varchar(10) NOT NULL,
 	email varchar(30) NOT NULL,
 	expired_time timestamp,
 	created_by varchar(36) NOT NULL,
@@ -278,7 +279,7 @@ CREATE TABLE t_user_premium(
 	member_id varchar(36) NOT NULL,
 	premium_id varchar(36) NOT NULL,
 	expire_date date,
-	file_id varchar(36),
+	file_id varchar(36) NOT NULL,
 	created_by varchar(36) NOT NULL,
 	created_at timestamp NOT NULL,
 	updated_by varchar(36),
@@ -399,6 +400,7 @@ CREATE TABLE t_voucher(
 	id varchar(36),
 	voucher_code varchar(10) NOT NULL,
 	discount_price DECIMAL(15,0) NOT NULL,
+	minimum_purchase DECIMAL(15,0),
 	expired_date date,
 	created_by varchar(36) NOT NULL,
 	created_at timestamp NOT NULL,
@@ -462,9 +464,6 @@ ALTER TABLE t_user_activity
 	ADD CONSTRAINT user_activity_pk PRIMARY KEY (id);
 
 ALTER TABLE t_user_activity 
-	ADD CONSTRAINT user_activity_bk UNIQUE (invoice_code);
-	
-ALTER TABLE t_user_activity 
 	ADD CONSTRAINT member_fk FOREIGN KEY(member_id)
 	REFERENCES t_user(id);
 
@@ -519,7 +518,6 @@ CREATE TABLE t_user_polling(
 	id varchar(36) NOT NULL,
 	member_id varchar(36) NOT NULL,
 	polling_detail_id varchar(36) NOT NULL,
-	polling_id varchar(36) NOT NULL,
 	created_by varchar(36) NOT NULL,
 	created_at timestamp NOT NULL,
 	updated_by varchar(36),
@@ -534,13 +532,10 @@ ALTER TABLE t_user_polling
 	ADD CONSTRAINT polling_detail_id FOREIGN KEY(polling_detail_id)
 	REFERENCES t_polling_detail(id);
 ALTER TABLE t_user_polling 
-	ADD CONSTRAINT polling_id FOREIGN KEY(polling_id)
-	REFERENCES t_polling(id);
-ALTER TABLE t_user_polling 
 	ADD CONSTRAINT member_fk FOREIGN KEY(member_id)
 	REFERENCES t_user(id);
 ALTER TABLE t_user_polling 
-	ADD CONSTRAINT user_polling_ck UNIQUE(member_id,polling_id);
+	ADD CONSTRAINT user_polling_ck UNIQUE(member_id,polling_detail_id);
 
 
 
@@ -551,7 +546,7 @@ CREATE TABLE t_post(
 	content text NOT NULL,
 	is_premium boolean,
 	category_id varchar(36) NOT NULL,
-	member_id varchar(36) NOT NULL,
+	member_id varchar(36),
 	polling_id varchar(36),
 	created_by varchar(36) NOT NULL,
 	created_at timestamp NOT NULL,
@@ -722,6 +717,3 @@ ALTER TABLE t_bank_account
 ALTER TABLE t_bank_account 
 	ADD CONSTRAINT user_fk FOREIGN KEY(user_id)
 	REFERENCES t_user(id);
-	
-	
-	
