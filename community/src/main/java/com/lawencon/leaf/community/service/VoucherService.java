@@ -60,7 +60,6 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 			
 			Activity activity = activityDao.getById(activityId).get();
 			if(voucher.getMinimumPurchase().compareTo(activity.getPrice())>0 ) {
-
 				pojoVoucherRes.setCodeWarning("Minimum pembelian melewati harga ");			
 				throw new RuntimeException(new ObjectMapper().writeValueAsString(pojoVoucherRes));
 			}
