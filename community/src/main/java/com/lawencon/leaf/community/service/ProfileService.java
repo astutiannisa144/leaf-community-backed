@@ -12,6 +12,7 @@ import com.lawencon.leaf.community.dao.ProfileDao;
 import com.lawencon.leaf.community.dao.ProfileSocialMediaDao;
 import com.lawencon.leaf.community.dao.SocialMediaDao;
 import com.lawencon.leaf.community.model.File;
+import com.lawencon.leaf.community.model.Job;
 import com.lawencon.leaf.community.model.Profile;
 import com.lawencon.leaf.community.model.ProfileSocialMedia;
 import com.lawencon.leaf.community.model.SocialMedia;
@@ -59,11 +60,15 @@ public class ProfileService extends AbstractJpaDao {
 		profile.setPhoneNumber(data.getPhoneNumber());
 		profile.setIsActive(true);
 		Profile profileInsert = save(profile);
-
+		
+		final Job job = getByIdAndDetach(Job.class, data.getJob().getId());
+		
+		job.setCompanyName(data.getJob().getCompanyName());
+		
 		for (int i = 0; i < data.getProfileSocialMedia().size(); i++) {
 			ProfileSocialMedia profileSocialMedia = new ProfileSocialMedia();
 			if (data.getProfileSocialMedia().get(i).getId() != null) {
-				profileSocialMedia.setId(data.getProfileSocialMedia().get(i).getId());
+				profileSocialMedia=getByIdAndDetach(ProfileSocialMedia.class, data.getProfileSocialMedia().get(i).getId());
 				if(data.getProfileSocialMedia().get(i).getSocialMediaId()==null) {
 					try {
 						deleteById(ProfileSocialMedia.class, profileSocialMedia.getId());
@@ -72,6 +77,7 @@ public class ProfileService extends AbstractJpaDao {
 						e.printStackTrace();
 					}
 				}
+				profileSocialMedia.setVer(data.getProfileSocialMedia().get(i).getVer());
 			}
 			profileSocialMedia.setProfile(profileInsert);
 			SocialMedia socialMedia = socialMediaDao.getById(data.getProfileSocialMedia().get(i).getSocialMediaId())
@@ -112,6 +118,7 @@ public class ProfileService extends AbstractJpaDao {
 		
 		List<ProfileSocialMedia> profileSocialMedias = profileSocialMediaDao.getAllByProfileId(user.getProfile().getId());
 		List<PojoProfileSocialMediaRes> profileSocialMediasRes = new ArrayList<>();
+		System.out.println(profileSocialMedias.size());
 		for (int i = 0; i < profileSocialMedias.size(); i++) {
 			PojoProfileSocialMediaRes pojoProfileSocialMediaRes = new PojoProfileSocialMediaRes();
 			pojoProfileSocialMediaRes.setId(profileSocialMedias.get(i).getId());
@@ -122,6 +129,7 @@ public class ProfileService extends AbstractJpaDao {
 			pojoProfileSocialMediaRes.setUsername(profileSocialMedias.get(i).getUsername());
 			PojoSocialMediaRes socialMedia = new PojoSocialMediaRes();
 			socialMedia.setId(profileSocialMedias.get(i).getSocialMedia().getId());
+			socialMedia.setSocialMediaName(profileSocialMedias.get(i).getSocialMedia().getSocialMediaName());
 			socialMedia.setSocialMediaIcon(profileSocialMedias.get(i).getSocialMedia().getSocialMediaIcon());
 			socialMedia.setSocialMediaLink(profileSocialMedias.get(i).getSocialMedia().getSocialMediaLink());
 			File fileInsert = new File();
