@@ -1,14 +1,24 @@
 package com.lawencon.leaf.community.pojo.social.media;
 
+import com.lawencon.leaf.community.pojo.file.PojoFileRes;
+
 public class PojoSocialMediaRes {
 	private String id;
 	private String socialMediaName;
 	private String socialMediaLink;
 	private String socialMediaCode;
-	private String fileId;
+	private String socialMediaIcon;
+	private PojoFileRes file;
 	private Integer ver;
 	private Boolean isActive;
 	
+	
+	public String getSocialMediaIcon() {
+		return socialMediaIcon;
+	}
+	public void setSocialMediaIcon(String socialMediaIcon) {
+		this.socialMediaIcon = socialMediaIcon;
+	}
 	public String getId() {
 		return id;
 	}
@@ -27,11 +37,12 @@ public class PojoSocialMediaRes {
 	public void setSocialMediaLink(String socialMediaLink) {
 		this.socialMediaLink = socialMediaLink;
 	}
-	public String getFileId() {
-		return fileId;
+	
+	public PojoFileRes getFile() {
+		return file;
 	}
-	public void setFileId(String fileId) {
-		this.fileId = fileId;
+	public void setFile(PojoFileRes file) {
+		this.file = file;
 	}
 	public Integer getVer() {
 		return ver;
