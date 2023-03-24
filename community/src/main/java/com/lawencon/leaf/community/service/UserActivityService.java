@@ -23,6 +23,10 @@ import com.lawencon.leaf.community.model.UserActivity;
 import com.lawencon.leaf.community.model.UserVoucher;
 import com.lawencon.leaf.community.model.Voucher;
 import com.lawencon.leaf.community.pojo.PojoRes;
+import com.lawencon.leaf.community.pojo.report.PojoActivityIncomeRes;
+import com.lawencon.leaf.community.pojo.report.PojoMemberIncomeRes;
+import com.lawencon.leaf.community.pojo.report.PojoMemberParticipantRes;
+import com.lawencon.leaf.community.pojo.report.PojoActivityParticipantRes;
 import com.lawencon.leaf.community.pojo.user.activity.PojoUserActivityReq;
 import com.lawencon.leaf.community.pojo.user.activity.PojoUserActivityRes;
 import com.lawencon.leaf.community.util.GenerateCodeUtil;
@@ -42,59 +46,58 @@ public class UserActivityService extends AbstractJpaDao {
 	@Autowired
 	private VoucherDao voucherDao;
 	private static final BigDecimal percent = new BigDecimal(0.8);
-	
+
 	public UserActivityService(PrincipalServiceImpl principalServiceImpl) {
 		this.principalService = principalServiceImpl;
 	}
-	
+
 	private void valIdNull(UserActivity userActivity) {
-		if(userActivity.getId()!=null) {
+		if (userActivity.getId() != null) {
 			throw new RuntimeException("Id Harus Kosong");
 		}
 	}
 
-
 	private void valBkNotNull(UserActivity userActivity) {
-		if(userActivity.getInvoiceCode()==null) {
+		if (userActivity.getInvoiceCode() == null) {
 			throw new RuntimeException("Invoice Code Tidak Boleh Kosong");
 		}
 	}
+
 	private void valBkNotChange(UserActivity userActivity) {
-		if(userActivityDao.getById(userActivity.getId()).get().getInvoiceCode()!=userActivity.getInvoiceCode()) {
+		if (userActivityDao.getById(userActivity.getId()).get().getInvoiceCode() != userActivity.getInvoiceCode()) {
 			throw new RuntimeException("Invoice Code Cant Change Exist");
 		}
 	}
 
 	private void valNonBk(UserActivity userActivity) {
-		if(userActivity.getMember()==null) {
+		if (userActivity.getMember() == null) {
 			throw new RuntimeException("Member Tidak Boleh Kosong");
 		}
-		if(userActivity.getTotalPrice()==null) {
+		if (userActivity.getTotalPrice() == null) {
 			throw new RuntimeException("Price Tidak Boleh Kosong");
 		}
-		if(userActivity.getActivity()==null) {
+		if (userActivity.getActivity() == null) {
 			throw new RuntimeException("Activity Tidak Boleh Kosong");
 		}
-		if((userActivity.getIsActive()==null)) {
+		if ((userActivity.getIsActive() == null)) {
 			throw new RuntimeException("Active Tidak Boleh Kosong");
 
 		}
-		
+
 	}
+
 	private void valIdNotNull(UserActivity userActivity) {
-		if(userActivity.getId()==null) {
+		if (userActivity.getId() == null) {
 			throw new RuntimeException("Id Tidak Boleh Kosong");
 		}
 	}
-	
+
 	private void valIdExist(String id) {
-		if(userActivityDao.getById(id).isEmpty()) {
+		if (userActivityDao.getById(id).isEmpty()) {
 			throw new RuntimeException("Id Tidak Boleh Kosong");
 		}
 	}
-	
-	
-	
+
 	public PojoRes insert(PojoUserActivityReq data) {
 		ConnHandler.begin();
 		String code = GenerateCodeUtil.generateCode(10);
@@ -104,7 +107,7 @@ public class UserActivityService extends AbstractJpaDao {
 		if (data.getVoucherCode() != null) {
 			Voucher voucher = voucherDao.getByCode(data.getVoucherCode()).get();
 
-			if (voucher.getMinimumPurchase().compareTo(activity.getPrice())==1) {
+			if (voucher.getMinimumPurchase().compareTo(activity.getPrice()) == 1) {
 				throw new RuntimeException("This Voucher Cant be used for this purchase");
 			}
 			UserVoucher userVoucher = new UserVoucher();
@@ -126,7 +129,7 @@ public class UserActivityService extends AbstractJpaDao {
 		userActivity.setActivity(activity);
 		userActivity.setMember(member);
 		userActivity.setIsActive(true);
-		
+
 		valIdNull(userActivity);
 		valNonBk(userActivity);
 
@@ -139,16 +142,14 @@ public class UserActivityService extends AbstractJpaDao {
 		return res;
 	}
 
-	
-
 	public PojoRes update(PojoUserActivityReq data) {
 		ConnHandler.begin();
-		
+
 		final UserActivity userActivity = userActivityDao.getByIdAndDetach(UserActivity.class, data.getId());
-		if(userActivity.getVer()>0) {
+		if (userActivity.getVer() > 0) {
 			throw new RuntimeException("Anda Sudah Approve Transaksi ini TIdak bisa approve lagi");
 		}
-		User admin =userDao.getUserByRole(EnumRole.SY.getCode()).get();
+		User admin = userDao.getUserByRole(EnumRole.SY.getCode()).get();
 		final Activity activity = activityDao.getByIdAndDetach(Activity.class, userActivity.getActivity().getId());
 		final Profile profileAdmin = getByIdAndDetach(Profile.class, admin.getProfile().getId());
 		final User member = userDao.getById(User.class, activity.getMember().getId());
@@ -156,20 +157,20 @@ public class UserActivityService extends AbstractJpaDao {
 		BigDecimal priceMember = activity.getPrice().multiply(percent);
 		BigDecimal memberBalance = profileMember.getBalance().add(priceMember);
 		BigDecimal adminBalance = profileAdmin.getBalance().add(userActivity.getTotalPrice().subtract(priceMember));
-		
+
 		profileMember.setBalance(memberBalance);
 		profileAdmin.setBalance(adminBalance);
 		save(profileAdmin);
 		save(profileMember);
 		userActivity.setIsApproved(true);
 		userActivity.setIsActive(true);
-		
+
 		valIdExist(userActivity.getId());
 		valIdNotNull(userActivity);
 		valBkNotNull(userActivity);
 		valBkNotChange(userActivity);
 		valNonBk(userActivity);
-		
+
 		userActivityDao.save(userActivity);
 
 		ConnHandler.commit();
@@ -202,18 +203,19 @@ public class UserActivityService extends AbstractJpaDao {
 		final List<PojoUserActivityRes> pojoUserActivityRes = new ArrayList<>();
 		List<UserActivity> userActivities = new ArrayList<>();
 
-		if(code==null && typeCode==null) {
+		if (code == null && typeCode == null) {
 			userActivities = userActivityDao.getAll();
-		
-		}else if (typeCode != null && code==null) {
+
+		} else if (typeCode != null && code == null) {
 			userActivities = userActivityDao.getAllByActivityType(typeCode);
 		} else if (code.equals("profile") && typeCode == null) {
 
 			userActivities = userActivityDao.getAllByActivityPurchased(principalService.getAuthPrincipal());
 		} else if (code.equals("profile") && typeCode != null) {
-			userActivities = userActivityDao.getAllByActivityByTypeAndMember(typeCode,principalService.getAuthPrincipal());
-		
-		}  else if (code.equals("non") && typeCode != null) {
+			userActivities = userActivityDao.getAllByActivityByTypeAndMember(typeCode,
+					principalService.getAuthPrincipal());
+
+		} else if (code.equals("non") && typeCode != null) {
 			userActivities = userActivityDao.getAllByActivityTypeNotPurchase(typeCode);
 		}
 
@@ -251,6 +253,22 @@ public class UserActivityService extends AbstractJpaDao {
 		final PojoRes pojoRes = new PojoRes();
 		pojoRes.setMessage("Succes Delete User Activity");
 		return pojoRes;
+	}
+	
+	public List<PojoActivityParticipantRes> getActivityParticipants(String dateStart, String dateEnd) {
+		return userActivityDao.getActivityParticipants(dateStart, dateEnd);
+	}
+
+	public List<PojoMemberParticipantRes> getMemberParticipants(String dateStart, String dateEnd) {
+		return userActivityDao.getMemberParticipants(dateStart, dateEnd);
+	}
+
+	public List<PojoActivityIncomeRes> getEventIncome(String dateStart, String dateEnd) {
+		return userActivityDao.getEventIncome(dateStart, dateEnd);
+	}
+
+	public List<PojoMemberIncomeRes> getMemberIncome(String dateStart, String dateEnd) {
+		return userActivityDao.getMemberIncome(dateStart, dateEnd);
 	}
 
 }

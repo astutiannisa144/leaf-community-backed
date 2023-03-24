@@ -1,5 +1,6 @@
 package com.lawencon.leaf.community.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +26,13 @@ public class DateUtil {
 		final DateTimeFormatter formater = DateTimeFormatter.ofPattern("HH:mm:ss");
 		final LocalTime time = LocalTime.parse(dateStr, formater);
 		return time;
+	}
+	
+	public static String isoToDate(final String dateStr) {
+		final DateTimeFormatter isoFormater = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		final DateTimeFormatter formater = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		final LocalDate date = LocalDate.parse(dateStr, isoFormater);
+		return date.format(formater);
 	}
 
 }
