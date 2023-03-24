@@ -168,7 +168,7 @@ public class UserActivityService extends AbstractJpaDao {
 		valIdExist(userActivity.getId());
 		valIdNotNull(userActivity);
 		valBkNotNull(userActivity);
-		valBkNotChange(userActivity);
+//		valBkNotChange(userActivity);
 		valNonBk(userActivity);
 
 		userActivityDao.save(userActivity);

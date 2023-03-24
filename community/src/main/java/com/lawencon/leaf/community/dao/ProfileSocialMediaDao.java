@@ -29,11 +29,11 @@ public class ProfileSocialMediaDao extends BaseDao<ProfileSocialMedia> {
 	@SuppressWarnings("unchecked")
 	public List<ProfileSocialMedia> getAllByProfileId(String id) {
 		final List<ProfileSocialMedia> socialMedias = new ArrayList<>();
-		try {
-			
 		
+			
 		final StringBuilder str = new StringBuilder();
-		str.append("SELECT tp.profile_id,tp.id,tp.username,tp.social_media_id,tp.ver,tp.is_active,tp.profile_link,sm.id,file_id,social_media_name,social_media_icon,social_media_link ");
+		
+		str.append("SELECT tp.profile_id,tp.id as tpid,tp.username,tp.social_media_id,tp.ver,tp.is_active,tp.profile_link,sm.id,file_id,social_media_name,social_media_icon,social_media_link ");
 		str.append("FROM t_profile_social_media tp ");
 		str.append("INNER JOIN t_social_media sm ON tp.social_media_id=sm.id ");
 		str.append("WHERE profile_id =:id ");
@@ -45,8 +45,9 @@ public class ProfileSocialMediaDao extends BaseDao<ProfileSocialMedia> {
 		str.append("FROM t_profile_social_media tp ");
 		str.append("WHERE profile_id =:id) ");
 		
+		
 
-		final List<Object> result = ConnHandler.getManager().createNativeQuery(str.toString(), ProfileSocialMedia.class)
+		final List<Object> result = ConnHandler.getManager().createNativeQuery(str.toString())
 				.setParameter("id", id)
 				.getResultList();
 		if (result != null) {
@@ -55,17 +56,38 @@ public class ProfileSocialMediaDao extends BaseDao<ProfileSocialMedia> {
 
 				final Object[] objArr = (Object[]) objs;
 				final Profile profile = new Profile();
-				if(objArr[0].toString()!=null) {
+				if(objArr[0]!=null) {
 					profile.setId(objArr[0].toString());
 				}else {
 					profile.setId(null);
-				}
-				profileSocialMedia.setProfile(profile);
-				profileSocialMedia.setId(objArr[1].toString());
-				profileSocialMedia.setUsername(objArr[2].toString());
 
-				profileSocialMedia.setVer(Integer.valueOf(objArr[4].toString()) );
-				profileSocialMedia.setProfileLink(objArr[6].toString());
+				}
+				
+				profileSocialMedia.setProfile(profile);
+				if(objArr[1]!=null) {
+					profileSocialMedia.setId(objArr[1].toString());
+				}else {
+					profileSocialMedia.setId(null);
+
+				}
+				if(objArr[2]!=null) {
+					profileSocialMedia.setUsername(objArr[2].toString());
+				}else {
+					profileSocialMedia.setUsername(null);
+
+				}
+				if(objArr[4]!=null) {
+					profileSocialMedia.setVer(Integer.valueOf(objArr[4].toString()) );
+				}else {
+					profileSocialMedia.setVer(null);
+
+				}
+				if(objArr[6]!=null) {
+					profileSocialMedia.setProfileLink(objArr[6].toString());
+				}else {
+					profileSocialMedia.setProfileLink(null);
+
+				}
 				SocialMedia socialMedia= new SocialMedia();
 				socialMedia.setId(objArr[7].toString());
 				File file = new File();
@@ -78,9 +100,6 @@ public class ProfileSocialMediaDao extends BaseDao<ProfileSocialMedia> {
 				socialMedias.add(profileSocialMedia);
 			}
 			
-		}
-		} catch (Exception e) {
-			// TODO: handle exception
 		}
 		return socialMedias;
 	} 
