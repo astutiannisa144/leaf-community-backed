@@ -22,6 +22,7 @@ import com.lawencon.leaf.community.pojo.job.PojoJobRes;
 import com.lawencon.leaf.community.pojo.profile.PojoProfileReq;
 import com.lawencon.leaf.community.pojo.profile.PojoProfileRes;
 import com.lawencon.leaf.community.pojo.profile.social.media.PojoProfileSocialMediaRes;
+import com.lawencon.leaf.community.pojo.social.media.PojoSocialMediaRes;
 import com.lawencon.security.principal.PrincipalService;
 
 @Service
@@ -119,7 +120,14 @@ public class ProfileService extends AbstractJpaDao {
 			pojoProfileSocialMediaRes.setSocialMediaId(profileSocialMedias.get(i).getSocialMedia().getId());
 			pojoProfileSocialMediaRes.setProfileId(profileSocialMedias.get(i).getProfile().getId());
 			pojoProfileSocialMediaRes.setUsername(profileSocialMedias.get(i).getUsername());
-			pojoProfileSocialMediaRes.setSocialMediaIcon(profileSocialMedias.get(i).getSocialMedia().getSocialMediaIcon());
+			PojoSocialMediaRes socialMedia = new PojoSocialMediaRes();
+			socialMedia.setId(profileSocialMedias.get(i).getSocialMedia().getId());
+			socialMedia.setSocialMediaIcon(profileSocialMedias.get(i).getSocialMedia().getSocialMediaIcon());
+			socialMedia.setSocialMediaLink(profileSocialMedias.get(i).getSocialMedia().getSocialMediaLink());
+			File fileInsert = new File();
+			fileInsert.setId(profileSocialMedias.get(i).getSocialMedia().getFile().getId());
+			socialMedia.setFile(file);
+			pojoProfileSocialMediaRes.setSocialMedia(socialMedia);
 			profileSocialMediasRes.add(pojoProfileSocialMediaRes);
 		}
 		profileRes.setProfileSocialMedia(profileSocialMediasRes);
