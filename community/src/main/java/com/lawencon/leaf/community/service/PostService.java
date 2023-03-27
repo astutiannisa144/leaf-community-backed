@@ -34,7 +34,6 @@ import com.lawencon.leaf.community.pojo.polling.PollingResGet;
 import com.lawencon.leaf.community.pojo.post.PojoPostReqInsert;
 import com.lawencon.leaf.community.pojo.post.PojoPostReqUpdate;
 import com.lawencon.leaf.community.pojo.post.PojoPostResGetAll;
-import com.lawencon.leaf.community.util.DateUtil;
 import com.lawencon.leaf.community.util.GenerateCodeUtil;
 import com.lawencon.security.principal.PrincipalService;
 import com.lawencon.security.principal.PrincipalServiceImpl;
@@ -94,9 +93,9 @@ public class PostService {
 				Polling polling = new Polling();
 				polling.setContent(data.getPolling().getContent());
 				polling.setExpired(data.getPolling().getExpired());
-				
+
 				polling = pollingDao.save(polling);
-				
+
 				postInsert.setPolling(polling);
 				for (int i = 0; i < data.getPolling().getPollingDetail().size(); i++) {
 					final PollingDetail pollingDetail = new PollingDetail();
@@ -126,6 +125,7 @@ public class PostService {
 		ConnHandler.commit();
 
 		final PojoRes res = new PojoRes();
+		res.setId(postInsert.getId());
 		res.setMessage("Post created");
 		return res;
 
@@ -186,10 +186,11 @@ public class PostService {
 			res.setContent(postList.get(i).getContent());
 			res.setIsPremium(postList.get(i).getIsPremium());
 			res.setCategoryId(postList.get(i).getCategory().getId());
+			res.setCategoryName(postList.get(i).getCategory().getCategoryName());
 			res.setMemberId(postList.get(i).getMember().getId());
 			res.setFileId(postList.get(i).getMember().getProfile().getFile().getId());
 			res.setFullName(postList.get(i).getMember().getProfile().getFullName());
-			res.setCreatedAt(DateUtil.dateToStr(postList.get(i).getCreatedAt()));
+			res.setCreatedAt(postList.get(i).getCreatedAt());
 			res.setLikeSum(likeDao.countLike(postList.get(i).getId()));
 			res.setCommentSum(commentDao.countComment(postList.get(i).getId()));
 
@@ -211,8 +212,10 @@ public class PostService {
 				final Long totalPolling = userPollingDao.countTotalPolling(postList.get(i).getPolling().getId());
 				polling.setTotalPolling(totalPolling);
 
-				if (userPollingDao.getId(principalService.getAuthPrincipal()).isPresent()) {
-					polling.setUserPollingId(userPollingDao.getId(principalService.getAuthPrincipal()).get());
+				if (userPollingDao.getId(principalService.getAuthPrincipal(), postList.get(i).getPolling().getId())
+						.isPresent()) {
+					polling.setUserPollingId(userPollingDao
+							.getId(principalService.getAuthPrincipal(), postList.get(i).getPolling().getId()).get());
 				}
 
 				final List<PollingDetailRes> resPollingDetailList = new ArrayList<>();
@@ -227,11 +230,11 @@ public class PostService {
 					BigDecimal percentage = BigDecimal
 							.valueOf(userPollingDao.countPercentage(pollingDetailList.get(j).getId()) * 100);
 					if (totalPolling > 0) {
-					percentage = percentage.divide(BigDecimal.valueOf(totalPolling), 2, RoundingMode.HALF_UP);
+						percentage = percentage.divide(BigDecimal.valueOf(totalPolling), 2, RoundingMode.HALF_UP);
 					} else {
 						percentage = BigDecimal.valueOf(0);
 					}
-					
+
 					resPollingDetail.setPercentage(percentage);
 
 					resPollingDetailList.add(resPollingDetail);

@@ -19,7 +19,7 @@ public class PostDao extends BaseDao<Post> {
 		
 		final List<Post> postList = ConnHandler.getManager()
 				.createNativeQuery(sql.toString(), Post.class)
-				.setFirstResult((offset - 1) * limit)
+				.setFirstResult(offset)
 				.setMaxResults(limit)
 				.getResultList();
 

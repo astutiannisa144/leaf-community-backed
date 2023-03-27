@@ -50,7 +50,7 @@ public class UserPollingDao extends BaseDao<UserPolling> {
 		return count;
 	}
 
-	public Optional<String> getId(String id) {
+	public Optional<String> getId(String uid, String pid) {
 
 		String userPollingId = null;
 
@@ -58,11 +58,13 @@ public class UserPollingDao extends BaseDao<UserPolling> {
 			final StringBuilder sql = new StringBuilder();
 
 			sql.append("SELECT id FROM t_user_polling ");
-			sql.append("WHERE member_id = :id ");
+			sql.append("WHERE polling_id = :pid ");
+			sql.append("AND member_id = :uid ");
 
 			userPollingId = ConnHandler.getManager()
 					.createNativeQuery(sql.toString())
-					.setParameter("id", id)
+					.setParameter("uid", uid)
+					.setParameter("pid", pid)
 					.getSingleResult().toString();
 
 		} catch (Exception e) {
