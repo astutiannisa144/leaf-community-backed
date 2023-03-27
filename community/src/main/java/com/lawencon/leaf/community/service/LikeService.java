@@ -31,18 +31,19 @@ public class LikeService {
 	public PojoRes insert(PojoLikeReqInsert data) {
 		ConnHandler.begin();
 
-		final Like like = new Like();
+		Like like = new Like();
 		final Post post = postDao.getById(data.getPostId()).get();
 		like.setPost(post);
 
 		final User user = userDao.getById(principalService.getAuthPrincipal()).get();
 		like.setMember(user);
 
-		likeDao.save(like);
+		like = likeDao.save(like);
 
 		ConnHandler.commit();
 
 		final PojoRes res = new PojoRes();
+		res.setId(like.getId());
 		res.setMessage("Post liked");
 		return res;
 	}
@@ -57,7 +58,7 @@ public class LikeService {
 		}
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Like Deleted");
+		pojoRes.setMessage("Post Disliked");
 		return pojoRes;
 	}
 

@@ -18,7 +18,7 @@ public class VoucherDao extends BaseDao<Voucher> {
 		final StringBuilder str = new StringBuilder();
 		str.append("SELECT * ");
 		str.append("FROM t_voucher ");
-		str.append("WHERE expired_date>NOW()");
+//		str.append("WHERE expired_date>NOW()");
 
 		final List<Voucher> vouchers = ConnHandler.getManager().createNativeQuery(str.toString(), Voucher.class)
 				.getResultList();

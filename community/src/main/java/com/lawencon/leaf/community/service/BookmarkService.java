@@ -33,18 +33,19 @@ public class BookmarkService {
 	public PojoRes insert(PojoBookmarkReqInsert data) {
 		ConnHandler.begin();
 
-		final Bookmark bookmark = new Bookmark();
+		Bookmark bookmark = new Bookmark();
 		final Post post = postDao.getById(Post.class, data.getPostId());
 		bookmark.setPost(post);
 
 		final User user = userDao.getById(principalService.getAuthPrincipal()).get();
 		bookmark.setMember(user);
 
-		bookmarkDao.save(bookmark);
+		bookmark = bookmarkDao.save(bookmark);
 
 		ConnHandler.commit();
 
 		final PojoRes res = new PojoRes();
+		res.setId(bookmark.getId());
 		res.setMessage("Post added to bookmark");
 		return res;
 	}
