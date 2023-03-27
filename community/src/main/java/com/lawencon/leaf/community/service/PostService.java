@@ -21,7 +21,6 @@ import com.lawencon.leaf.community.dao.PostFileDao;
 import com.lawencon.leaf.community.dao.UserDao;
 import com.lawencon.leaf.community.dao.UserPollingDao;
 import com.lawencon.leaf.community.model.Category;
-import com.lawencon.leaf.community.model.Comment;
 import com.lawencon.leaf.community.model.File;
 import com.lawencon.leaf.community.model.Polling;
 import com.lawencon.leaf.community.model.PollingDetail;
@@ -151,13 +150,13 @@ public class PostService {
 
 		try {
 			ConnHandler.begin();
-			postDao.deleteById(Comment.class, id);
+			postDao.deleteById(Post.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Comment Deleted");
+		pojoRes.setMessage("Post Deleted");
 		return pojoRes;
 	}
 

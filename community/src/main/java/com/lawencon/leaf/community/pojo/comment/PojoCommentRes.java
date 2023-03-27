@@ -1,5 +1,7 @@
 package com.lawencon.leaf.community.pojo.comment;
 
+import java.time.LocalDateTime;
+
 public class PojoCommentRes {
 
 	private String commentId;
@@ -7,6 +9,7 @@ public class PojoCommentRes {
 	private String memberId;
 	private String fullName;
 	private String fileId;
+	private LocalDateTime createdAt;
 
 	public String getCommentId() {
 		return commentId;
@@ -46,6 +49,14 @@ public class PojoCommentRes {
 
 	public void setFileId(String fileId) {
 		this.fileId = fileId;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
 }

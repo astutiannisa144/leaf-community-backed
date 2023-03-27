@@ -94,6 +94,7 @@ public class CommentService {
 			res.setMemberId(commentList.get(i).getMember().getId());
 			res.setFullName(commentList.get(i).getMember().getProfile().getFullName());
 			res.setFileId(commentList.get(i).getMember().getProfile().getFile().getId());
+			res.setCreatedAt(commentList.get(i).getCreatedAt());
 			
 			resList.add(res);
 		}
