@@ -70,15 +70,15 @@ public class UserPremiumService extends BaseService<PojoUserPremiumRes> {
 		return Optional.ofNullable(userPremiumRes);
 	}
 	
-	public List<PojoUserPremiumRes> getAll(String code) {
+	public List<PojoUserPremiumRes> getAll(int limit, int page, String code) {
 		List<UserPremium> userPremiums = new ArrayList<>();
 		
 		if(code==null) {
-			userPremiums = userPremiumDao.getAll();
+			userPremiums = userPremiumDao.getAll(limit,page);
 
 		}
 		else if (code.equals("non")) {
-			userPremiums = userPremiumDao.getAllNonApproved();
+			userPremiums = userPremiumDao.getAllNonApproved(limit,page);
 
 		} 
 		List<PojoUserPremiumRes> userPremiumRes = new ArrayList<>();
@@ -113,7 +113,6 @@ public class UserPremiumService extends BaseService<PojoUserPremiumRes> {
 		File file = new File();
 		file.setFileContent(data.getFile().getFileContent());
 		file.setFileExtension(data.getFile().getFileExtension());
-		file.setIsActive(true);
 		File fileInsert = fileDao.save(file);
 		userPremium.setFile(fileInsert);
 		userPremium.setIsActive(true);

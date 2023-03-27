@@ -10,6 +10,25 @@ public class PojoFileReqInsert {
 	@NotNull(message = "Extension for file Required")
 	@Length(max = 10, message = "length for file Extension too long")
 	private String fileExtension;
+	private String id;
+	private Integer ver;
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+
+	public Integer getVer() {
+		return ver;
+	}
+
+	public void setVer(Integer ver) {
+		this.ver = ver;
+	}
 
 	public String getFileContent() {
 		return fileContent;

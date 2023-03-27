@@ -1,14 +1,32 @@
 package com.lawencon.leaf.community.pojo.article;
 
+import com.lawencon.leaf.community.pojo.file.PojoFileReqInsert;
+
 public class PojoArticleReqUpdate {
-	private String articleId;
+	private String id;
 	private String title;
 	private String content;
-	public String getArticleId() {
-		return articleId;
+	private Integer ver;
+	private PojoFileReqInsert file;
+	
+	
+	public Integer getVer() {
+		return ver;
 	}
-	public void setArticleId(String articleId) {
-		this.articleId = articleId;
+	public void setVer(Integer ver) {
+		this.ver = ver;
+	}
+	public PojoFileReqInsert getFile() {
+		return file;
+	}
+	public void setFile(PojoFileReqInsert file) {
+		this.file = file;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	public String getTitle() {
 		return title;

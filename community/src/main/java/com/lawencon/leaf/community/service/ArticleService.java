@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.lawencon.base.AbstractJpaDao;
 import com.lawencon.base.ConnHandler;
 import com.lawencon.leaf.community.dao.ArticleDao;
+import com.lawencon.leaf.community.dao.FileDao;
 import com.lawencon.leaf.community.dao.UserDao;
 import com.lawencon.leaf.community.model.Article;
 import com.lawencon.leaf.community.model.File;
@@ -17,6 +18,7 @@ import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.article.PojoArticleReqInsert;
 import com.lawencon.leaf.community.pojo.article.PojoArticleReqUpdate;
 import com.lawencon.leaf.community.pojo.article.PojoArticleRes;
+import com.lawencon.leaf.community.pojo.file.PojoFileRes;
 import com.lawencon.leaf.community.util.GenerateCodeUtil;
 import com.lawencon.security.principal.PrincipalService;
 
@@ -28,10 +30,53 @@ public class ArticleService extends AbstractJpaDao{
 	@Autowired
 	private UserDao userDao;
 	@Autowired
+	private FileDao fileDao;
+	@Autowired
 	private PrincipalService principalService;
 
+	private void valIdNull(PojoArticleReqInsert article) {
+		if (article.getId() != null) {
+			throw new RuntimeException("Id Harus Kosong");
+		}
+	}
+
+	private void valBkNull(PojoArticleReqInsert article) {
+		if (article.getArticleCode() != null) {
+			throw new RuntimeException("Article Code Harus Kosong");
+		}
+	}
+
+	private void valNonBk(PojoArticleReqInsert article) {
+		if (article.getContent() == null) {
+			throw new RuntimeException("Content Tidak Boleh Kosong");
+		}
+		if (article.getTitle() == null) {
+			throw new RuntimeException("Judul Tidak Boleh Kosong");
+		}
+		if (article.getFile() == null) {
+			throw new RuntimeException("Gambar Tidak Boleh Kosong");
+		}
+
+
+	}
+
+	private void valIdNotNull(PojoArticleReqUpdate article) {
+		if (article.getId() == null) {
+			throw new RuntimeException("Id Tidak Boleh Kosong");
+		}
+	}
+
+	private void valIdExist(String id) {
+		if (articleDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id Tidak Boleh Kosong");
+		}
+	}
+	
 	public PojoRes insert(PojoArticleReqInsert data) {
 		ConnHandler.begin();
+		valIdNull(data);
+		valNonBk(data);
+		valBkNull(data);
 
 		final Article article = new Article();
 		
@@ -64,11 +109,18 @@ public class ArticleService extends AbstractJpaDao{
 	
 	public PojoRes update(PojoArticleReqUpdate data) {
 		ConnHandler.begin();
-
-		final Article articleUpdate = articleDao.getById(data.getArticleId()).get();
+		valIdNotNull(data);
+		valIdExist(data.getId());
+		final Article articleUpdate = articleDao.getById(data.getId()).get();
 		articleUpdate.setTitle(data.getTitle());
 		articleUpdate.setContent(data.getContent());
-
+		File file=fileDao.getById(data.getFile().getId()).get();
+		file.setFileContent(data.getFile().getFileContent());
+		file.setFileExtension(data.getFile().getFileExtension());
+		file.setVer(data.getFile().getVer());
+		fileDao.save(file);
+		articleUpdate.setFile(file);
+		articleUpdate.setVer(data.getVer());
 		articleDao.save(articleUpdate);
 
 		ConnHandler.commit();
@@ -78,9 +130,10 @@ public class ArticleService extends AbstractJpaDao{
 		return res;
 	}
 	
-	public List<PojoArticleRes> getAll() {
+	public List<PojoArticleRes> getAll(int limit,int page) {
 		final List<PojoArticleRes> pojoArticleRes = new ArrayList<>();
-		List<Article> articles = articleDao.getAll();
+		
+		List<Article> articles = articleDao.getAll(limit,page);
 		for (int i = 0; i < articles.size(); i++) {
 			PojoArticleRes articleRes = new PojoArticleRes();
 			articleRes.setArticleId(articles.get(i).getId());
@@ -97,7 +150,32 @@ public class ArticleService extends AbstractJpaDao{
 		
 		return pojoArticleRes;
 	}
-	
+	public PojoArticleRes getById(String id) {
+		
+			Article articles = articleDao.getById(id).get();
+
+			PojoArticleRes articleRes = new PojoArticleRes();
+			articleRes.setArticleId(articles.getId());
+			articleRes.setAdminId(articles.getAdmin().getId());
+			articleRes.setContent(articles.getContent());
+			articleRes.setFullName(articles.getAdmin().getProfile().getFullName());
+			articleRes.setCreatedAt(articles.getCreatedAt());
+			PojoFileRes file = new PojoFileRes();
+			file.setFileId(articles.getFile().getId());
+			file.setFileContent(articles.getFile().getFileContent());
+			file.setFileExtension(articles.getFile().getFileExtension());
+			file.setVer(articles.getFile().getVer());
+			
+			articleRes.setFile(file);
+			articleRes.setFileId(articles.getFile().getId());
+			articleRes.setTitle(articles.getTitle());
+			articleRes.setVer(articles.getVer());
+			articleRes.setIsActive(articles.getIsActive());
+			
+		
+		
+		return articleRes;
+	}
 	public PojoRes delete(String id) {
 
 		try {

@@ -13,19 +13,20 @@ import com.lawencon.leaf.community.model.UserPremium;
 public class UserPremiumDao extends BaseDao<UserPremium> {
 
 	@SuppressWarnings("unchecked")
-	@Override
-	public List<UserPremium> getAll() {
+	public List<UserPremium> getAll(int limit, int offset) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("SELECT * ");
 		sql.append("FROM t_user_premium");
 
 		final List<UserPremium> activities = ConnHandler.getManager().createNativeQuery(sql.toString(), UserPremium.class)
+				.setFirstResult(offset)
+				.setMaxResults(limit)
 				.getResultList();
 		return activities;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<UserPremium> getAllNonApproved() {
+	public List<UserPremium> getAllNonApproved(int limit, int offset) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("SELECT * ");
 		sql.append("FROM t_user_premium ");
@@ -33,6 +34,8 @@ public class UserPremiumDao extends BaseDao<UserPremium> {
 		sql.append("AND is_active =true ");
 
 		final List<UserPremium> activities = ConnHandler.getManager().createNativeQuery(sql.toString(), UserPremium.class)
+				.setFirstResult(offset)
+				.setMaxResults(limit)
 				.getResultList();
 		return activities;
 	}
@@ -106,6 +109,12 @@ public class UserPremiumDao extends BaseDao<UserPremium> {
 		
 		return Optional.ofNullable(userPremium);
 
+	}
+
+	@Override
+	List<UserPremium> getAll() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

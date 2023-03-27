@@ -30,4 +30,15 @@ public class ArticleDao extends BaseDao<Article> {
 	Optional<Article> getByIdAndDetach(String id) {
 		return Optional.empty();
 	}
+	@SuppressWarnings("unchecked")
+	public List<Article> getAll(Integer limit, Integer offset) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT * ");
+		str.append("FROM t_article");
+		final List<Article> articles = ConnHandler.getManager().createNativeQuery(str.toString(), Article.class)
+				.setFirstResult((offset-1)*limit)
+				.setMaxResults(limit)
+				.getResultList();
+		return articles;
+	}
 }

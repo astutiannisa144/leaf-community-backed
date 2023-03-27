@@ -30,7 +30,14 @@ public class PojoActivityRes {
 	private String fileExtension;
 	private Integer ver;
 	private List<PojoScheduleRes> schedule;
+	private Boolean isApprove;
 	
+	public Boolean getIsApprove() {
+		return isApprove;
+	}
+	public void setIsApprove(Boolean isApprove) {
+		this.isApprove = isApprove;
+	}
 	public String getFileContent() {
 		return fileContent;
 	}

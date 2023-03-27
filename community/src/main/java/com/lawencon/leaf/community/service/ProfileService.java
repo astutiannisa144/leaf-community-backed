@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.lawencon.base.AbstractJpaDao;
 import com.lawencon.base.ConnHandler;
+import com.lawencon.leaf.community.dao.FileDao;
 import com.lawencon.leaf.community.dao.ProfileDao;
 import com.lawencon.leaf.community.dao.ProfileSocialMediaDao;
 import com.lawencon.leaf.community.dao.SocialMediaDao;
@@ -35,6 +36,8 @@ public class ProfileService extends AbstractJpaDao {
 	private SocialMediaDao socialMediaDao;
 	@Autowired
 	private ProfileSocialMediaDao profileSocialMediaDao;
+	@Autowired
+	private FileDao fileDao;
 	private final PrincipalService pricipalService;
 	
 	public ProfileService(PrincipalService pricipalService) {
@@ -49,7 +52,9 @@ public class ProfileService extends AbstractJpaDao {
 		profile.setAddress(data.getAddress());
 		profile.setFullName(data.getFullName());
 
-		final File file = new File();
+		final File file = fileDao.getById(data.getFile().getId()).get();
+		file.setId(data.getFile().getId());
+		file.setVer(data.getFile().getVer());
 		file.setFileContent(data.getFile().getFileContent());
 		file.setFileExtension(data.getFile().getFileExtension());
 		file.setIsActive(true);

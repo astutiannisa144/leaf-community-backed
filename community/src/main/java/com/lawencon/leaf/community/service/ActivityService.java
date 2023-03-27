@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lawencon.base.ConnHandler;
@@ -13,6 +14,7 @@ import com.lawencon.leaf.community.dao.ActivityTypeDao;
 import com.lawencon.leaf.community.dao.CategoryDao;
 import com.lawencon.leaf.community.dao.FileDao;
 import com.lawencon.leaf.community.dao.ScheduleDao;
+import com.lawencon.leaf.community.dao.UserActivityDao;
 import com.lawencon.leaf.community.dao.UserDao;
 import com.lawencon.leaf.community.model.Activity;
 import com.lawencon.leaf.community.model.ActivityType;
@@ -20,6 +22,7 @@ import com.lawencon.leaf.community.model.Category;
 import com.lawencon.leaf.community.model.File;
 import com.lawencon.leaf.community.model.Schedule;
 import com.lawencon.leaf.community.model.User;
+import com.lawencon.leaf.community.model.UserActivity;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.activity.PojoActivityReq;
 import com.lawencon.leaf.community.pojo.activity.PojoActivityRes;
@@ -37,6 +40,8 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 	private final UserDao userDao;
 	private final ActivityTypeDao activityTypeDao;
 	private final ScheduleDao scheduleDao;
+	@Autowired
+	private UserActivityDao userActivityDao;
 	private final PrincipalService principalService;
 
 	public ActivityService(ActivityDao activityDao, ActivityTypeDao activityTypeDao, CategoryDao categoryDao,
@@ -150,7 +155,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 
 	public List<PojoActivityRes> getAll(String typeCode,String categoryId,String code,int limit,int page) {
 		List<Activity> activities = new ArrayList<>();
-
+		List<UserActivity>userActivities=new ArrayList<>();
 		if (categoryId == null&&typeCode==null && code==null) {
 			activities = activityDao.getAll(limit,page);
 		} else if(typeCode!=null && categoryId==null && code==null){
@@ -164,16 +169,17 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		
 		} else if(typeCode!=null && categoryId==null && "purchase".equals(code)) {
 			activities = activityDao.getAllByTypeAndPurchased(typeCode,principalService.getAuthPrincipal(),limit,page);
-		
+			userActivities = userActivityDao.getAll();
 		} else if(categoryId!=null && typeCode==null && code==null){
 			activities = activityDao.getAllByCategory(categoryId,limit,page);
 			
 		} else if(typeCode!=null && categoryId!=null && "profile".equals(code)) {
 			activities = activityDao.getAllByTypeCategoryAndMember(typeCode,categoryId,principalService.getAuthPrincipal(),limit,page);
-		
+			
 		} else if(typeCode!=null && categoryId!=null && "purchase".equals(code)) {
 			activities = activityDao.getAllByTypeCategoryAndPurchased(typeCode,categoryId,principalService.getAuthPrincipal(),limit,page);
-		
+			userActivities = userActivityDao.getAll();
+
 		}
 		
 		List<Schedule> schedules= scheduleDao.getAll();
@@ -211,9 +217,18 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 					scheduleRes.add(schedule);
 				}
 			}
+		
 			activity.setSchedule(scheduleRes);
+			if(code!=null&&code.equals("purchase")) {
+				for(int j=0;j<userActivities.size();j++) {
+					if(activities.get(i).getId()==userActivities.get(j).getActivity().getId()){
+						activity.setIsApprove(userActivities.get(j).getIsApproved());
+					}
+				}
+			}
 			activitiesRes.add(activity);
 		}
+		
 		return activitiesRes;
 	}
 
