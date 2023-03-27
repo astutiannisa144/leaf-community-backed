@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lawencon.leaf.community.pojo.PojoRes;
@@ -37,8 +38,8 @@ public class ArticleController {
 	}
 	
 	@GetMapping()
-	public ResponseEntity<List<PojoArticleRes>> getAll() throws Exception {
-		final List<PojoArticleRes> result = articleService.getAll();
+	public ResponseEntity<List<PojoArticleRes>> getAll(@RequestParam int limit, @RequestParam int page) throws Exception {
+		final List<PojoArticleRes> result = articleService.getAll(limit,page);
 		return new ResponseEntity<List<PojoArticleRes>>(result, HttpStatus.OK);
 	}
 	
@@ -47,7 +48,11 @@ public class ArticleController {
 		final PojoRes res = articleService.update(data);
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
-	
+	@GetMapping("/{id}")
+	public ResponseEntity<PojoArticleRes> getById(@PathVariable ("id") String id) throws Exception {
+		PojoArticleRes result = articleService.getById(id);
+		return new ResponseEntity<PojoArticleRes>(result, HttpStatus.OK);
+	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<PojoRes> delete(final @Valid @PathVariable String id) {
 		final PojoRes res = articleService.delete(id);

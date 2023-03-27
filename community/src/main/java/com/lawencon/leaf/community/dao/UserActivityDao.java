@@ -19,17 +19,32 @@ import com.lawencon.leaf.community.util.DateUtil;
 public class UserActivityDao extends BaseDao<UserActivity> {
 
 	@SuppressWarnings("unchecked")
-	@Override
-	public List<UserActivity> getAll() {
+	public List<UserActivity> getAll(int limit, int offset) {
 		final StringBuilder str = new StringBuilder();
 		str.append("SELECT * ");
 		str.append("FROM t_user_activity ");
 		str.append("ORDER BY created_at DESC ");
 		final List<UserActivity> userActivitys = ConnHandler.getManager()
-				.createNativeQuery(str.toString(), UserActivity.class).getResultList();
+				.createNativeQuery(str.toString(), UserActivity.class)
+				.setFirstResult(offset)
+				.setMaxResults(limit)
+				.getResultList();
 		return userActivitys;
 	}
-
+	
+	public Long countUserActivity(String code) {
+		final StringBuilder sql = new StringBuilder();
+		sql.append("SELECT COUNT(a.id) ");
+		sql.append("FROM t_user_activity a ");
+		sql.append("INNER JOIN t_activity b ON a.activity_id=b.id ");
+		sql.append("INNER JOIN t_activity_type c ON b.activity_type_id=c.id ");
+		sql.append("WHERE c.activity_type_code=:code");
+		final Long count = Long.valueOf(ConnHandler.getManager()
+				.createNativeQuery(sql.toString())
+				.setParameter("code", code)
+				.getSingleResult().toString());
+		return count;
+	}
 	@Override
 	public Optional<UserActivity> getByIdAndDetach(String id) {
 		return Optional.ofNullable(super.getByIdAndDetach(UserActivity.class, id));
@@ -73,7 +88,7 @@ public class UserActivityDao extends BaseDao<UserActivity> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<UserActivity> getAllByActivityType(String typeCode) {
+	public List<UserActivity> getAllByActivityType(String typeCode,int limit, int offset) {
 		final StringBuilder str = new StringBuilder();
 		str.append("SELECT * ");
 		str.append("FROM t_user_activity a ");
@@ -83,12 +98,14 @@ public class UserActivityDao extends BaseDao<UserActivity> {
 
 		final List<UserActivity> userActivitys = ConnHandler.getManager()
 				.createNativeQuery(str.toString(), UserActivity.class).setParameter("typeCode", typeCode)
+				.setFirstResult(offset)
+				.setMaxResults(limit)
 				.getResultList();
 		return userActivitys;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<UserActivity> getAllByActivityTypeNotPurchase(String typeCode) {
+	public List<UserActivity> getAllByActivityTypeNotPurchase(String typeCode,int limit, int offset) {
 		final StringBuilder str = new StringBuilder();
 		str.append("SELECT * ");
 		str.append("FROM t_user_activity a ");
@@ -99,12 +116,14 @@ public class UserActivityDao extends BaseDao<UserActivity> {
 		str.append("ORDER BY a.created_at DESC ");
 		final List<UserActivity> userActivitys = ConnHandler.getManager()
 				.createNativeQuery(str.toString(), UserActivity.class).setParameter("typeCode", typeCode)
+				.setFirstResult(offset)
+				.setMaxResults(limit)
 				.getResultList();
 		return userActivitys;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<UserActivity> getAllByActivityByTypeAndMember(String typeCode, String memberId) {
+	public List<UserActivity> getAllByActivityByTypeAndMember(String typeCode, String memberId,int limit, int offset) {
 		final StringBuilder str = new StringBuilder();
 		str.append("SELECT * ");
 		str.append("FROM t_user_activity a ");
@@ -114,18 +133,22 @@ public class UserActivityDao extends BaseDao<UserActivity> {
 		str.append("AND a.member_id =:memberId");
 		final List<UserActivity> userActivitys = ConnHandler.getManager()
 				.createNativeQuery(str.toString(), UserActivity.class).setParameter("typeCode", typeCode)
+				.setFirstResult(offset)
+				.setMaxResults(limit)
 				.setParameter("memberId", memberId).getResultList();
 		return userActivitys;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<UserActivity> getAllByActivityPurchased(String memberId) {
+	public List<UserActivity> getAllByActivityPurchased(String memberId,int limit, int offset) {
 		final StringBuilder str = new StringBuilder();
 		str.append("SELECT * ");
 		str.append("FROM t_user_activity a ");
 		str.append("AND a.member_id =:memberId ");
 		final List<UserActivity> userActivitys = ConnHandler.getManager()
 				.createNativeQuery(str.toString(), UserActivity.class).setParameter("memberId", memberId)
+				.setFirstResult(offset)
+				.setMaxResults(limit)
 				.getResultList();
 		return userActivitys;
 	}
@@ -261,6 +284,18 @@ public class UserActivityDao extends BaseDao<UserActivity> {
 		}
 
 		return reportList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<UserActivity> getAll() {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT * ");
+		str.append("FROM t_user_activity  ");
+		final List<UserActivity> userActivitys = ConnHandler.getManager()
+				.createNativeQuery(str.toString(), UserActivity.class)
+				.getResultList();
+		return userActivitys;
 	}
 
 }

@@ -16,7 +16,6 @@ import com.lawencon.leaf.community.dao.UserDao;
 import com.lawencon.leaf.community.dao.VoucherDao;
 import com.lawencon.leaf.community.model.Activity;
 import com.lawencon.leaf.community.model.File;
-import com.lawencon.leaf.community.model.Industry;
 import com.lawencon.leaf.community.model.Profile;
 import com.lawencon.leaf.community.model.User;
 import com.lawencon.leaf.community.model.UserActivity;
@@ -24,9 +23,10 @@ import com.lawencon.leaf.community.model.UserVoucher;
 import com.lawencon.leaf.community.model.Voucher;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.report.PojoActivityIncomeRes;
+import com.lawencon.leaf.community.pojo.report.PojoActivityParticipantRes;
 import com.lawencon.leaf.community.pojo.report.PojoMemberIncomeRes;
 import com.lawencon.leaf.community.pojo.report.PojoMemberParticipantRes;
-import com.lawencon.leaf.community.pojo.report.PojoActivityParticipantRes;
+import com.lawencon.leaf.community.pojo.user.activity.PojoUserActivityDataRes;
 import com.lawencon.leaf.community.pojo.user.activity.PojoUserActivityReq;
 import com.lawencon.leaf.community.pojo.user.activity.PojoUserActivityRes;
 import com.lawencon.leaf.community.util.GenerateCodeUtil;
@@ -62,12 +62,12 @@ public class UserActivityService extends AbstractJpaDao {
 			throw new RuntimeException("Invoice Code Tidak Boleh Kosong");
 		}
 	}
-
-	private void valBkNotChange(UserActivity userActivity) {
-		if (userActivityDao.getById(userActivity.getId()).get().getInvoiceCode() != userActivity.getInvoiceCode()) {
-			throw new RuntimeException("Invoice Code Cant Change Exist");
-		}
-	}
+//
+//	private void valBkNotChange(UserActivity userActivity) {
+//		if (userActivityDao.getById(userActivity.getId()).get().getInvoiceCode() != userActivity.getInvoiceCode()) {
+//			throw new RuntimeException("Invoice Code Cant Change Exist");
+//		}
+//	}
 
 	private void valNonBk(UserActivity userActivity) {
 		if (userActivity.getMember() == null) {
@@ -144,8 +144,17 @@ public class UserActivityService extends AbstractJpaDao {
 
 	public PojoRes update(PojoUserActivityReq data) {
 		ConnHandler.begin();
-
 		final UserActivity userActivity = userActivityDao.getByIdAndDetach(UserActivity.class, data.getId());
+		if(data.getIsApprove()!=null) {
+			if(data.getIsApprove()==false) {
+				userActivity.setIsApproved(false);
+				userActivityDao.save(userActivity);
+				final PojoRes res = new PojoRes();
+				res.setMessage("Success Reject Transaction");
+				return res;
+			}
+		}
+		
 		if (userActivity.getVer() > 0) {
 			throw new RuntimeException("Anda Sudah Approve Transaksi ini TIdak bisa approve lagi");
 		}
@@ -180,9 +189,10 @@ public class UserActivityService extends AbstractJpaDao {
 		return res;
 	}
 
-	public PojoUserActivityRes getById(String id) {
+	public PojoUserActivityDataRes getById(String id) {
+		
 		UserActivity userActivity = userActivityDao.getById(id).get();
-		final PojoUserActivityRes pojoUserActivityRes = new PojoUserActivityRes();
+		final PojoUserActivityDataRes pojoUserActivityRes = new PojoUserActivityDataRes();
 		pojoUserActivityRes.setActivityName(userActivity.getActivity().getTitle());
 		pojoUserActivityRes.setFileId(userActivity.getFile().getId());
 		pojoUserActivityRes.setId(userActivity.getId());
@@ -199,28 +209,29 @@ public class UserActivityService extends AbstractJpaDao {
 		return pojoUserActivityRes;
 	}
 
-	public List<PojoUserActivityRes> getAll(String typeCode, String code) {
-		final List<PojoUserActivityRes> pojoUserActivityRes = new ArrayList<>();
+	public PojoUserActivityRes getAll(int limit, int offset,String typeCode, String code) {
+		final PojoUserActivityRes activityRes= new PojoUserActivityRes();
+		final List<PojoUserActivityDataRes> pojoUserActivityRes = new ArrayList<>();
 		List<UserActivity> userActivities = new ArrayList<>();
 
 		if (code == null && typeCode == null) {
-			userActivities = userActivityDao.getAll();
+			userActivities = userActivityDao.getAll(limit,offset);
 
 		} else if (typeCode != null && code == null) {
-			userActivities = userActivityDao.getAllByActivityType(typeCode);
+			userActivities = userActivityDao.getAllByActivityType(typeCode,limit,offset);
 		} else if (code.equals("profile") && typeCode == null) {
 
-			userActivities = userActivityDao.getAllByActivityPurchased(principalService.getAuthPrincipal());
+			userActivities = userActivityDao.getAllByActivityPurchased(principalService.getAuthPrincipal(),limit,offset);
 		} else if (code.equals("profile") && typeCode != null) {
 			userActivities = userActivityDao.getAllByActivityByTypeAndMember(typeCode,
-					principalService.getAuthPrincipal());
+					principalService.getAuthPrincipal(),limit,offset);
 
 		} else if (code.equals("non") && typeCode != null) {
-			userActivities = userActivityDao.getAllByActivityTypeNotPurchase(typeCode);
+			userActivities = userActivityDao.getAllByActivityTypeNotPurchase(typeCode,limit,offset);
 		}
 
 		for (int i = 0; i < userActivities.size(); i++) {
-			PojoUserActivityRes userActivity = new PojoUserActivityRes();
+			PojoUserActivityDataRes userActivity = new PojoUserActivityDataRes();
 			userActivity.setActivityName(userActivities.get(i).getActivity().getTitle());
 			userActivity.setActivityId(userActivities.get(i).getActivity().getId());
 			userActivity.setFileId(userActivities.get(i).getFile().getId());
@@ -234,10 +245,16 @@ public class UserActivityService extends AbstractJpaDao {
 			}
 			userActivity.setInvoiceCode(userActivities.get(i).getInvoiceCode());
 			userActivity.setIsActive(userActivities.get(i).getIsActive());
+			if(typeCode != null) {
+				userActivity.setTransactionSum(userActivityDao.countUserActivity(typeCode));
 
+			}
 			pojoUserActivityRes.add(userActivity);
 		}
-		return pojoUserActivityRes;
+		activityRes.setData(pojoUserActivityRes);
+		activityRes.setTotal(userActivityDao.countUserActivity(typeCode));
+		
+		return activityRes;
 	}
 
 	public PojoRes delete(String id) {
@@ -245,13 +262,13 @@ public class UserActivityService extends AbstractJpaDao {
 		try {
 			ConnHandler.begin();
 			valIdExist(id);
-			userActivityDao.deleteById(Industry.class, id);
+			userActivityDao.deleteById(UserActivity.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();
 
 		}
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Delete User Activity");
+		pojoRes.setMessage("Succes Delete Transaction");
 		return pojoRes;
 	}
 	

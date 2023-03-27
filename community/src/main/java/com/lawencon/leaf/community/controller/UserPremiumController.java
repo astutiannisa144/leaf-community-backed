@@ -32,8 +32,8 @@ public class UserPremiumController {
 	}
 
 	@GetMapping()
-	public ResponseEntity<List<PojoUserPremiumRes>> getAll(@RequestParam (required = false) String code) throws Exception {
-		final List<PojoUserPremiumRes> result = userPremiumService.getAll(code);
+	public ResponseEntity<List<PojoUserPremiumRes>> getAll(@RequestParam (required = false) String code,@RequestParam int limit,@RequestParam int page) throws Exception {
+		final List<PojoUserPremiumRes> result = userPremiumService.getAll(limit,page,code);
 		return new ResponseEntity<List<PojoUserPremiumRes>>(result, HttpStatus.OK);
 	}
 

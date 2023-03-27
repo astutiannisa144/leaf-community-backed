@@ -22,7 +22,6 @@ public class UserVoucherDao  {
 					.setParameter("voucherId", voucherId)
 					.getSingleResult().toString();
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		return Optional.ofNullable(result);
