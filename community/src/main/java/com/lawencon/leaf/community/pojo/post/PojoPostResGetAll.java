@@ -21,6 +21,7 @@ public class PojoPostResGetAll {
 	private LocalDateTime createdAt;
 	private String likeId;
 	private String bookmarkId;
+	private Integer ver;
 	private PollingResGet polling;
 	private List<String> file;
 
@@ -150,6 +151,14 @@ public class PojoPostResGetAll {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public Integer getVer() {
+		return ver;
+	}
+
+	public void setVer(Integer ver) {
+		this.ver = ver;
 	}
 
 }

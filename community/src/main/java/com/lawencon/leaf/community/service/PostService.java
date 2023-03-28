@@ -192,6 +192,7 @@ public class PostService {
 			res.setCreatedAt(postList.get(i).getCreatedAt());
 			res.setLikeSum(likeDao.countLike(postList.get(i).getId()));
 			res.setCommentSum(commentDao.countComment(postList.get(i).getId()));
+			res.setVer(postList.get(i).getVer());
 
 			if (likeDao.getId(principalService.getAuthPrincipal(), postList.get(i).getId()).isPresent()) {
 				res.setLikeId(likeDao.getId(principalService.getAuthPrincipal(), postList.get(i).getId()).get());
