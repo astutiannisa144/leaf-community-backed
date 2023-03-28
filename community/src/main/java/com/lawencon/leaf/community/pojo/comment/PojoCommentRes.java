@@ -9,6 +9,7 @@ public class PojoCommentRes {
 	private String memberId;
 	private String fullName;
 	private String fileId;
+	private Integer ver;
 	private LocalDateTime createdAt;
 
 	public String getCommentId() {
@@ -49,6 +50,14 @@ public class PojoCommentRes {
 
 	public void setFileId(String fileId) {
 		this.fileId = fileId;
+	}
+
+	public Integer getVer() {
+		return ver;
+	}
+
+	public void setVer(Integer ver) {
+		this.ver = ver;
 	}
 
 	public LocalDateTime getCreatedAt() {
