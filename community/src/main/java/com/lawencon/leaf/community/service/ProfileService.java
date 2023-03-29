@@ -46,7 +46,7 @@ public class ProfileService extends AbstractJpaDao {
 	
 	public PojoRes update(PojoProfileReq data) {
 		ConnHandler.begin();
-
+		 
 		final Profile profile = profileDao.getByIdAndDetach(data.getId()).get();
 		profile.setId(data.getId());
 		profile.setAddress(data.getAddress());

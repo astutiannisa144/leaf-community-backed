@@ -239,7 +239,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		Activity activity = new Activity();
 
 		activity.setActivityCode(GenerateCodeUtil.generateCode(10));
-
+		
 		ActivityType activityType = activityTypeDao.getById(data.getActivityTypeId()).get();
 		activity.setActivityType(activityType);
 

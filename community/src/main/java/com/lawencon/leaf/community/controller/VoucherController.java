@@ -51,6 +51,7 @@ public class VoucherController {
 		final PojoVoucherRes result = voucherService.getByCode(code,activityId);
 		return new ResponseEntity<PojoVoucherRes>(result, HttpStatus.OK);
 	}
+	
 	@PostMapping()
 	public ResponseEntity<PojoRes> insert(final @Valid @RequestBody PojoVoucherReq data) {
 		final PojoRes res = voucherService.insert(data);

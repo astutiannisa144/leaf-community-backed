@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,9 +73,14 @@ public class VerificationService extends BaseService<PojoVerificationRes> {
 		final PojoRes pojoRes = new PojoRes();
 		pojoRes.setMessage("Code sent to your email");
 
-		new Thread(() -> emailSenderService.sendMail(data.getEmail(), "Verify your email address",
-				"Dear," + data.getEmail() + "\n" + "To verify your email address, enter this code in your browser : "
-						+ verification.getVerificationCode() + "\n" + "Thank you"))
+		new Thread(() -> {
+			try {
+				emailSenderService.sendMailVerification(verification);
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		})
 				.start();
 
 		return pojoRes;
