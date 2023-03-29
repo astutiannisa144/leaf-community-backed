@@ -33,5 +33,17 @@ public class ScheduleDao extends BaseDao<Schedule> {
 		return Optional.ofNullable(super.getById(Schedule.class, id));
 
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getIdByActivity(String id) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT id ");
+		str.append("FROM t_schedule WHERE activity_id=:id ");
+		final List<String> schedules = ConnHandler.getManager()
+				.createNativeQuery(str.toString())
+				.setParameter("id", id)
+				.getResultList();
+		return schedules;
+	}
 
 }
