@@ -297,5 +297,29 @@ public class UserActivityDao extends BaseDao<UserActivity> {
 				.getResultList();
 		return userActivitys;
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public List<UserActivity> getAllById(String id) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT * ");
+		str.append("FROM t_user_activity  ");
+		str.append("WHERE member_id=:id");
+		final List<UserActivity> userActivitys = ConnHandler.getManager()
+				.createNativeQuery(str.toString(), UserActivity.class)
+				.setParameter("id", "id")
+				.getResultList();
+		return userActivitys;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> getIdByActivity(String id) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT id ");
+		str.append("FROM t_user_activity WHERE activity_id=:id ");
+		final List<String> userActivitys = ConnHandler.getManager()
+				.createNativeQuery(str.toString())
+				.setParameter("id", id)
+				.getResultList();
+		return userActivitys;
+	}
 }

@@ -168,8 +168,9 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 			activities = activityDao.getAllByTypeAndMember(typeCode,principalService.getAuthPrincipal(),limit,page);
 		
 		} else if(typeCode!=null && categoryId==null && "purchase".equals(code)) {
+			
 			activities = activityDao.getAllByTypeAndPurchased(typeCode,principalService.getAuthPrincipal(),limit,page);
-			userActivities = userActivityDao.getAll();
+			userActivities = userActivityDao.getAllById(principalService.getAuthPrincipal());
 		} else if(categoryId!=null && typeCode==null && code==null){
 			activities = activityDao.getAllByCategory(categoryId,limit,page);
 			
@@ -178,7 +179,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 			
 		} else if(typeCode!=null && categoryId!=null && "purchase".equals(code)) {
 			activities = activityDao.getAllByTypeCategoryAndPurchased(typeCode,categoryId,principalService.getAuthPrincipal(),limit,page);
-			userActivities = userActivityDao.getAll();
+			userActivities = userActivityDao.getAllById(principalService.getAuthPrincipal());
 
 		}
 		
@@ -220,7 +221,11 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		
 			activity.setSchedule(scheduleRes);
 			if(code!=null&&code.equals("purchase")) {
+				System.out.println("anjay:" +userActivities.size());
+				
 				for(int j=0;j<userActivities.size();j++) {
+					
+					System.out.println(userActivities.get(j).getIsApproved());
 					if(activities.get(i).getId()==userActivities.get(j).getActivity().getId()){
 						activity.setIsApprove(userActivities.get(j).getIsApproved());
 					}
@@ -358,9 +363,19 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 	public PojoRes delete(String id) {
 		
 		try {
+			
 			ConnHandler.begin();
 			valIdExist(id);
-
+			List<String> schedules= scheduleDao.getIdByActivity(id);
+			
+			for(int i=0;i<schedules.size();i++) {
+				System.out.println(schedules);
+				scheduleDao.deleteById(Schedule.class,schedules.get(i));
+			}
+			List<String> userActivityId=userActivityDao.getIdByActivity(id);
+			for(int i=0;i<userActivityId.size();i++) {
+				userActivityDao.deleteById(UserActivity.class,userActivityId.get(i));
+			}
 			activityDao.deleteById(Activity.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();

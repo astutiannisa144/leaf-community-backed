@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -154,14 +156,21 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 			user.setIsActive(true);
 
 			saveNoLogin(user, () -> system.getId());
-
+			new Thread(() -> {
+				try {
+					emailSenderService.sendMailRegister(user);
+				} catch (MessagingException er) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			})
+			.start();
 		}
 		
 		final PojoRes pojoRes = new PojoRes();
 		pojoRes.setMessage("Registration Completed" + data.getEmail());
 
-		new Thread(() -> emailSenderService.sendMail(data.getEmail(), "Welcome to Leaf Community ",
-			 	"Dear," + data.getProfile().getFullName() + "\nWelcome to Leaf Community\nThank You")).start();
+		
 		ConnHandler.commit();
 		return pojoRes;
 
