@@ -75,12 +75,12 @@ INSERT INTO t_job (id,company_name, industry_id,position_id,created_by,created_a
 ('779f6e42-49aa-402b-872b-e4780cc6c0bc','Google','2e764c67-74b2-4908-9507-64f0fad6174b','5fced11f-91f5-4207-bac1-d4fb235c517e','1',NOW(),0,TRUE);
 
 
-INSERT INTO t_profile (id,full_name, phone_number,job_id,file_id ,address,created_by,created_at,ver,is_active) VALUES
-('15a6a11b-2953-4bad-a1f7-fec4639c1ba0','Astuti','1111111','3e195035-90e0-4c1f-b023-855594a087eb','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','Jl.Sunter Jaya','1',NOW(),0,TRUE),
-('a23b21a1-00c5-4fd2-b0ef-5ce5d9825caf','Yudha','22222222','2360cf03-73a8-4d51-a3ff-fd171d0b028d','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','Jl.Sunter Jaya','1',NOW(),0,TRUE),
-('c25d3e4e-16b4-46fb-bb01-c744cc0f09ce','Eron','333333333','8a4d8aad-b9f3-45a1-92b0-55d4e86ef440','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','Jl.Sunter Jaya','1',NOW(),0,TRUE),
-('5fa96e72-c272-417c-8cea-3eed1e277814','Aduy','444444444','6ebcfd57-9eb0-4926-aa41-77559638b199','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','Jl.Casablanca','1',NOW(),0,TRUE),
-('c4d30767-cec7-4efa-af85-a5be6fd2cb05','Budi','555555555','779f6e42-49aa-402b-872b-e4780cc6c0bc','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','Jl.Casablanca','1',NOW(),0,TRUE);
+INSERT INTO t_profile (id,full_name, phone_number,job_id,file_id ,address,balance,created_by,created_at,ver,is_active) VALUES
+('15a6a11b-2953-4bad-a1f7-fec4639c1ba0','Astuti','1111111','3e195035-90e0-4c1f-b023-855594a087eb','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','Jl.Sunter Jaya',0,'1',NOW(),0,TRUE),
+('a23b21a1-00c5-4fd2-b0ef-5ce5d9825caf','Yudha','22222222','2360cf03-73a8-4d51-a3ff-fd171d0b028d','9c78859c-5bfb-4c15-bd54-afa1e98ed426','Jl.Sunter Jaya',0,'1',NOW(),0,TRUE),
+('c25d3e4e-16b4-46fb-bb01-c744cc0f09ce','Eron','333333333','8a4d8aad-b9f3-45a1-92b0-55d4e86ef440','7dd831ec-9ef4-4285-abfc-16cd30d360f6','Jl.Sunter Jaya',0,'1',NOW(),0,TRUE),
+('5fa96e72-c272-417c-8cea-3eed1e277814','Aduy','444444444','6ebcfd57-9eb0-4926-aa41-77559638b199','f9884da4-1aae-4745-9fe0-f7e52e7eda58','Jl.Casablanca',0,'1',NOW(),0,TRUE),
+('c4d30767-cec7-4efa-af85-a5be6fd2cb05','Budi','555555555','779f6e42-49aa-402b-872b-e4780cc6c0bc','fc92ec77-6a94-45f4-9a2c-61ce5e354c86','Jl.Casablanca',0,'1',NOW(),0,TRUE);
 
 
 INSERT INTO t_activity_type  (id,activity_type_code , activity_type_name ,created_by,created_at,ver,is_active) VALUES
@@ -103,7 +103,7 @@ INSERT INTO t_voucher  (id,voucher_code ,discount_price ,minimum_purchase , expi
 ('31a0f684-dc5a-4b7d-8564-3108e0d233f0','VOUCHER5',50000,300000,'2022-10-4','1',NOW(),0,TRUE);
 
 INSERT INTO t_social_media  (id,social_media_code ,social_media_name ,social_media_link,social_media_icon,file_id,created_by,created_at,ver,is_active) VALUES
-('524969b4-6840-4fd7-99ef-c60dee3b1e31','IN','Linked In','https://www.linkedin.com/','pi-linkedin','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE),
+('524969b4-6840-4fd7-99ef-c60dee3b1e31','IN','Linked In','https://www.linkedin.com/','pi-linkedin','931196c1-51a6-4b2e-bb38-ababd04bb134','1',NOW(),0,TRUE),
 ('524969b4-6840-4fd7-99ef-c60dee3b1e35','TWT','Twitter','https://www.twitter.com/','pi-twitter','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE),
 ('a5917c8c-c755-4adf-be46-93aea1ed0a6c','FB','FaceBook','https://www.facebook.com/','pi-facebook','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE),
 ('99bdb8f6-d0c3-43cd-9ba5-cbe84b004842','INS','Instagram','https://www.instagram.com/','pi-instagram','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE);
@@ -134,8 +134,8 @@ INSERT INTO t_premium  (id,premium_code ,premium_name ,price ,duration ,created_
 ('e65577bc-9fcf-492d-9687-1e1bb34066e7','MTH','Monthly',14000,30,'1',NOW(),0,TRUE),
 ('7097b318-99e3-4d23-8df2-a6fbc3727905','ANN','Annual',140000,356,'1',NOW(),0,TRUE);
 
-INSERT INTO t_user_premium  (id,member_id ,premium_id ,expire_date ,file_id ,created_by,created_at,ver,is_active) VALUES
-('22f80d55-7b3d-42f9-9864-28304dfa8e60','bdfe90b0-053e-4df0-a6bc-9f39b8e6b678','e65577bc-9fcf-492d-9687-1e1bb34066e7','2023-05-02','1','1',NOW(),0,TRUE),
-('4e660149-6100-435e-a752-0f7261db0c08','bdfe90b0-053e-4df0-a6bc-9f39b8e6b678','7097b318-99e3-4d23-8df2-a6fbc3727905','2023-05-02','2','1',NOW(),0,TRUE);
+--INSERT INTO t_user_premium  (id,member_id ,premium_id ,expire_date ,file_id ,created_by,created_at,ver,is_active) VALUES
+--('22f80d55-7b3d-42f9-9864-28304dfa8e60','bdfe90b0-053e-4df0-a6bc-9f39b8e6b678','e65577bc-9fcf-492d-9687-1e1bb34066e7','2023-05-02','1','1',NOW(),0,TRUE),
+--('4e660149-6100-435e-a752-0f7261db0c08','bdfe90b0-053e-4df0-a6bc-9f39b8e6b678','7097b318-99e3-4d23-8df2-a6fbc3727905','2023-05-02','2','1',NOW(),0,TRUE);
 INSERT INTO t_bank_account  (id,account_number, user_id , file_id ,bank_name,created_by,created_at,ver,is_active) VALUES
 ('2f2de992-5230-46f3-9ffd-89027dbb5635','62777111851','dcf7d6d7-f3fe-4153-825c-570117573061','09d41b98-1899-4ece-9877-c8a206c214fd','BCA','1',NOW(),0,TRUE);
