@@ -180,6 +180,8 @@ public class ArticleService extends AbstractJpaDao{
 
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
+			
 			articleDao.deleteById(Article.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();

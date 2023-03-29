@@ -19,7 +19,31 @@ public class CategoryService extends BaseService<PojoCategoryRes> {
 	
 	@Autowired
 	private CategoryDao categoryDao;
-	
+	private void valIdNull(PojoCategoryReq category) {
+		if (category.getId() != null) {
+			throw new RuntimeException("Id Harus Kosong");
+		}
+	}
+
+	private void valNonBk(PojoCategoryReq category) {
+		if (category.getCategoryName() == null) {
+			throw new RuntimeException("Content Tidak Boleh Kosong");
+		}
+
+
+	}
+
+	private void valIdNotNull(PojoCategoryReq category) {
+		if (category.getId() == null) {
+			throw new RuntimeException("Id Tidak Boleh Kosong");
+		}
+	}
+
+	private void valIdExist(String id) {
+		if (categoryDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id Tidak Boleh Kosong");
+		}
+	}
 	@Override
 	public PojoCategoryRes getById(String id) {
 		final PojoCategoryRes pojoCategoryRes = new PojoCategoryRes();
@@ -51,7 +75,8 @@ public class CategoryService extends BaseService<PojoCategoryRes> {
 	
 	public PojoRes insert(PojoCategoryReq data) {
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
 		Category category = new Category();
 
 		category.setCategoryName(data.getCategoryName());
@@ -67,7 +92,9 @@ public class CategoryService extends BaseService<PojoCategoryRes> {
 	
 	public PojoRes update(PojoCategoryReq data) {
 		ConnHandler.begin();
-		
+		valIdExist(data.getId());
+		valIdNotNull(data);
+		valNonBk(data);
 		Category category = categoryDao.getById(data.getId()).get();
 		category.setCategoryName(data.getCategoryName());
 		category.setIsActive(true);
@@ -83,6 +110,7 @@ public class CategoryService extends BaseService<PojoCategoryRes> {
 		
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
 			categoryDao.deleteById(Category.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();

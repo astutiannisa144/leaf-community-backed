@@ -47,6 +47,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 	private VerificationDao verificationDao;
 	@Autowired
 	private BankAccountDao bankAccountDao;
+	
 	private final PrincipalService pricipalService;
 
 	public UserService(UserDao userDao, RoleDao roleDao, PasswordEncoder encoder, EmailSenderService emailSenderService,
@@ -160,7 +161,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		pojoRes.setMessage("Registration Completed" + data.getEmail());
 
 		new Thread(() -> emailSenderService.sendMail(data.getEmail(), "Welcome to Leaf Community ",
-				"Dear," + data.getProfile().getFullName() + "\nWelcome to Leaf Community\nThank You")).start();
+			 	"Dear," + data.getProfile().getFullName() + "\nWelcome to Leaf Community\nThank You")).start();
 		ConnHandler.commit();
 		return pojoRes;
 
@@ -172,11 +173,11 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		if (encoder.matches(data.getOldPass(), user.getPass()) == false) {
 			throw new RuntimeException("Password tidak match");
 		}
-
+		
 		user.setPass(encoder.encode(data.getNewPass()));
 
 		user.setIsActive(true);
-
+		user.setVer(data.getVer());
 		final User userUpdate = userDao.save(user);
 
 		new Thread(() -> emailSenderService.sendMail(userUpdate.getEmail(), "sudah Berhasil Ganti Password ", "Dear,"

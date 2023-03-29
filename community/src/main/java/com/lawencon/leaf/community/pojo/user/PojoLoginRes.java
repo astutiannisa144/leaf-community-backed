@@ -10,8 +10,16 @@ public class PojoLoginRes {
 	private String fileId;
 	private Boolean isPremium;
 	private String email;
+	private Integer ver;
 	
-	
+	public Integer getVer() {
+		return ver;
+	}
+
+	public void setVer(Integer ver) {
+		this.ver = ver;
+	}
+
 	public String getEmail() {
 		return email;
 	}

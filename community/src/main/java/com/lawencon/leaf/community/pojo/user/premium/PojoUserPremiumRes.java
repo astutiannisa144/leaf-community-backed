@@ -1,5 +1,6 @@
 package com.lawencon.leaf.community.pojo.user.premium;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class PojoUserPremiumRes {
@@ -11,7 +12,16 @@ public class PojoUserPremiumRes {
 	private LocalDate expireDate;
 	private Integer ver;
 	private Boolean isActive;
+	private BigDecimal price;
 	
+	
+	
+	public BigDecimal getPrice() {
+		return price;
+	}
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
 	public String getId() {
 		return id;
 	}

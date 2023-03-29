@@ -19,7 +19,7 @@ public class UserDao extends AbstractJpaDao {
 
 		try {
 			final StringBuilder sql = new StringBuilder();
-			sql.append("SELECT u.id, u.profile_id, p.full_name, p.file_id, r.role_code, u.pass ");
+			sql.append("SELECT u.id, u.profile_id, p.full_name, p.file_id, r.role_code, u.pass,u.ver ");
 			sql.append("FROM t_user u ");
 			sql.append("INNER JOIN t_role r ON r.id = u.role_id ");
 			sql.append("INNER JOIN t_profile p ON p.id = u.profile_id ");
@@ -43,14 +43,16 @@ public class UserDao extends AbstractJpaDao {
 				final Profile profile = new Profile();
 				profile.setId(objArr[1].toString());
 				profile.setFullName(objArr[2].toString());
-
 				final File file = new File();
-				file.setId(objArr[3].toString());
-
+				if(objArr[3]!=null) {
+					file.setId(objArr[3].toString());
+				}else {
+					file.setId(null);
+				}
+				
 				profile.setFile(file);
-
 				user.setProfile(profile);
-
+				user.setVer(Integer.valueOf(objArr[6].toString()) );
 			}
 
 		} catch (Exception e) {

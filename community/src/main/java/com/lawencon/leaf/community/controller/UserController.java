@@ -74,6 +74,7 @@ public class UserController {
 		loginRes.setRoleCode(userOptional.get().getRole().getRoleCode());
 		loginRes.setProfileId(userOptional.get().getProfile().getId());
 		loginRes.setEmail(user.getEmail());
+		loginRes.setVer(userOptional.get().getVer());
 		if (userOptional.get().getProfile().getFile() != null) {
 			loginRes.setFileId(userOptional.get().getProfile().getFile().getId());
 		}

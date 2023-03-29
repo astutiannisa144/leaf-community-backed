@@ -31,7 +31,7 @@ public class PremiumService extends BaseService<PojoPremiumRes> {
 		pojoPremiumRes.setId(id);
 		pojoPremiumRes.setVer(premium.getVer());
 		pojoPremiumRes.setIsActive(premium.getIsActive());
-		
+		pojoPremiumRes.setPrice(premium.getPrice());
 		return pojoPremiumRes;
 	}
 
@@ -48,6 +48,7 @@ public class PremiumService extends BaseService<PojoPremiumRes> {
 			premium.setId(premiums.get(i).getId());
 			premium.setVer(premiums.get(i).getVer());
 			premium.setIsActive(premiums.get(i).getIsActive());
+			premium.setPrice(premiums.get(i).getPrice());
 			pojoPremiumRes.add(premium);
 		}
 		return pojoPremiumRes;
