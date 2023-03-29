@@ -43,12 +43,14 @@ public class UserDao extends AbstractJpaDao {
 				final Profile profile = new Profile();
 				profile.setId(objArr[1].toString());
 				profile.setFullName(objArr[2].toString());
-
 				final File file = new File();
-				file.setId(objArr[3].toString());
-
-				profile.setFile(file);
+				if(objArr[3]!=null) {
+					file.setId(objArr[3].toString());
+				}else {
+					file.setId(null);
+				}
 				
+				profile.setFile(file);
 				user.setProfile(profile);
 				user.setVer(Integer.valueOf(objArr[6].toString()) );
 			}

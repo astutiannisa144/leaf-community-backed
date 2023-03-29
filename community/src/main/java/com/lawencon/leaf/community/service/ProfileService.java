@@ -51,13 +51,20 @@ public class ProfileService extends AbstractJpaDao {
 		profile.setId(data.getId());
 		profile.setAddress(data.getAddress());
 		profile.setFullName(data.getFullName());
-
-		final File file = fileDao.getById(data.getFile().getId()).get();
-		file.setId(data.getFile().getId());
-		file.setVer(data.getFile().getVer());
-		file.setFileContent(data.getFile().getFileContent());
-		file.setFileExtension(data.getFile().getFileExtension());
-		file.setIsActive(true);
+		 File file = new File();
+		if(data.getFile().getId()!=null) {
+			file=fileDao.getById(data.getFile().getId()).get();
+			file.setId(data.getFile().getId());
+			file.setVer(data.getFile().getVer());
+			file.setFileContent(data.getFile().getFileContent());
+			file.setFileExtension(data.getFile().getFileExtension());
+			file.setIsActive(true);
+		}else {
+			file.setFileContent(data.getFile().getFileContent());
+			file.setFileExtension(data.getFile().getFileExtension());
+			file.setIsActive(true);
+		}
+		
 		
 		final File fileInsert = save(file);
 		profile.setFile(fileInsert);
@@ -112,12 +119,15 @@ public class ProfileService extends AbstractJpaDao {
 		profileRes.setId(profile.getId());
 		profileRes.setAddress(profile.getAddress());
 		profileRes.setBalance(profile.getBalance());
-		PojoFileRes file = new PojoFileRes();
-		file.setFileId(profile.getFile().getId());
-		file.setFileContent(profile.getFile().getFileContent());
-		file.setFileExtension(profile.getFile().getFileExtension());
-		file.setVer(profile.getFile().getVer());
-		profileRes.setFile(file);
+		if(profile.getFile()!=null) {
+			PojoFileRes file = new PojoFileRes();
+			file.setFileId(profile.getFile().getId());
+			file.setFileContent(profile.getFile().getFileContent());
+			file.setFileExtension(profile.getFile().getFileExtension());
+			file.setVer(profile.getFile().getVer());
+			profileRes.setFile(file);
+		}
+		
 		profileRes.setFullName(profile.getFullName());
 		profileRes.setPhoneNumber(profile.getPhoneNumber());
 		
@@ -139,7 +149,7 @@ public class ProfileService extends AbstractJpaDao {
 			socialMedia.setSocialMediaLink(profileSocialMedias.get(i).getSocialMedia().getSocialMediaLink());
 			File fileInsert = new File();
 			fileInsert.setId(profileSocialMedias.get(i).getSocialMedia().getFile().getId());
-			socialMedia.setFile(file);
+//			socialMedia.setFile(file);
 			pojoProfileSocialMediaRes.setSocialMedia(socialMedia);
 			profileSocialMediasRes.add(pojoProfileSocialMediaRes);
 		}
