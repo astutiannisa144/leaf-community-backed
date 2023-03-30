@@ -48,7 +48,23 @@ public class CommentDao extends BaseDao<Comment> {
 		final List<Comment> commentList = ConnHandler.getManager()
 				.createNativeQuery(sql.toString(), Comment.class)
 				.setFirstResult(offset)
-				.setMaxResults(limit).setParameter("id", id)
+				.setMaxResults(limit)
+				.setParameter("id", id)
+				.getResultList();
+
+		return commentList;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Comment> getCommentByPostId(String id) {
+
+		final StringBuilder sql = new StringBuilder();
+		sql.append("SELECT * FROM t_comment ");
+		sql.append("WHERE post_id = :id ");
+
+		final List<Comment> commentList = ConnHandler.getManager()
+				.createNativeQuery(sql.toString(), Comment.class)
+				.setParameter("id", id)
 				.getResultList();
 
 		return commentList;

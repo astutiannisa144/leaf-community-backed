@@ -6,8 +6,10 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +48,12 @@ public class PostController {
 	public ResponseEntity<List<PojoPostResGetAll>> getAll(@RequestParam(required = false) String code,
 			final @RequestParam int limit, @RequestParam int page) {
 		final List<PojoPostResGetAll> res = postService.getAll(limit, page, code);
+		return new ResponseEntity<>(res, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<PojoRes> deletePost(final @Valid @PathVariable String id) {
+		final PojoRes res = postService.delete(id);
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 

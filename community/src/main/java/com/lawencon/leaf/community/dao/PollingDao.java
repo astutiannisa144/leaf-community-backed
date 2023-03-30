@@ -16,8 +16,8 @@ public class PollingDao extends BaseDao<Polling> {
 	}
 
 	@Override
-	Optional<Polling> getById(String id) {
-		return Optional.empty();
+	public Optional<Polling> getById(String id) {
+		return Optional.ofNullable(super.getById(Polling.class, id));
 	}
 
 	@Override

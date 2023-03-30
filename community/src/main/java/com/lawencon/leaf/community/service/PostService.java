@@ -20,13 +20,17 @@ import com.lawencon.leaf.community.dao.PostDao;
 import com.lawencon.leaf.community.dao.PostFileDao;
 import com.lawencon.leaf.community.dao.UserDao;
 import com.lawencon.leaf.community.dao.UserPollingDao;
+import com.lawencon.leaf.community.model.Bookmark;
 import com.lawencon.leaf.community.model.Category;
+import com.lawencon.leaf.community.model.Comment;
 import com.lawencon.leaf.community.model.File;
+import com.lawencon.leaf.community.model.Like;
 import com.lawencon.leaf.community.model.Polling;
 import com.lawencon.leaf.community.model.PollingDetail;
 import com.lawencon.leaf.community.model.Post;
 import com.lawencon.leaf.community.model.PostFile;
 import com.lawencon.leaf.community.model.User;
+import com.lawencon.leaf.community.model.UserPolling;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.polling.PollingDetailRes;
 import com.lawencon.leaf.community.pojo.polling.PollingResGet;
@@ -147,16 +151,61 @@ public class PostService {
 	}
 
 	public PojoRes delete(String id) {
-
+		
+		final PojoRes pojoRes = new PojoRes();
+		
 		try {
 			ConnHandler.begin();
+			
+			Post post = postDao.getById(id).get();
+			
+			List<Like> likeList = likeDao.getLikeByPost(id);
+			List<Bookmark> bookmarkList = bookmarkDao.getBookmarkByPost(id);
+			List<Comment> commentList = commentDao.getCommentByPostId(id);
+			
+			commentList.forEach((c) -> commentDao.deleteById(Comment.class, c.getId()));
+			bookmarkList.forEach((c) -> bookmarkDao.deleteById(Bookmark.class, c.getId()));
+			likeList.forEach((c) -> likeDao.deleteById(Like.class, c.getId()));
+			
+			if (post.getPolling() != null) {
+				Polling polling = pollingDao.getById(post.getPolling().getId()).get();
+				
+				List<PollingDetail> pollingDetailList = pollingDetailDao.getAllByPolling(polling.getId());
+				
+				List<UserPolling> userPollingList = userPollingDao.getAllByPollingId(polling.getId());
+				
+				if (userPollingList.size() > 0) {
+					for (int i=0; i<userPollingList.size(); i++) {
+						userPollingDao.deleteById(UserPolling.class, userPollingList.get(i).getId());
+					}
+				}
+				
+				pollingDetailList.forEach((c) -> pollingDetailDao.deleteById(PollingDetail.class, c.getId()));
+				
+			}
+			
+			List<PostFile> fileList = postFileDao.getAllByPost(id);
+			
+			if (fileList.size() > 0) {
+				fileList.forEach((c) -> postFileDao.deleteById(PostFile.class, c.getId()));
+				fileList.forEach((c) -> fileDao.deleteById(File.class, c.getFile().getId()));
+			}
+			
 			postDao.deleteById(Post.class, id);
+			
+			if (post.getPolling() != null) {
+				pollingDao.deleteById(Polling.class, pollingDao.getById(post.getPolling().getId()).get().getId());
+			}
+			
+			ConnHandler.commit();
+			
+			pojoRes.setMessage("Post Deleted");
+			
 		} catch (Exception e) {
+			
 			e.printStackTrace();
 		}
-
-		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Post Deleted");
+		
 		return pojoRes;
 	}
 
