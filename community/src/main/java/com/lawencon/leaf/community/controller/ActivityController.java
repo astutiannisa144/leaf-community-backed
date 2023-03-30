@@ -39,7 +39,7 @@ public class ActivityController {
 
 		return new ResponseEntity<List<PojoActivityRes>>(result, HttpStatus.OK);
 	}
-	@PostMapping("/get")
+	@PostMapping("/filter")
 	public ResponseEntity<List<PojoActivityRes>> getAllByListCategory(final @Valid @RequestBody PojoActivityReqGetAll data) throws Exception {
 		List<PojoActivityRes> result = activityService.getAllByListCategory(data);
 
