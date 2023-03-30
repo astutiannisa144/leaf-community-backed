@@ -94,6 +94,27 @@ public class UserActivityController {
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName + ".pdf")
 				.body(fileBytes);
 	}
+	
+	@GetMapping("/member-participants")
+	public ResponseEntity<?> getMemberParticipant(@RequestParam String dateStart, @RequestParam String dateEnd)
+			throws Exception {
+		final List<PojoActivityParticipantRes> result = userActivityService.getActivityParticipants(dateStart, dateEnd);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@GetMapping("/activity-participants")
+	public ResponseEntity<?> getActivityParticipant(@RequestParam String dateStart, @RequestParam String dateEnd)
+			throws Exception {
+		final List<PojoMemberParticipantRes> result = userActivityService.getMemberParticipants(dateStart, dateEnd);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@GetMapping("/activity-incomes")
+	public ResponseEntity<?> getActivityIncomes(@RequestParam String dateStart, @RequestParam String dateEnd)
+			throws Exception {
+		final List<PojoMemberIncomeRes> result = userActivityService.getMemberIncome(dateStart, dateEnd);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 
 	@GetMapping("/report/member-incomes")
 	public ResponseEntity<?> getMemberIncome(@RequestParam String dateStart, @RequestParam String dateEnd) throws Exception {
@@ -102,6 +123,14 @@ public class UserActivityController {
 		final byte[] fileBytes = jasperUtil.responseToByteArray(result, null, "member-incomes");
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName + ".pdf")
 				.body(fileBytes);
+	}
+	
+	@GetMapping("/member-incomes")
+	public ResponseEntity<?> getMemberIncomes(@RequestParam String dateStart, @RequestParam String dateEnd)
+			throws Exception {
+		final List<PojoActivityIncomeRes> result = userActivityService.getEventIncome(dateStart, dateEnd);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+		
 	}
 
 	@GetMapping("/report/activity-incomes")
