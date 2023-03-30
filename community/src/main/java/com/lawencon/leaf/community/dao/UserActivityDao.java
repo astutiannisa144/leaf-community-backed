@@ -306,7 +306,7 @@ public class UserActivityDao extends BaseDao<UserActivity> {
 		str.append("WHERE member_id=:id");
 		final List<UserActivity> userActivitys = ConnHandler.getManager()
 				.createNativeQuery(str.toString(), UserActivity.class)
-				.setParameter("id", "id")
+				.setParameter("id", id)
 				.getResultList();
 		return userActivitys;
 	}

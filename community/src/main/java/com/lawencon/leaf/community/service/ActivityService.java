@@ -25,6 +25,7 @@ import com.lawencon.leaf.community.model.User;
 import com.lawencon.leaf.community.model.UserActivity;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.activity.PojoActivityReq;
+import com.lawencon.leaf.community.pojo.activity.PojoActivityReqGetAll;
 import com.lawencon.leaf.community.pojo.activity.PojoActivityRes;
 import com.lawencon.leaf.community.pojo.activity.type.PojoActivityTypeRes;
 import com.lawencon.leaf.community.pojo.schedule.PojoScheduleRes;
@@ -397,5 +398,91 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		final PojoRes pojoRes = new PojoRes();
 		pojoRes.setMessage("Succes Delete Schedule");
 		return pojoRes;
+	}
+	
+	
+	
+	public List<PojoActivityRes> getAllByListCategory(PojoActivityReqGetAll data) {
+		List<Activity> activities = new ArrayList<>();
+		List<UserActivity>userActivities=new ArrayList<>();
+		if (data.getCategory() == null&&data.getType()==null && data.getCode()==null) {
+			activities = activityDao.getAll(data.getLimit(),data.getPage());
+		} else if(data.getType()!=null && data.getCategory()==null && data.getCode()==null){
+			activities = activityDao.getAllByType(data.getType(),data.getLimit(),data.getPage());
+			
+		} else if(data.getType()!=null && data.getCategory()!=null && data.getCode()==null){
+			activities = activityDao.getAllByTypeAndListCategory(data.getType(),data.getCategory(),data.getLimit(),data.getPage());
+		
+		} else if(data.getType()!=null && data.getCategory()==null && "profile".equals(data.getCode())) {
+			activities = activityDao.getAllByTypeAndMember(data.getType(),principalService.getAuthPrincipal(),data.getLimit(),data.getPage());
+		
+		} else if(data.getType()!=null && data.getCategory()==null && "purchase".equals(data.getCode())) {
+			
+			activities = activityDao.getAllByTypeAndPurchased(data.getType(),principalService.getAuthPrincipal(),data.getLimit(),data.getPage());
+			userActivities = userActivityDao.getAllById(principalService.getAuthPrincipal());
+		} else if(data.getCategory()!=null && data.getType()==null && data.getCode()==null){
+			activities = activityDao.getAllByListCategory(data.getCategory(),data.getLimit(),data.getPage());
+			
+		} else if(data.getType()!=null && data.getCategory()!=null && "profile".equals(data.getCode())) {
+			activities = activityDao.getAllByTypeListCategoryAndMember(data.getType(),data.getCategory(),principalService.getAuthPrincipal(),data.getLimit(),data.getPage());
+			
+		} else if(data.getType()!=null && data.getCategory()!=null && "purchase".equals(data.getCode())) {
+			activities = activityDao.getAllByTypeListCategoryAndPurchased(data.getType(),data.getCategory(),principalService.getAuthPrincipal(),data.getLimit(),data.getPage());
+			userActivities = userActivityDao.getAllById(principalService.getAuthPrincipal());
+
+		}
+		
+		List<Schedule> schedules= scheduleDao.getAll();
+		List<PojoActivityRes> activitiesRes = new ArrayList<>();
+
+		for (int i = 0; i < activities.size(); i++) {
+			PojoActivityRes activity = new PojoActivityRes();
+			activity.setActivityCode(activities.get(i).getActivityCode());
+			activity.setActivityTypeId(activities.get(i).getActivityType().getId());
+			activity.setActivityTypeCode(activities.get(i).getActivityType().getActivityTypeCode());
+			activity.setActivityTypeName(activities.get(i).getActivityType().getActivityTypeName());
+			activity.setCategoryId(activities.get(i).getCategory().getId());
+			activity.setCategoryCode(activities.get(i).getCategory().getCategoryCode());
+			activity.setCategoryName(activities.get(i).getCategory().getCategoryName());
+			activity.setDescription(activities.get(i).getDescription());
+			activity.setTitle(activities.get(i).getTitle());
+			activity.setFileId(activities.get(i).getFile().getId());
+			activity.setMemberId(activities.get(i).getMember().getId());
+			activity.setFullName(activities.get(i).getMember().getProfile().getFullName());
+			activity.setId(activities.get(i).getId());
+			activity.setLocationAddress(activities.get(i).getLocationAddress());
+			activity.setPrice(activities.get(i).getPrice());
+			activity.setProvider(activities.get(i).getProvider());
+			activity.setTimeEnd(activities.get(i).getTimeEnd());
+			activity.setTimeStart(activities.get(i).getTimeStart());
+			activity.setVer(activities.get(i).getVer());
+			activity.setCreatedAt(DateUtil.dateToStr(activities.get(i).getCreatedAt()) );
+			List<PojoScheduleRes> scheduleRes = new ArrayList<>();
+			for(int j=0;j<schedules.size();j++) {
+				if(schedules.get(j).getActivity().getId().equals(activities.get(i).getId()) ) {
+					PojoScheduleRes schedule = new PojoScheduleRes();
+					schedule.setId(schedules.get(j).getId());
+					schedule.setScheduleDate(schedules.get(j).getScheduleDate());
+					schedule.setVer(schedules.get(j).getVer());
+					scheduleRes.add(schedule);
+				}
+			}
+		
+			activity.setSchedule(scheduleRes);
+			if(data.getCode()!=null&&data.getCode().equals("purchase")) {
+				System.out.println("anjay:" +userActivities.size());
+				
+				for(int j=0;j<userActivities.size();j++) {
+					
+					System.out.println(userActivities.get(j).getIsApproved());
+					if(activities.get(i).getId()==userActivities.get(j).getActivity().getId()){
+						activity.setIsApprove(userActivities.get(j).getIsApproved());
+					}
+				}
+			}
+			activitiesRes.add(activity);
+		}
+		
+		return activitiesRes;
 	}
 }
