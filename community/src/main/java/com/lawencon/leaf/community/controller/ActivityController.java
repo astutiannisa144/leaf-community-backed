@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.activity.PojoActivityReq;
+import com.lawencon.leaf.community.pojo.activity.PojoActivityReqGetAll;
 import com.lawencon.leaf.community.pojo.activity.PojoActivityRes;
 import com.lawencon.leaf.community.pojo.activity.type.PojoActivityTypeRes;
 import com.lawencon.leaf.community.service.ActivityService;
@@ -38,7 +39,12 @@ public class ActivityController {
 
 		return new ResponseEntity<List<PojoActivityRes>>(result, HttpStatus.OK);
 	}
-	
+	@PostMapping("/get")
+	public ResponseEntity<List<PojoActivityRes>> getAllByListCategory(final @Valid @RequestBody PojoActivityReqGetAll data) throws Exception {
+		List<PojoActivityRes> result = activityService.getAllByListCategory(data);
+
+		return new ResponseEntity<List<PojoActivityRes>>(result, HttpStatus.OK);
+	}
 	@GetMapping("/type")
 	public ResponseEntity<List<PojoActivityTypeRes>> getAllType() throws Exception {
 		List<PojoActivityTypeRes> result = activityService.getAllType();
