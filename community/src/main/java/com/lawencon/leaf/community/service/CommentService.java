@@ -74,6 +74,7 @@ public class CommentService {
 		try {
 			ConnHandler.begin();
 			commentDao.deleteById(Comment.class, id);
+			ConnHandler.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

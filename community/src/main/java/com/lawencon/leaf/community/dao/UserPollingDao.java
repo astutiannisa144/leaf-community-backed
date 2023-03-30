@@ -44,8 +44,10 @@ public class UserPollingDao extends BaseDao<UserPolling> {
 		sql.append("SELECT COUNT(id) FROM t_user_polling ");
 		sql.append("WHERE polling_detail_id = :id ");
 
-		final Long count = Long.valueOf(ConnHandler.getManager().createNativeQuery(sql.toString())
-				.setParameter("id", id).getSingleResult().toString());
+		final Long count = Long.valueOf(ConnHandler.getManager()
+				.createNativeQuery(sql.toString())
+				.setParameter("id", id)
+				.getSingleResult().toString());
 
 		return count;
 	}
@@ -72,6 +74,21 @@ public class UserPollingDao extends BaseDao<UserPolling> {
 		}
 
 		return Optional.ofNullable(userPollingId);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<UserPolling> getAllByPollingId(String id) {
+
+		final StringBuilder sql = new StringBuilder();
+		sql.append("SELECT * FROM t_user_polling ");
+		sql.append("WHERE polling_id = :id ");
+
+		final List<UserPolling> userPollingList = ConnHandler.getManager()
+				.createNativeQuery(sql.toString(), UserPolling.class)
+				.setParameter("id", id)
+				.getResultList();
+
+		return userPollingList;
 	}
 
 }

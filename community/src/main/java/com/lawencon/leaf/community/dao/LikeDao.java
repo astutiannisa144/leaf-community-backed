@@ -61,5 +61,19 @@ public class LikeDao extends BaseDao<Like> {
 
 		return Optional.ofNullable(likeId);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Like> getLikeByPost(String id) {
+		final StringBuilder sql = new StringBuilder();
+		sql.append("SELECT * FROM t_like ");
+		sql.append("WHERE post_id  = :id ");
+		
+		final List<Like> likeList = ConnHandler.getManager()
+				.createNativeQuery(sql.toString(), Like.class)
+				.setParameter("id", id)
+				.getResultList();
+
+		return likeList;
+	}
 
 }
