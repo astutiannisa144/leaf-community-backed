@@ -50,11 +50,11 @@ INSERT INTO t_role (id,role_code, role_name,created_by,created_at,ver,is_active)
 
 
 INSERT INTO t_position (id,position_code, position_name,created_by,created_at,ver,is_active) VALUES
-('de208bb3-6436-4b57-9e47-cf24b357aacf','CE','Back-ENd Dev','1',NOW(),0,TRUE),
-('52ebcfc2-3f5a-4e3d-bd84-3299309d02ab','FE','Front-End-','1',NOW(),0,TRUE),
+('de208bb3-6436-4b57-9e47-cf24b357aacf','CE','Back-end Developer','1',NOW(),0,TRUE),
+('52ebcfc2-3f5a-4e3d-bd84-3299309d02ab','FE','Front-End Developer','1',NOW(),0,TRUE),
 ('65e9a920-7433-4d80-b723-2c70a7e3e28f','QA','Quality Assurance','1',NOW(),0,TRUE),
 ('c7c0035b-9d83-47b4-8a91-2a7e43d90159','HR','Human Resource','1',NOW(),0,TRUE),
-('5fced11f-91f5-4207-bac1-d4fb235c517e','DB','Database Dev','1',NOW(),0,TRUE);
+('5fced11f-91f5-4207-bac1-d4fb235c517e','DB','Database Engineer','1',NOW(),0,TRUE);
 
 
 
