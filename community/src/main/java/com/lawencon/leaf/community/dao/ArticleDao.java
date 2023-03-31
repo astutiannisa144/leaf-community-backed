@@ -27,15 +27,19 @@ public class ArticleDao extends BaseDao<Article> {
 	}
 	
 	
+
 	public Optional<String> getByBk(String code) {
+
 		final StringBuilder str = new StringBuilder();
 		str.append("SELECT * ");
 		str.append("FROM t_article ");
 		str.append("WHERE article_code=:code");
+
 		final String articles = ConnHandler.getManager().createNativeQuery(str.toString())
 				.setParameter("code", code)
 				.getSingleResult().toString();
 		return Optional.ofNullable(articles) ;
+
 	}
 	@Override
 	Optional<Article> getByIdAndDetach(String id) {

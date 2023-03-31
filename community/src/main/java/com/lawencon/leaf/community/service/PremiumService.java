@@ -91,6 +91,7 @@ public class PremiumService extends BaseService<PojoPremiumRes> {
 		premium.setPrice(data.getPrice());
 		premium.setDuration(data.getDuration());
 		premium.setIsActive(true);
+		valBkNotExist(premium);
 		premiumDao.save(premium);
 		ConnHandler.commit();
 		

@@ -165,6 +165,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		ConnHandler.begin();
 		valIdNull(data);
 		valBkNotNull(data);
+
 		valNonBk(data);
 		final User system = userDao.getUserByRole(EnumRole.SY.getCode()).get();
 		try {

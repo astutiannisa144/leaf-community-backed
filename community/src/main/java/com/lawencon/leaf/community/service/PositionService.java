@@ -86,7 +86,7 @@ public class PositionService extends BaseService<PojoPositionRes> {
 		position.setPositionCode(GenerateCodeUtil.generateCode(10));
 		position.setIsActive(true);
 		
-		
+
 		positionDao.save(position);
 		ConnHandler.commit();
 		

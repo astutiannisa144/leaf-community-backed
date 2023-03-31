@@ -43,6 +43,7 @@ public class ArticleService extends AbstractJpaDao{
 	private void valBkNull(PojoArticleReqInsert article) {
 		if (article.getArticleCode() != null) {
 			throw new RuntimeException("Article Code Should Be Empty");
+
 		}
 	}
 //	private void valBkNotExist(Article article) {
@@ -50,6 +51,7 @@ public class ArticleService extends AbstractJpaDao{
 //			throw new RuntimeException("Article Code Already Exist");
 //		}
 //	}
+
 	private void valNonBk(PojoArticleReqInsert article) {
 		if (article.getContent() == null) {
 			throw new RuntimeException("Content Cannot Be Empty");
@@ -85,7 +87,7 @@ public class ArticleService extends AbstractJpaDao{
 		final Article article = new Article();
 		
 		article.setArticleCode(GenerateCodeUtil.generateCode(10));
-	
+
 		article.setTitle(data.getTitle());
 		
 		final User admin = userDao.getByIdRef(User.class, principalService.getAuthPrincipal());
