@@ -103,7 +103,7 @@ INSERT INTO t_voucher  (id,voucher_code ,discount_price ,minimum_purchase , expi
 ('31a0f684-dc5a-4b7d-8564-3108e0d233f0','VOUCHER5',50000,300000,'2022-10-4','1',NOW(),0,TRUE);
 
 INSERT INTO t_social_media  (id,social_media_code ,social_media_name ,social_media_link,social_media_icon,file_id,created_by,created_at,ver,is_active) VALUES
-('524969b4-6840-4fd7-99ef-c60dee3b1e31','IN','Linked In','https://www.linkedin.com/','pi-linkedin','931196c1-51a6-4b2e-bb38-ababd04bb134','1',NOW(),0,TRUE),
+('524969b4-6840-4fd7-99ef-c60dee3b1e31','IN','Linked In','https://www.linkedin.com/in/','pi-linkedin','931196c1-51a6-4b2e-bb38-ababd04bb134','1',NOW(),0,TRUE),
 ('524969b4-6840-4fd7-99ef-c60dee3b1e35','TWT','Twitter','https://www.twitter.com/','pi-twitter','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE),
 ('a5917c8c-c755-4adf-be46-93aea1ed0a6c','FB','FaceBook','https://www.facebook.com/','pi-facebook','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE),
 ('99bdb8f6-d0c3-43cd-9ba5-cbe84b004842','INS','Instagram','https://www.instagram.com/','pi-instagram','3a24e99b-11bf-4cae-9af8-8a2bd78ec9b0','1',NOW(),0,TRUE);
