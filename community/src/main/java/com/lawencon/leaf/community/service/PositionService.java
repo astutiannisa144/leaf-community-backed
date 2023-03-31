@@ -20,6 +20,36 @@ public class PositionService extends BaseService<PojoPositionRes> {
 	@Autowired
 	private PositionDao positionDao;
 	
+	private void valIdNull(PojoPositionReq position) {
+		if (position.getId() != null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+
+
+	private void valBkNotExist(Position position) {
+		if (positionDao.getByBk(position.getPositionCode()).isPresent()) {
+			throw new RuntimeException("Position Code Already Exist");
+		}
+	}
+	private void valNonBk(PojoPositionReq position) {
+		if (position.getPositionName() == null) {
+			throw new RuntimeException("Position Name Cannot Be Empty");
+		}
+	}
+
+	private void valIdNotNull(PojoPositionReq position) {
+		if (position.getId() == null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+
+	private void valIdExist(String id) {
+		if (positionDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+	
 	@Override
 	public PojoPositionRes getById(String id) {
 		final PojoPositionRes pojoPositionRes = new PojoPositionRes();
@@ -51,12 +81,16 @@ public class PositionService extends BaseService<PojoPositionRes> {
 	
 	public PojoRes insert(PojoPositionReq data) {
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
+	
 		Position position = new Position();
 
 		position.setPositionName(data.getPositionName());
 		position.setPositionCode(GenerateCodeUtil.generateCode(10));
 		position.setIsActive(true);
+		
+		valBkNotExist(position);
 		positionDao.save(position);
 		ConnHandler.commit();
 		
@@ -67,7 +101,9 @@ public class PositionService extends BaseService<PojoPositionRes> {
 	
 	public PojoRes update(PojoPositionReq data) {
 		ConnHandler.begin();
-		
+		valIdNotNull(data);
+		valIdExist(data.getId());
+		valNonBk(data);
 		Position position = positionDao.getById(data.getId()).get();
 		position.setId(data.getId());
 		position.setPositionName(data.getPositionName());
@@ -84,6 +120,7 @@ public class PositionService extends BaseService<PojoPositionRes> {
 		
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
 			positionDao.deleteById(Position.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -16,6 +16,8 @@ import com.lawencon.leaf.community.model.Activity;
 import com.lawencon.leaf.community.model.Voucher;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.voucher.PojoVoucherReq;
+import com.lawencon.leaf.community.pojo.voucher.PojoVoucherReq;
+import com.lawencon.leaf.community.pojo.voucher.PojoVoucherReq;
 import com.lawencon.leaf.community.pojo.voucher.PojoVoucherRes;
 import com.lawencon.security.principal.PrincipalServiceImpl;
 
@@ -33,6 +35,36 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 	public VoucherService(PrincipalServiceImpl principalServiceImpl) {
 		this.principalService = principalServiceImpl;
 	}
+	
+	private void valIdNull(PojoVoucherReq voucher) {
+		if (voucher.getId() != null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+
+	private void valIdNotNull(PojoVoucherReq voucher) {
+		if (voucher.getId() == null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+	private void valNonBk(PojoVoucherReq voucher) {
+		if (voucher.getDiscountPrice() == null) {
+			throw new RuntimeException("Discount PRice Cannot Be Empty");
+		}
+
+		if (voucher.getMinimumPurchase() == null) {
+			throw new RuntimeException("Minimum Price Cannot Be Empty");
+		}
+
+	}
+
+
+	private void valIdExist(String id) {
+		if (voucherDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+	
 	@Override
 	public PojoVoucherRes getById(String id) {
 		final PojoVoucherRes pojoVoucherRes = new PojoVoucherRes();
@@ -98,7 +130,8 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 	
 	public PojoRes insert(PojoVoucherReq data) {
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
 		Voucher voucher = new Voucher();
 
 		voucher.setVoucherCode(data.getVoucherCode());
@@ -116,7 +149,9 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 	
 	public PojoRes update(PojoVoucherReq data) {
 		ConnHandler.begin();
-		
+		valIdNotNull(data);
+		valIdExist(data.getId());
+		valNonBk(data);
 		Voucher voucher = voucherDao.getByIdAndDetach(data.getId()).get();
 		voucher.setId(data.getId());
 
@@ -142,6 +177,7 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 	public PojoRes delete(String id) {
 		
 		try {
+			valIdExist(id);
 			ConnHandler.begin();
 			voucherDao.deleteById(Voucher.class, id);
 		} catch (Exception e) {

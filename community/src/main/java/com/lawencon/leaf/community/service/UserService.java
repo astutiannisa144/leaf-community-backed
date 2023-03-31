@@ -63,7 +63,77 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		this.jobDao = jobDao;
 		this.pricipalService=pricipalService;
 	}
-
+	
+	private void valIdNull(PojoUserReq user) {
+		if(user.getId()!=null) {
+			throw new RuntimeException("Id Cannot be Filled");
+		}
+	}
+	
+	private void valBkNotNull(PojoUserReq user) {
+		if(user==null) {
+			throw new RuntimeException("Object is Null");
+		}
+		if(user.getEmail()==null) {
+			throw new RuntimeException("Email is Empty");
+		}
+	
+	}
+	private void valBkNotExist(PojoUserReq user) {
+		if(user==null) {
+			throw new RuntimeException("Object is Null");
+		}
+		if(userDao.getEmail(user.getEmail()).isPresent()) {
+			throw new RuntimeException("Email already Exist");
+		}
+	
+	}
+	
+	private void valNonBk(PojoUserReq user) {
+		if(user.getPass()==null) {
+			throw new RuntimeException("Pass Is Empty");
+		}
+		if(user.getVerificationCode()==null) {
+			throw new RuntimeException("Verification Code Is Empty");
+		}
+		if(user.getProfile().getFullName()==null) {
+			throw new RuntimeException("Your Name Is Empty");
+		}
+		if(user.getProfile().getPhoneNumber()==null) {
+			throw new RuntimeException("Your Phone Number Is Empty");
+		}
+		if(user.getProfile().getAddress()==null) {
+			throw new RuntimeException("Your Address Is Empty");
+		}
+		if(user.getProfile().getJob().getCompanyName()==null) {
+			throw new RuntimeException("Your Company Field Is Empty");
+		}
+		if(user.getProfile().getJob().getIndustryId()==null) {
+			throw new RuntimeException("Your Industry Field Is Empty");
+		}
+		if(user.getProfile().getJob().getPositionId()==null) {
+			throw new RuntimeException("Your Position Field Is Empty");
+		}
+	}
+	
+	private void valIdNotNull(PojoUserReq user) {
+		if(user.getId()==null) {
+			throw new RuntimeException("Id Is Empty");
+		}
+	}
+	private void valIdExist(PojoUserReq user) {
+		if(userDao.getById(user.getId()).isEmpty()) {
+			throw new RuntimeException("Your Id Does Not Exist ");
+		}
+	}
+	private void valBkNotChange(PojoUserReq data) {
+		User user = userDao.getById(data.getId()).get();
+		if(data.getEmail()!=user.getEmail()) {
+			throw new RuntimeException("Your Email Should Not Change");
+		}
+		
+	}
+	
 	public Optional<User> login(String email) {
 		return userDao.getEmail(email);
 	}
@@ -80,7 +150,15 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		return res;
 		
 	}
+	private void valNonBkUpdate(PojoUserReq user) {
+		if(user.getOldPass()==null) {
+			throw new RuntimeException("Your Old Password is Empty");
+		}
+		if(user.getNewPass()==null) {
+			throw new RuntimeException("Your New Password Is Empty");
+		}
 	
+	}
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		final Optional<User> user = userDao.getEmail(username);
@@ -93,6 +171,10 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 
 	public PojoRes saveNoLogin(PojoUserReq data) {
 		ConnHandler.begin();
+		valIdNull(data);
+		valBkNotNull(data);
+		valBkNotExist(data);
+		valNonBk(data);
 		final User system = userDao.getUserByRole(EnumRole.SY.getCode()).get();
 		try {
 			pricipalService.getAuthPrincipal();
@@ -178,6 +260,12 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 
 	public PojoRes update(PojoUserReq data) {
 		ConnHandler.begin();
+		valIdNotNull(data);
+		valIdExist(data);
+		valBkNotNull(data);
+		valBkNotChange(data);
+		valNonBkUpdate(data);
+		
 		final User user = userDao.getByIdAndDetach(User.class, pricipalService.getAuthPrincipal());
 		if (encoder.matches(data.getOldPass(), user.getPass()) == false) {
 			throw new RuntimeException("Password tidak match");
@@ -187,7 +275,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 
 		user.setIsActive(true);
 		user.setVer(data.getVer());
-		final User userUpdate = userDao.save(user);
+		userDao.save(user);
 
 
 		final PojoRes pojoRes = new PojoRes();

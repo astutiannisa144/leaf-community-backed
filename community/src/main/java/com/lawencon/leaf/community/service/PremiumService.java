@@ -20,6 +20,35 @@ public class PremiumService extends BaseService<PojoPremiumRes> {
 	@Autowired
 	private PremiumDao premiumDao;
 	
+	private void valIdNull(PojoPremiumReq premium) {
+		if (premium.getId() != null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+
+
+	private void valBkNotExist(Premium premium) {
+		if (premiumDao.getByBk(premium.getPremiumCode()).isPresent()) {
+			throw new RuntimeException("Premium Code Already Exist");
+		}
+	}
+	private void valNonBk(PojoPremiumReq premium) {
+		if (premium.getPremiumName() == null) {
+			throw new RuntimeException("Premium Name Cannot Be Empty");
+		}
+	}
+
+	private void valIdNotNull(PojoPremiumReq premium) {
+		if (premium.getId() == null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+
+	private void valIdExist(String id) {
+		if (premiumDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
 	@Override
 	public PojoPremiumRes getById(String id) {
 		final PojoPremiumRes pojoPremiumRes = new PojoPremiumRes();
@@ -56,7 +85,9 @@ public class PremiumService extends BaseService<PojoPremiumRes> {
 	
 	public PojoRes insert(PojoPremiumReq data) {
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
+		
 		Premium premium = new Premium();
 
 		premium.setPremiumName(data.getPremiumName());
@@ -64,6 +95,7 @@ public class PremiumService extends BaseService<PojoPremiumRes> {
 		premium.setPrice(data.getPrice());
 		premium.setDuration(data.getDuration());
 		premium.setIsActive(true);
+		valBkNotExist(premium);
 		premiumDao.save(premium);
 		ConnHandler.commit();
 		
@@ -74,7 +106,9 @@ public class PremiumService extends BaseService<PojoPremiumRes> {
 	
 	public PojoRes update(PojoPremiumReq data) {
 		ConnHandler.begin();
-		
+		valIdNotNull(data);
+		valIdExist(data.getId());
+		valNonBk(data);
 		Premium premium = premiumDao.getByIdAndDetach(data.getId()).get();
 		premium.setId(data.getId());
 		if(data.getPremiumName()!=null) {
@@ -99,6 +133,7 @@ public class PremiumService extends BaseService<PojoPremiumRes> {
 		
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
 			premiumDao.deleteById(Premium.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();

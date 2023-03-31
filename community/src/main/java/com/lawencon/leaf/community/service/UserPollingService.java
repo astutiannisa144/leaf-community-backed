@@ -34,10 +34,27 @@ public class UserPollingService {
 		this.userDao = userDao;
 		this.principalService = principalService;
 	}
+	
+	private void valIdNull(PojoUserPollingReqInsert userPolling) {
+		if (userPolling.getId() != null) {
+			throw new RuntimeException("Id Cannot Be Filled");
+		}
+	}
+
+
+	private void valNonBk(PojoUserPollingReqInsert userPolling) {
+		if (userPolling.getPollingDetailId() == null) {
+			throw new RuntimeException("Poling Detail Cannot Be Empty");
+		}
+	}
+
+
 
 	public PojoRes insert(PojoUserPollingReqInsert data) {
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
+		
 		UserPolling userPolling = new UserPolling();
 		final PollingDetail pollingDetail = pollingDetailDao.getById(PollingDetail.class, data.getPollingDetailId());
 		userPolling.setPollingDetail(pollingDetail);

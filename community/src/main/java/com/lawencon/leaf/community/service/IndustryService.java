@@ -20,6 +20,36 @@ public class IndustryService extends BaseService<PojoIndustryRes> {
 	@Autowired
 	private IndustryDao industryDao;
 	
+	private void valIdNull(PojoIndustryReq industry) {
+		if (industry.getId() != null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+
+
+	private void valBkNotExist(Industry industry) {
+		if (industryDao.getByBk(industry.getIndustryCode()).isPresent()) {
+			throw new RuntimeException("Industry Code Already Exist");
+		}
+	}
+	private void valNonBk(PojoIndustryReq industry) {
+		if (industry.getIndustryName() == null) {
+			throw new RuntimeException("Industry Name Cannot Be Empty");
+		}
+	}
+
+	private void valIdNotNull(PojoIndustryReq industry) {
+		if (industry.getId() == null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+
+	private void valIdExist(String id) {
+		if (industryDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+	
 	@Override
 	public PojoIndustryRes getById(String id) {
 		final PojoIndustryRes pojoIndustryRes = new PojoIndustryRes();
@@ -51,12 +81,14 @@ public class IndustryService extends BaseService<PojoIndustryRes> {
 	
 	public PojoRes insert(PojoIndustryReq data) {
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
 		Industry industry = new Industry();
 
 		industry.setIndustryName(data.getIndustryName());
 		industry.setIndustryCode(GenerateCodeUtil.generateCode(10));
 		industry.setIsActive(true);
+		valBkNotExist(industry);
 		industryDao.save(industry);
 		ConnHandler.commit();
 		
@@ -67,7 +99,8 @@ public class IndustryService extends BaseService<PojoIndustryRes> {
 	
 	public PojoRes update(PojoIndustryReq data) {
 		ConnHandler.begin();
-		
+		valIdNotNull(data);
+		valIdExist(data.getId());
 		Industry industry = industryDao.getById(data.getId()).get();
 		industry.setId(data.getId());
 		industry.setIndustryName(data.getIndustryName());
@@ -84,6 +117,7 @@ public class IndustryService extends BaseService<PojoIndustryRes> {
 		
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
 			industryDao.deleteById(Industry.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();

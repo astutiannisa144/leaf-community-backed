@@ -21,7 +21,19 @@ public class SocialMediaDao extends BaseDao<SocialMedia> {
 		final List<SocialMedia> socialMedia = ConnHandler.getManager().createNativeQuery(str.toString(), SocialMedia.class).getResultList();
 		return socialMedia;
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public Optional<SocialMedia> getByBk(String code) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT * ");
+		str.append("FROM t_social_media ");
+		str.append("WHERE social_media_code = :code");
+		final List<SocialMedia> socialMedia = ConnHandler.getManager().createNativeQuery(str.toString(), SocialMedia.class)
+				.setParameter("code", code)
+				.getResultList();
+		return Optional.ofNullable(socialMedia.get(0));
+	}
+	
 	@Override
 	public Optional<SocialMedia> getByIdAndDetach(String id) {
 		return Optional.ofNullable(super.getByIdAndDetach(SocialMedia.class, id));

@@ -13,6 +13,16 @@ public class PojoPostReqInsert {
 	private String categoryId;
 	private PollingReqInsert polling;
 	private List<PojoFileReqInsert> file;
+	private String id;
+	
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getTitle() {
 		return title;

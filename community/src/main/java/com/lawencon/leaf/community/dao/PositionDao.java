@@ -22,7 +22,19 @@ public class PositionDao extends BaseDao<Position> {
 				.getResultList();
 		return activities;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Optional<Position> getByBk(String code) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT * ");
+		str.append("FROM t_position");
+		str.append("WHERE position_code=:code");
 
+		final List<Position> activities = ConnHandler.getManager().createNativeQuery(str.toString(), Position.class)
+				.setParameter("code", code)
+				.getResultList();
+		return Optional.ofNullable(activities.get(0));
+	}
 	@Override
 	public Optional<Position> getByIdAndDetach(String id) {
 		return Optional.ofNullable(super.getByIdAndDetach(Position.class, id));

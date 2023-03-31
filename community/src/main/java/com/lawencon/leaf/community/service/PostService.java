@@ -74,11 +74,58 @@ public class PostService {
 		this.fileDao = fileDao;
 		this.likeDao = likeDao;
 	}
+	
+	private void valIdNull(PojoPostReqInsert post) {
+		if(post==null) {
+			throw new RuntimeException("Form cannot be empty");
+		}
+		if(post.getId()!=null ) {
+			throw new RuntimeException("Id cannot be filled");
+		}
+	}
 
+	private void valNonBk(PojoPostReqInsert post) {
+		if(post==null) {
+			throw new RuntimeException("Form cannot be empty");
+		}
+		if(post.getCategoryId()==null) {
+			throw new RuntimeException("Category cannot be empty");
+		}
+		if(post.getContent()==null) {
+			throw new RuntimeException("Content cannot be empty");
+		}
+		if(post.getTitle()==null) {
+			throw new RuntimeException("Title cannot be empty");
+		}
+		if(post.getIsPremium()==null) {
+			throw new RuntimeException("Premium cannot be empty");
+		}
+	}
+
+	private void valNonBkUpdate(PojoPostReqUpdate post) {
+		if(post==null) {
+			throw new RuntimeException("Form cannot be empty");
+		}
+		if(post.getContent()==null) {
+			throw new RuntimeException("Content cannot be empty");
+		}
+		if(post.getTitle()==null) {
+			throw new RuntimeException("Title cannot be empty");
+		}
+
+	}
+	
+	private void valIdExist(String id) {
+		if(postDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id cannot be empty in database");
+		}
+	}
 	public PojoRes insert(final PojoPostReqInsert data) {
 
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
+		
 		Post postInsert = new Post();
 		postInsert.setPostCode(GenerateCodeUtil.generateCode(10));
 		postInsert.setTitle(data.getTitle());
@@ -136,7 +183,8 @@ public class PostService {
 
 	public PojoRes update(PojoPostReqUpdate data) {
 		ConnHandler.begin();
-
+		valIdExist(data.getPostId());
+		valNonBkUpdate(data);
 		final Post postInsert = postDao.getById(data.getPostId()).get();
 		postInsert.setTitle(data.getTitle());
 		postInsert.setContent(data.getContent());
@@ -155,6 +203,7 @@ public class PostService {
 		final PojoRes pojoRes = new PojoRes();
 		
 		try {
+			valIdExist(id);
 			ConnHandler.begin();
 			
 			Post post = postDao.getById(id).get();

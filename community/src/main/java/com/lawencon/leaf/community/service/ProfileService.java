@@ -43,9 +43,35 @@ public class ProfileService extends AbstractJpaDao {
 	public ProfileService(PrincipalService pricipalService) {
 		this.pricipalService=pricipalService;
 	}
+
+
+
+	private void valNonBk(PojoProfileReq profile) {
+
+		if (profile.getFullName() == null) {
+			throw new RuntimeException("Full Name Cannot Be Empty");
+		}
+
+	}
+
+	private void valIdNotNull(PojoProfileReq profile) {
+		if (profile.getId() == null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+
+	private void valIdExist(String id) {
+		if (profileDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+	
 	
 	public PojoRes update(PojoProfileReq data) {
 		ConnHandler.begin();
+		 valIdNotNull(data);
+		 valIdExist(data.getId());
+		 valNonBk(data);
 		 
 		final Profile profile = profileDao.getByIdAndDetach(data.getId()).get();
 		profile.setId(data.getId());

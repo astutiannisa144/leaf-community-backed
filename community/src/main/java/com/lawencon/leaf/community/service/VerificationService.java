@@ -29,7 +29,27 @@ public class VerificationService extends BaseService<PojoVerificationRes> {
 	private EmailSenderService emailSenderService;
 	@Autowired
 	private UserDao userDao;
+	
+	private void valIdNull(PojoVerificationReq verification) {
+		if (verification.getId() != null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
 
+
+	private void valNonBk(PojoVerificationReq verification) {
+		if (verification.getEmail() == null) {
+			throw new RuntimeException("Email Cannot Be Empty");
+		}
+	}
+
+
+	private void valIdExist(String id) {
+		if (verificationDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+	
 	@Override
 	public PojoVerificationRes getById(String id) {
 		final PojoVerificationRes pojoVerificationRes = new PojoVerificationRes();
@@ -58,7 +78,10 @@ public class VerificationService extends BaseService<PojoVerificationRes> {
 	}
 
 	public PojoRes insert(PojoVerificationReq data) {
+		
 		ConnHandler.begin();
+		valIdNull(data);
+		valNonBk(data);
 		final User system = userDao.getUserByRole(EnumRole.SY.getCode()).get();
 
 		Verification verification = new Verification();
@@ -89,6 +112,7 @@ public class VerificationService extends BaseService<PojoVerificationRes> {
 	public PojoRes delete(String id) {
 
 		try {
+			valIdExist(id);
 			ConnHandler.begin();
 			verificationDao.deleteById(Verification.class, id);
 		} catch (Exception e) {

@@ -58,10 +58,10 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 	
 	private void valIdNull(PojoActivityReq activity) {
 		if(activity==null) {
-			throw new RuntimeException("Activity Tidak Boleh Kosong");
+			throw new RuntimeException("Form cannot be empty");
 		}
 		if(activity.getId()!=null ) {
-			throw new RuntimeException("Id Harus Kosong");
+			throw new RuntimeException("Id cannot be filled");
 		}
 	}
 
@@ -69,43 +69,43 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 	
 	private void valBkNotNull(Activity activity) {
 		if(activity==null) {
-			throw new RuntimeException("Activity Tidak Boleh Kosong");
+			throw new RuntimeException("Form cannot be empty");
 		}
 		if(activity.getActivityCode()==null) {
-			throw new RuntimeException("Invoice Code Tidak Boleh Kosong");
+			throw new RuntimeException("Invoice cannot be empty");
 		}
 	}
 
 
 	private void valNonBk(PojoActivityReq activity) {
 		if(activity==null) {
-			throw new RuntimeException("Activity Tidak Boleh Kosong");
+			throw new RuntimeException("Form cannot be empty");
 		}
 		if(activity.getCategoryId()==null) {
-			throw new RuntimeException("Member Tidak Boleh Kosong");
+			throw new RuntimeException("Member cannot be empty");
 		}
 		if(activity.getActivityTypeId()==null) {
-			throw new RuntimeException("Activity Type Tidak Boleh Kosong");
+			throw new RuntimeException("Activity Type cannot be empty");
 		}
 		if(activity.getPrice()==null) {
-			throw new RuntimeException("Price Tidak Boleh Kosong");
+			throw new RuntimeException("Price cannot be empty");
 		}
 
 		if((activity.getProvider()==null)) {
-			throw new RuntimeException("Provider Tidak Boleh Kosong");
+			throw new RuntimeException("Provider cannot be empty");
 
 		}
 		
 	}
 	private void valIdNotNull(PojoActivityReq activity) {
 		if(activity.getId()==null) {
-			throw new RuntimeException("Id Tidak Boleh Kosong");
+			throw new RuntimeException("Id cannot be empty");
 		}
 	}
 	
 	private void valIdExist(String id) {
 		if(activityDao.getById(id).isEmpty()) {
-			throw new RuntimeException("Id Tidak Boleh Kosong");
+			throw new RuntimeException("Id cannot be empty in database");
 		}
 	}
 
@@ -116,7 +116,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		List<Schedule> schedules= scheduleDao.getAll();
 
 		if (activity.isEmpty()) {
-			throw new RuntimeException("This is Emplty or lacking");
+			throw new RuntimeException("This is Empty or lacking");
 		}
 		activitiesRes.setActivityCode(activity.get().getActivityCode());
 		activitiesRes.setActivityTypeId(activity.get().getActivityType().getId());
@@ -222,11 +222,9 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		
 			activity.setSchedule(scheduleRes);
 			if(code!=null&&code.equals("purchase")) {
-				System.out.println("anjay:" +userActivities.size());
 				
 				for(int j=0;j<userActivities.size();j++) {
 					
-					System.out.println(userActivities.get(j).getIsApproved());
 					if(activities.get(i).getId()==userActivities.get(j).getActivity().getId()){
 						activity.setIsApprove(userActivities.get(j).getIsApproved());
 					}
@@ -242,6 +240,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		ConnHandler.begin();
 		valIdNull(data);
 		valNonBk(data);
+		
 		Activity activity = new Activity();
 
 		activity.setActivityCode(GenerateCodeUtil.generateCode(10));
@@ -286,7 +285,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		ConnHandler.commit();
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Build Activity");
+		pojoRes.setMessage(activity.getActivityType().getActivityTypeName()+ "Created");
 		return pojoRes;
 	}
 
@@ -339,7 +338,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		activityDao.save(activity);
 		ConnHandler.commit();
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Update Activity");
+		pojoRes.setMessage("Succes Update "+activity.getActivityType().getActivityTypeName());
 		return pojoRes;
 
 	}
@@ -382,7 +381,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 			e.printStackTrace();
 		}
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Delete Activity");
+		pojoRes.setMessage("Succes Deleted");
 		return pojoRes;
 	}
 	
@@ -470,11 +469,9 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		
 			activity.setSchedule(scheduleRes);
 			if(data.getCode()!=null&&data.getCode().equals("purchase")) {
-				System.out.println("anjay:" +userActivities.size());
 				
 				for(int j=0;j<userActivities.size();j++) {
 					
-					System.out.println(userActivities.get(j).getIsApproved());
 					if(activities.get(i).getId()==userActivities.get(j).getActivity().getId()){
 						activity.setIsApprove(userActivities.get(j).getIsApproved());
 					}

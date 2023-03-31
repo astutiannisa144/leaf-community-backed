@@ -4,7 +4,7 @@ public class PojoIndustryReq {
 	private String industryName;
 	private String id;
 	private Integer ver;
-
+	
 	public String getIndustryName() {
 		return industryName;
 	}

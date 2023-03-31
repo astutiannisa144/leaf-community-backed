@@ -27,10 +27,34 @@ public class LikeService {
 		this.userDao = userDao;
 		this.principalService = principalService;
 	}
+	private void valIdNull(PojoLikeReqInsert like) {
+		if(like==null) {
+			throw new RuntimeException("Form cannot be empty");
+		}
+		if(like.getId()!=null ) {
+			throw new RuntimeException("Id cannot be filled");
+		}
+	}
 
+	private void valNonBk(PojoLikeReqInsert like) {
+		if(like==null) {
+			throw new RuntimeException("Form cannot be empty");
+		}
+		if(like.getPostId()==null) {
+			throw new RuntimeException("Post cannot be empty");
+		}
+	}
+
+	private void valIdExist(String id) {
+		if(likeDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id cannot be empty in database");
+		}
+	}
 	public PojoRes insert(PojoLikeReqInsert data) {
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
+		
 		Like like = new Like();
 		final Post post = postDao.getById(data.getPostId()).get();
 		like.setPost(post);
@@ -52,6 +76,7 @@ public class LikeService {
 
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
 			likeDao.deleteById(Like.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();
