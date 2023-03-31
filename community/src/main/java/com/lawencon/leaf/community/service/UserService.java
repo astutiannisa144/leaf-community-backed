@@ -189,9 +189,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		user.setVer(data.getVer());
 		final User userUpdate = userDao.save(user);
 
-		new Thread(() -> emailSenderService.sendMail(userUpdate.getEmail(), "sudah Berhasil Ganti Password ", "Dear,"
-				+ userUpdate.getEmail() + " \n password Anda yang baru : " + data.getNewPass() + "\n Terimakasih "))
-				.start();
+
 		final PojoRes pojoRes = new PojoRes();
 		pojoRes.setMessage("anda berhasil Mengganti Password ");
 
