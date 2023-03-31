@@ -25,7 +25,19 @@ public class ArticleDao extends BaseDao<Article> {
 	public Optional<Article> getById(String id) {
 		return Optional.ofNullable(super.getById(Article.class, id));
 	}
-
+	
+	
+	@SuppressWarnings("unchecked")
+	public Optional<Article> getByBk(String code) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT * ");
+		str.append("FROM t_article ");
+		str.append("WHERE article_code=:code");
+		final List<Article> articles = ConnHandler.getManager().createNativeQuery(str.toString(), Article.class)
+				.setParameter("code", code)
+				.getResultList();
+		return Optional.ofNullable(articles.get(0)) ;
+	}
 	@Override
 	Optional<Article> getByIdAndDetach(String id) {
 		return Optional.empty();

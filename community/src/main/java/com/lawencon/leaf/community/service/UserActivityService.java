@@ -62,12 +62,7 @@ public class UserActivityService extends AbstractJpaDao {
 			throw new RuntimeException("Invoice Code Tidak Boleh Kosong");
 		}
 	}
-//
-//	private void valBkNotChange(UserActivity userActivity) {
-//		if (userActivityDao.getById(userActivity.getId()).get().getInvoiceCode() != userActivity.getInvoiceCode()) {
-//			throw new RuntimeException("Invoice Code Cant Change Exist");
-//		}
-//	}
+
 
 	private void valNonBk(UserActivity userActivity) {
 		if (userActivity.getMember() == null) {

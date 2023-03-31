@@ -24,6 +24,41 @@ public class SocialMediaService extends BaseService<PojoSocialMediaRes> {
 	private SocialMediaDao socialMediaDao;
 	@Autowired
 	private FileDao fileDao;
+	
+	private void valIdNull(PojoSocialMediaReq socialMedia) {
+		if (socialMedia.getId() != null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+
+
+	private void valBkNotExist(SocialMedia socialMedia) {
+		if (socialMediaDao.getByBk(socialMedia.getSocialMediaCode()).isPresent()) {
+			throw new RuntimeException("SocialMedia Code Already Exist");
+		}
+	}
+	private void valNonBk(PojoSocialMediaReq socialMedia) {
+		if (socialMedia.getSocialMediaName() == null) {
+			throw new RuntimeException("SocialMedia Name Cannot Be Empty");
+		}
+		if (socialMedia.getFile() == null) {
+			throw new RuntimeException("Image Cannot Be Empty");
+		}
+		
+	}
+
+	private void valIdNotNull(PojoSocialMediaReq socialMedia) {
+		if (socialMedia.getId() == null) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+
+	private void valIdExist(String id) {
+		if (socialMediaDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id Cannot Be Empty");
+		}
+	}
+	
 	@Override
 	public PojoSocialMediaRes getById(String id) {
 		final PojoSocialMediaRes pojoSocialMediaRes = new PojoSocialMediaRes();
@@ -62,7 +97,9 @@ public class SocialMediaService extends BaseService<PojoSocialMediaRes> {
 	
 	public PojoRes insert(PojoSocialMediaReq data) {
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
+		
 		SocialMedia socialMedia = new SocialMedia();
 		
 		File file = new File();
@@ -75,6 +112,7 @@ public class SocialMediaService extends BaseService<PojoSocialMediaRes> {
 		socialMedia.setSocialMediaName(data.getSocialMediaName());
 		socialMedia.setSocialMediaCode(GenerateCodeUtil.generateCode(10));
 		socialMedia.setIsActive(true);
+		valBkNotExist(socialMedia);
 		socialMediaDao.save(socialMedia);
 		ConnHandler.commit();
 		
@@ -85,7 +123,8 @@ public class SocialMediaService extends BaseService<PojoSocialMediaRes> {
 	
 	public PojoRes update(PojoSocialMediaReq data) {
 		ConnHandler.begin();
-		
+		valIdNotNull(data);
+		valIdExist(data.getId());
 		SocialMedia socialMedia = socialMediaDao.getById(data.getId()).get();
 		if(data.getSocialMediaName()!=null) {
 			socialMedia.setSocialMediaName(data.getSocialMediaName());
@@ -117,6 +156,7 @@ public class SocialMediaService extends BaseService<PojoSocialMediaRes> {
 		
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
 			socialMediaDao.deleteById(SocialMedia.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();

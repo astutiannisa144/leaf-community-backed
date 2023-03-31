@@ -32,10 +32,53 @@ public class CommentService {
 		this.userDao = userDao;
 		this.principalService = principalService;
 	}
+	
+	private void valIdNull(PojoCommentReqInsert comment) {
+		if(comment==null) {
+			throw new RuntimeException("Form cannot be empty");
+		}
+		if(comment.getId()!=null ) {
+			throw new RuntimeException("Id cannot be filled");
+		}
+	}
+
+	private void valNonBk(PojoCommentReqInsert comment) {
+		if(comment==null) {
+			throw new RuntimeException("Form cannot be empty");
+		}
+		if(comment.getPostId()==null) {
+			throw new RuntimeException("Post cannot be empty");
+		}
+		if(comment.getContent()==null) {
+			throw new RuntimeException("Comment cannot be empty");
+		}
+	}
+	
+	private void valNonBkUpdate(PojoCommentReqUpdate comment) {
+		if(comment==null) {
+			throw new RuntimeException("Form cannot be empty");
+		}
+		if(comment.getContent()==null) {
+			throw new RuntimeException("Comment cannot be empty");
+		}
+	}
+	private void valIdExist(String id) {
+		if(commentDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id cannot be empty in database");
+		}
+	}
+	private void valIdNotNull(PojoCommentReqUpdate comment) {
+		if(comment.getCommentId()==null) {
+			throw new RuntimeException("Id cannot be empty");
+		}
+	}
+	
 
 	public PojoRes insert(PojoCommentReqInsert data) {
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
+		
 		Comment comment = new Comment();
 		final Post post = postDao.getById(Post.class, data.getPostId());
 		comment.setContent(data.getContent());
@@ -56,7 +99,9 @@ public class CommentService {
 
 	public PojoRes update(PojoCommentReqUpdate data) {
 		ConnHandler.begin();
-
+		valIdNotNull(data);
+		valIdExist(data.getCommentId());
+		valNonBkUpdate(data);
 		final Comment comment = commentDao.getById(data.getCommentId()).get();
 		comment.setContent(data.getContent());
 
@@ -73,6 +118,7 @@ public class CommentService {
 
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
 			commentDao.deleteById(Comment.class, id);
 			ConnHandler.commit();
 		} catch (Exception e) {

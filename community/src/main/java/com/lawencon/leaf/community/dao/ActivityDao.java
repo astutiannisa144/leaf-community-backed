@@ -203,7 +203,7 @@ public class ActivityDao extends BaseDao<Activity> {
 		str.append("FROM t_activity a ");
 		str.append("INNER JOIN t_activity_type b ON a.activity_type_id=b.id ");
 		str.append("WHERE b.activity_type_code = :typeCode ");
-		str.append("AND a.category_id = IN (:categories) ");
+		str.append("AND a.category_id IN (:categories) ");
 		str.append("AND a.member_id = :memberId ");
 		str.append("ORDER BY a.created_at DESC ");
 
@@ -248,7 +248,7 @@ public class ActivityDao extends BaseDao<Activity> {
 		str.append("INNER JOIN t_user_activity c ON c.activity_id=a.id ");
 		str.append("INNER JOIN t_activity_type b ON a.activity_type_id=b.id ");
 		str.append("WHERE b.activity_type_code = :typeCode ");
-		str.append("AND a.category_id = IN(:categories) ");
+		str.append("AND a.category_id IN (:categories) ");
 		str.append("AND c.member_id = :memberId ");
 		str.append("ORDER BY a.created_at DESC ");
 

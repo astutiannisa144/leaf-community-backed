@@ -36,25 +36,29 @@ public class ArticleService extends AbstractJpaDao{
 
 	private void valIdNull(PojoArticleReqInsert article) {
 		if (article.getId() != null) {
-			throw new RuntimeException("Id Harus Kosong");
+			throw new RuntimeException("Id Cannot Be Empty");
 		}
 	}
 
 	private void valBkNull(PojoArticleReqInsert article) {
 		if (article.getArticleCode() != null) {
-			throw new RuntimeException("Article Code Harus Kosong");
+			throw new RuntimeException("Article Code Should Be Empty");
 		}
 	}
-
+	private void valBkNotExist(Article article) {
+		if (articleDao.getByBk(article.getArticleCode()).isPresent()) {
+			throw new RuntimeException("Article Code Already Exist");
+		}
+	}
 	private void valNonBk(PojoArticleReqInsert article) {
 		if (article.getContent() == null) {
-			throw new RuntimeException("Content Tidak Boleh Kosong");
+			throw new RuntimeException("Content Cannot Be Empty");
 		}
 		if (article.getTitle() == null) {
-			throw new RuntimeException("Judul Tidak Boleh Kosong");
+			throw new RuntimeException("Title Cannot Be Empty");
 		}
 		if (article.getFile() == null) {
-			throw new RuntimeException("Gambar Tidak Boleh Kosong");
+			throw new RuntimeException("Image Cannot Be Empty");
 		}
 
 
@@ -62,13 +66,13 @@ public class ArticleService extends AbstractJpaDao{
 
 	private void valIdNotNull(PojoArticleReqUpdate article) {
 		if (article.getId() == null) {
-			throw new RuntimeException("Id Tidak Boleh Kosong");
+			throw new RuntimeException("Id Cannot Be Empty");
 		}
 	}
 
 	private void valIdExist(String id) {
 		if (articleDao.getById(id).isEmpty()) {
-			throw new RuntimeException("Id Tidak Boleh Kosong");
+			throw new RuntimeException("Id Cannot Be Empty");
 		}
 	}
 	
@@ -81,6 +85,7 @@ public class ArticleService extends AbstractJpaDao{
 		final Article article = new Article();
 		
 		article.setArticleCode(GenerateCodeUtil.generateCode(10));
+		valBkNotExist(article);
 		article.setTitle(data.getTitle());
 		
 		final User admin = userDao.getByIdRef(User.class, principalService.getAuthPrincipal());

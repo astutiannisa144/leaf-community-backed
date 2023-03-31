@@ -29,10 +29,36 @@ public class BookmarkService {
 		this.userDao = userDao;
 		this.principalService = principalService;
 	}
+	private void valIdNull(PojoBookmarkReqInsert bookmark) {
+		if(bookmark==null) {
+			throw new RuntimeException("Form cannot be empty");
+		}
+		if(bookmark.getId()!=null ) {
+			throw new RuntimeException("Id cannot be filled");
+		}
+	}
+
+	private void valNonBk(PojoBookmarkReqInsert bookmark) {
+		if(bookmark==null) {
+			throw new RuntimeException("Form cannot be empty");
+		}
+		if(bookmark.getPostId()==null) {
+			throw new RuntimeException("Post cannot be empty");
+		}
+	}
+
+	private void valIdExist(String id) {
+		if(bookmarkDao.getById(id).isEmpty()) {
+			throw new RuntimeException("Id cannot be empty in database");
+		}
+	}
+	
 
 	public PojoRes insert(PojoBookmarkReqInsert data) {
 		ConnHandler.begin();
-
+		valIdNull(data);
+		valNonBk(data);
+		
 		Bookmark bookmark = new Bookmark();
 		final Post post = postDao.getById(Post.class, data.getPostId());
 		bookmark.setPost(post);
@@ -54,6 +80,7 @@ public class BookmarkService {
 
 		try {
 			ConnHandler.begin();
+			valIdExist(id);
 			bookmarkDao.deleteById(Bookmark.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();

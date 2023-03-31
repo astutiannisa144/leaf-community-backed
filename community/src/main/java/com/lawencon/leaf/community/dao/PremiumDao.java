@@ -22,6 +22,18 @@ public class PremiumDao extends BaseDao<Premium> {
 		return premiums;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public Optional<Premium> getByBk(String code) {
+		final StringBuilder str = new StringBuilder();
+		str.append("SELECT * ");
+		str.append("FROM t_premium ");
+		str.append("WHERE premium_code=:code");
+
+		final List<Premium> premiums = ConnHandler.getManager().createNativeQuery(str.toString(), Premium.class)
+				.setParameter("code", code)
+				.getResultList();
+		return  Optional.ofNullable(premiums.get(0));
+	}
 	@Override
 	public Optional<Premium> getByIdAndDetach(String id) {
 		return Optional.ofNullable(super.getByIdAndDetach(Premium.class, id));
