@@ -32,11 +32,7 @@ public class SocialMediaService extends BaseService<PojoSocialMediaRes> {
 	}
 
 
-	private void valBkNotExist(SocialMedia socialMedia) {
-		if (socialMediaDao.getByBk(socialMedia.getSocialMediaCode()).isPresent()) {
-			throw new RuntimeException("SocialMedia Code Already Exist");
-		}
-	}
+
 	private void valNonBk(PojoSocialMediaReq socialMedia) {
 		if (socialMedia.getSocialMediaName() == null) {
 			throw new RuntimeException("SocialMedia Name Cannot Be Empty");
@@ -112,7 +108,7 @@ public class SocialMediaService extends BaseService<PojoSocialMediaRes> {
 		socialMedia.setSocialMediaName(data.getSocialMediaName());
 		socialMedia.setSocialMediaCode(GenerateCodeUtil.generateCode(10));
 		socialMedia.setIsActive(true);
-		valBkNotExist(socialMedia);
+
 		socialMediaDao.save(socialMedia);
 		ConnHandler.commit();
 		
