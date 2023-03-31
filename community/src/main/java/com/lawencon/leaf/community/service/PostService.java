@@ -236,7 +236,11 @@ public class PostService {
 			res.setCategoryId(postList.get(i).getCategory().getId());
 			res.setCategoryName(postList.get(i).getCategory().getCategoryName());
 			res.setMemberId(postList.get(i).getMember().getId());
-			res.setFileId(postList.get(i).getMember().getProfile().getFile().getId());
+			
+			if (postList.get(i).getMember().getProfile().getFile() != null) {
+				res.setFileId(postList.get(i).getMember().getProfile().getFile().getId());
+			}
+			
 			res.setFullName(postList.get(i).getMember().getProfile().getFullName());
 			res.setCreatedAt(postList.get(i).getCreatedAt());
 			res.setLikeSum(likeDao.countLike(postList.get(i).getId()));
