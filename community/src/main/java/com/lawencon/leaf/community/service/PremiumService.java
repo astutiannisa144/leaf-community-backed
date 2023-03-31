@@ -27,11 +27,7 @@ public class PremiumService extends BaseService<PojoPremiumRes> {
 	}
 
 
-	private void valBkNotExist(Premium premium) {
-		if (premiumDao.getByBk(premium.getPremiumCode()).isPresent()) {
-			throw new RuntimeException("Premium Code Already Exist");
-		}
-	}
+
 	private void valNonBk(PojoPremiumReq premium) {
 		if (premium.getPremiumName() == null) {
 			throw new RuntimeException("Premium Name Cannot Be Empty");

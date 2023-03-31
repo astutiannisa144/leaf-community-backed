@@ -79,15 +79,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		}
 	
 	}
-	private void valBkNotExist(PojoUserReq user) {
-		if(user==null) {
-			throw new RuntimeException("Object is Null");
-		}
-		if(userDao.getEmail(user.getEmail()).isPresent()) {
-			throw new RuntimeException("Email already Exist");
-		}
-	
-	}
+
 	
 	private void valNonBk(PojoUserReq user) {
 		if(user.getPass()==null) {
@@ -173,7 +165,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		ConnHandler.begin();
 		valIdNull(data);
 		valBkNotNull(data);
-		valBkNotExist(data);
+
 		valNonBk(data);
 		final User system = userDao.getUserByRole(EnumRole.SY.getCode()).get();
 		try {

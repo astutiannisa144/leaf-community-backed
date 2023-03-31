@@ -27,11 +27,7 @@ public class PositionService extends BaseService<PojoPositionRes> {
 	}
 
 
-	private void valBkNotExist(Position position) {
-		if (positionDao.getByBk(position.getPositionCode()).isPresent()) {
-			throw new RuntimeException("Position Code Already Exist");
-		}
-	}
+
 	private void valNonBk(PojoPositionReq position) {
 		if (position.getPositionName() == null) {
 			throw new RuntimeException("Position Name Cannot Be Empty");
@@ -90,7 +86,7 @@ public class PositionService extends BaseService<PojoPositionRes> {
 		position.setPositionCode(GenerateCodeUtil.generateCode(10));
 		position.setIsActive(true);
 		
-		valBkNotExist(position);
+
 		positionDao.save(position);
 		ConnHandler.commit();
 		
