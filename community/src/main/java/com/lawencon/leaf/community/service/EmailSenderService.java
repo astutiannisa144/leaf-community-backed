@@ -65,7 +65,7 @@ public class EmailSenderService{
 		Context context = new Context();
 	    context.setVariable("verification", verification);
 	    
-	    String process = templateEngine.process("verification", context);
+	    String process = templateEngine.process("verif-code", context);
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
         helper.setSubject("Welcome " + verification.getEmail());
@@ -81,7 +81,7 @@ public class EmailSenderService{
 		Context context = new Context();
 	    context.setVariable("user", user);
 	    
-	    String process = templateEngine.process("Register", context);
+	    String process = templateEngine.process("regist", context);
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
         helper.setSubject("Welcome " + user.getProfile().getFullName());
