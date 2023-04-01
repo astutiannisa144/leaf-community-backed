@@ -17,6 +17,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lawencon.leaf.community.pojo.PojoErrorRes;
 import com.lawencon.leaf.community.service.JwtService;
 
 @Component
@@ -44,10 +46,14 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
 					final Authentication auth = new UsernamePasswordAuthenticationToken(map.get("id"), null);
 					SecurityContextHolder.getContext().setAuthentication(auth);
-
+  
 				} catch (Exception e) {
 					e.printStackTrace();
+					PojoErrorRes<String> res = new PojoErrorRes<>();
+					res.setMessage("Login Invalid");
+					response.getWriter().append(new ObjectMapper().writeValueAsString(res));
 					response.setStatus(401);
+					 
 					return;
 				}
 			} else {
