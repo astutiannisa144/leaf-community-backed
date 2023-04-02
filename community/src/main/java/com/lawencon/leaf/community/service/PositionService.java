@@ -108,7 +108,7 @@ public class PositionService extends BaseService<PojoPositionRes> {
 		ConnHandler.commit();
 		
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Update Position");
+		pojoRes.setMessage("Position updated");
 		return pojoRes;
 	}
 	
@@ -123,7 +123,7 @@ public class PositionService extends BaseService<PojoPositionRes> {
 			
 		}
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Delete Position");
+		pojoRes.setMessage("Position deleted");
 		return pojoRes;
 	}
 

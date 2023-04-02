@@ -138,7 +138,7 @@ public class ProfileService extends AbstractJpaDao {
 		ConnHandler.commit();
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Update Profile");
+		pojoRes.setMessage("Profile updated");
 		return pojoRes;
 	}
 	
@@ -181,7 +181,6 @@ public class ProfileService extends AbstractJpaDao {
 			socialMedia.setSocialMediaLink(profileSocialMedias.get(i).getSocialMedia().getSocialMediaLink());
 			File fileInsert = new File();
 			fileInsert.setId(profileSocialMedias.get(i).getSocialMedia().getFile().getId());
-//			socialMedia.setFile(file);
 			pojoProfileSocialMediaRes.setSocialMedia(socialMedia);
 			profileSocialMediasRes.add(pojoProfileSocialMediaRes);
 		}

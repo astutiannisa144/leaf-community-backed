@@ -21,7 +21,7 @@ import com.lawencon.security.principal.PrincipalServiceImpl;
 
 @Service
 public class VoucherService extends BaseService<PojoVoucherRes> {
-	
+
 	@Autowired
 	private VoucherDao voucherDao;
 	@Autowired
@@ -29,11 +29,11 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 	@Autowired
 	private UserVoucherDao uservoucherDao;
 	private final PrincipalServiceImpl principalService;
-	
+
 	public VoucherService(PrincipalServiceImpl principalServiceImpl) {
 		this.principalService = principalServiceImpl;
 	}
-	
+
 	private void valIdNull(PojoVoucherReq voucher) {
 		if (voucher.getId() != null) {
 			throw new RuntimeException("Id Cannot Be Empty");
@@ -45,9 +45,10 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 			throw new RuntimeException("Id Cannot Be Empty");
 		}
 	}
+
 	private void valNonBk(PojoVoucherReq voucher) {
 		if (voucher.getDiscountPrice() == null) {
-			throw new RuntimeException("Discount PRice Cannot Be Empty");
+			throw new RuntimeException("Discount Price Cannot Be Empty");
 		}
 
 		if (voucher.getMinimumPurchase() == null) {
@@ -56,13 +57,12 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 
 	}
 
-
 	private void valIdExist(String id) {
 		if (voucherDao.getById(id).isEmpty()) {
 			throw new RuntimeException("Id Cannot Be Empty");
 		}
 	}
-	
+
 	@Override
 	public PojoVoucherRes getById(String id) {
 		final PojoVoucherRes pojoVoucherRes = new PojoVoucherRes();
@@ -74,23 +74,26 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 		pojoVoucherRes.setId(id);
 		pojoVoucherRes.setVer(voucher.getVer());
 		pojoVoucherRes.setIsActive(voucher.getIsActive());
-		
+
 		return pojoVoucherRes;
 	}
-	
-	public PojoVoucherRes getByCode(String code,String activityId) throws JsonProcessingException {
+
+	public PojoVoucherRes getByCode(String code, String activityId) throws JsonProcessingException {
 		final PojoVoucherRes pojoVoucherRes = new PojoVoucherRes();
-		if(voucherDao.getByCode(code).isPresent()) {
+		if (voucherDao.getByCode(code).isPresent()) {
 			Voucher voucher = voucherDao.getByCode(code).get();
-			if(uservoucherDao.getRefByMemberAndVoucher(principalService.getAuthPrincipal(), voucher.getId()).isPresent()) {
-				pojoVoucherRes.setCodeWarning("You Already Used this voucher Before Unable to Purchase this voucher");			
+			if (uservoucherDao.getRefByMemberAndVoucher(principalService.getAuthPrincipal(), voucher.getId())
+					.isPresent()) {
+				pojoVoucherRes.setCodeWarning("Voucher already used");
 				throw new RuntimeException(new ObjectMapper().writeValueAsString(pojoVoucherRes));
-			
+
 			}
-			
+
 			Activity activity = activityDao.getById(activityId).get();
-			if(voucher.getMinimumPurchase().compareTo(activity.getPrice())>0 ) {
-				pojoVoucherRes.setCodeWarning("Minimum purchase for this voucher surpassess this "+activity.getActivityType().getActivityTypeName()+" Price");			
+
+			if (voucher.getMinimumPurchase().compareTo(activity.getPrice()) > 0) {
+				pojoVoucherRes.setCodeWarning("Minimum purchase for this voucher is Rp. " + voucher.getMinimumPurchase());
+
 				throw new RuntimeException(new ObjectMapper().writeValueAsString(pojoVoucherRes));
 			}
 			pojoVoucherRes.setVoucherCode(voucher.getVoucherCode());
@@ -100,19 +103,21 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 			pojoVoucherRes.setId(voucher.getId());
 			pojoVoucherRes.setVer(voucher.getVer());
 			pojoVoucherRes.setIsActive(voucher.getIsActive());
-		}else {
-			pojoVoucherRes.setCodeWarning("Voucher Cannot Be Found");			
+
+		} else {
+			pojoVoucherRes.setCodeWarning("Voucher not found");
+
 			throw new RuntimeException(new ObjectMapper().writeValueAsString(pojoVoucherRes));
 		}
-		
-		
+
 		return pojoVoucherRes;
 	}
+
 	@Override
 	public List<PojoVoucherRes> getAll() {
 		final List<PojoVoucherRes> pojoVoucherRes = new ArrayList<>();
 		List<Voucher> vouchers = voucherDao.getAll();
-		for(int i=0;i<vouchers.size();i++) {
+		for (int i = 0; i < vouchers.size(); i++) {
 			PojoVoucherRes voucher = new PojoVoucherRes();
 			voucher.setVoucherCode(vouchers.get(i).getVoucherCode());
 			voucher.setDiscountPrice(vouchers.get(i).getDiscountPrice());
@@ -125,7 +130,7 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 		}
 		return pojoVoucherRes;
 	}
-	
+
 	public PojoRes insert(PojoVoucherReq data) {
 		ConnHandler.begin();
 		valIdNull(data);
@@ -134,17 +139,17 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 
 		voucher.setVoucherCode(data.getVoucherCode());
 		voucher.setDiscountPrice(data.getDiscountPrice());
-		voucher.setExpiredDate( data.getExpiredDate());
+		voucher.setExpiredDate(data.getExpiredDate());
 		voucher.setMinimumPurchase(data.getMinimumPurchase());
 		voucher.setIsActive(true);
 		voucherDao.save(voucher);
 		ConnHandler.commit();
-		
+
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Build Voucher");
+		pojoRes.setMessage("Voucher created");
 		return pojoRes;
 	}
-	
+
 	public PojoRes update(PojoVoucherReq data) {
 		ConnHandler.begin();
 		valIdNotNull(data);
@@ -153,37 +158,37 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 		Voucher voucher = voucherDao.getByIdAndDetach(data.getId()).get();
 		voucher.setId(data.getId());
 
-		if(data.getDiscountPrice()!=null) {
+		if (data.getDiscountPrice() != null) {
 			voucher.setDiscountPrice(data.getDiscountPrice());
 		}
-		if(data.getExpiredDate()!=null) {
+		if (data.getExpiredDate() != null) {
 			voucher.setExpiredDate(data.getExpiredDate());
 		}
-		if(data.getMinimumPurchase()!=null) {
+		if (data.getMinimumPurchase() != null) {
 			voucher.setMinimumPurchase(data.getMinimumPurchase());
 
 		}
 		voucher.setIsActive(true);
 		voucherDao.save(voucher);
 		ConnHandler.commit();
-		
+
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Update Voucher");
+		pojoRes.setMessage("Voucher updated");
 		return pojoRes;
 	}
-	
+
 	public PojoRes delete(String id) {
-		
+
 		try {
 			valIdExist(id);
 			ConnHandler.begin();
 			voucherDao.deleteById(Voucher.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 		}
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Delete Voucher");
+		pojoRes.setMessage("Voucher deleted");
 		return pojoRes;
 	}
 

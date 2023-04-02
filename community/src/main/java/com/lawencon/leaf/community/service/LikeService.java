@@ -32,7 +32,7 @@ public class LikeService {
 			throw new RuntimeException("Form cannot be empty");
 		}
 		if(like.getId()!=null ) {
-			throw new RuntimeException("Id cannot be filled");
+			throw new RuntimeException("Id must be empty");
 		}
 	}
 
@@ -47,7 +47,7 @@ public class LikeService {
 
 	private void valIdExist(String id) {
 		if(likeDao.getById(id).isEmpty()) {
-			throw new RuntimeException("Id cannot be empty in database");
+			throw new RuntimeException("Id cannot be empty");
 		}
 	}
 	public PojoRes insert(PojoLikeReqInsert data) {

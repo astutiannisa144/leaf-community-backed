@@ -61,7 +61,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 			throw new RuntimeException("Form cannot be empty");
 		}
 		if(activity.getId()!=null ) {
-			throw new RuntimeException("Id cannot be filled");
+			throw new RuntimeException("Id must be empty");
 		}
 	}
 
@@ -338,7 +338,7 @@ public class ActivityService extends BaseService<PojoActivityRes> {
 		activityDao.save(activity);
 		ConnHandler.commit();
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Update "+activity.getActivityType().getActivityTypeName());
+		pojoRes.setMessage("Succes Update " + activity.getActivityType().getActivityTypeName());
 		return pojoRes;
 
 	}

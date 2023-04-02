@@ -66,16 +66,16 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 	
 	private void valIdNull(PojoUserReq user) {
 		if(user.getId()!=null) {
-			throw new RuntimeException("Id Cannot be Filled");
+			throw new RuntimeException("Id must be empty");
 		}
 	}
 	
 	private void valBkNotNull(PojoUserReq user) {
 		if(user==null) {
-			throw new RuntimeException("Object is Null");
+			throw new RuntimeException("Object not found");
 		}
 		if(user.getEmail()==null) {
-			throw new RuntimeException("Email is Empty");
+			throw new RuntimeException("Email cannot be empty");
 		}
 	
 	}
@@ -89,45 +89,45 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 	}
 	private void valNonBk(PojoUserReq user) {
 		if(user.getPass()==null) {
-			throw new RuntimeException("Pass Is Empty");
+			throw new RuntimeException("Password cannot be empty");
 		}
 		if(user.getVerificationCode()==null) {
-			throw new RuntimeException("Verification Code Is Empty");
+			throw new RuntimeException("Verification Code  cannot be empty");
 		}
 		if(user.getProfile().getFullName()==null) {
-			throw new RuntimeException("Your Name Is Empty");
+			throw new RuntimeException("Name cannot be empy");
 		}
 		if(user.getProfile().getPhoneNumber()==null) {
-			throw new RuntimeException("Your Phone Number Is Empty");
+			throw new RuntimeException("Phone number cannot be empty");
 		}
 		if(user.getProfile().getAddress()==null) {
-			throw new RuntimeException("Your Address Is Empty");
+			throw new RuntimeException("Address cannot be empty");
 		}
 		if(user.getProfile().getJob().getCompanyName()==null) {
-			throw new RuntimeException("Your Company Field Is Empty");
+			throw new RuntimeException("Company field cannot be empty");
 		}
 		if(user.getProfile().getJob().getIndustryId()==null) {
-			throw new RuntimeException("Your Industry Field Is Empty");
+			throw new RuntimeException("Industry Field cannot be empty");
 		}
 		if(user.getProfile().getJob().getPositionId()==null) {
-			throw new RuntimeException("Your Position Field Is Empty");
+			throw new RuntimeException("Position cannot be empty");
 		}
 	}
 	
 	private void valIdNotNull(PojoUserReq user) {
 		if(user.getId()==null) {
-			throw new RuntimeException("Id Is Empty");
+			throw new RuntimeException("Id cannot be empty");
 		}
 	}
 	private void valIdExist(PojoUserReq user) {
 		if(userDao.getById(user.getId()).isEmpty()) {
-			throw new RuntimeException("Your Id Does Not Exist ");
+			throw new RuntimeException("Id Does Not Exist ");
 		}
 	}
 	private void valBkNotChange(PojoUserReq data) {
 		User user = userDao.getById(data.getId()).get();
 		if(data.getEmail()!=user.getEmail()) {
-			throw new RuntimeException("Your Email Should Not Change");
+			throw new RuntimeException("Can't update email");
 		}
 		
 	}
@@ -150,10 +150,10 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 	}
 	private void valNonBkUpdate(PojoUserReq user) {
 		if(user.getOldPass()==null) {
-			throw new RuntimeException("Your Old Password is Empty");
+			throw new RuntimeException("Old Password is Empty");
 		}
 		if(user.getNewPass()==null) {
-			throw new RuntimeException("Your New Password Is Empty");
+			throw new RuntimeException("New Password Is Empty");
 		}
 	
 	}
@@ -199,7 +199,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 			
 		} catch (Exception e) {
 			if (verificationDao.getBycode(data.getVerificationCode(), data.getEmail()).isEmpty()) {
-				throw new RuntimeException("Verification anda telah expired / email tidak cocok ");
+				throw new RuntimeException("Verification code already expired / email didn't match");
 			}
 			
 			
@@ -266,7 +266,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		
 		final User user = userDao.getByIdAndDetach(User.class, pricipalService.getAuthPrincipal());
 		if (encoder.matches(data.getOldPass(), user.getPass()) == false) {
-			throw new RuntimeException("Password tidak match");
+			throw new RuntimeException("Password didn't match");
 		}
 		
 		user.setPass(encoder.encode(data.getNewPass()));
@@ -277,7 +277,9 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Change Password Success ");
+
+		pojoRes.setMessage("Password updated");
+
 
 		ConnHandler.commit();
 
@@ -294,7 +296,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 			
 		}
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Delete User");
+		pojoRes.setMessage("User deleted");
 		return pojoRes;
 	}
 
