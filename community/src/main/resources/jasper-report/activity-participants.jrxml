@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.20.1.final using JasperReports Library version 6.20.1-7584acb244139816654f64e2fd57a00d3e31921e  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="participants-report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bbd878e0-f42c-45b3-bdcf-407e70fad028">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="participants-report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="0" uuid="bbd878e0-f42c-45b3-bdcf-407e70fad028">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<queryString>
@@ -34,14 +34,11 @@ BETWEEN '2023-03-21' AND '2023-03-25']]>
 		<property name="com.jaspersoft.studio.field.name" value="total_participant"/>
 		<property name="com.jaspersoft.studio.field.label" value="total_participant"/>
 	</field>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
 	<pageHeader>
-		<band height="70" splitType="Stretch">
+		<band height="200" splitType="Stretch">
 			<image>
-				<reportElement x="40" y="0" width="130" height="50" uuid="3704053f-c1e9-4b3c-be91-0ada2aeff9c3"/>
-				<imageExpression><![CDATA["https://raw.githubusercontent.com/astutiannisa144/leaf-community-frontend/master/projects/base-area/src/assets/img/leaf.png"]]></imageExpression>
+				<reportElement x="-20" y="-20" width="595" height="220" uuid="1aeb50d5-0c93-4808-9697-da31f223fde5"/>
+				<imageExpression><![CDATA["https://raw.githubusercontent.com/astutiannisa144/leaf-community-frontend/master/projects/base-area/src/assets/img/jasper_header.png"]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>
@@ -199,20 +196,23 @@ BETWEEN '2023-03-21' AND '2023-03-25']]>
 		<band height="45" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="50" splitType="Stretch">
+		<band height="90" splitType="Stretch">
+			<image hAlign="Center" vAlign="Bottom" evaluationTime="Band">
+				<reportElement positionType="FixRelativeToBottom" mode="Transparent" x="-20" y="20" width="595" height="70" uuid="a6c1f743-7e34-41ff-a0d1-067a98d95f5b">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA["https://raw.githubusercontent.com/astutiannisa144/leaf-community-frontend/master/projects/base-area/src/assets/img/jasper_footer.png"]]></imageExpression>
+			</image>
 			<textField>
-				<reportElement x="180" y="20" width="100" height="30" uuid="cdb1ead5-2c5e-44fe-b863-b243eb656797"/>
-				<textElement textAlignment="Right"/>
+				<reportElement x="307" y="51" width="100" height="30" uuid="ee882bf4-4097-43c1-bd74-1d75ba31c01b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="280" y="20" width="100" height="30" uuid="c9209903-1ea7-407d-ac66-90fd02b9f983"/>
-				<textElement textAlignment="Left"/>
+				<reportElement x="407" y="51" width="100" height="30" uuid="471031b0-5337-4ae3-b5ce-0a8d3aa278e7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>
