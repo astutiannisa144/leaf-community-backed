@@ -133,7 +133,7 @@ public class UserActivityService extends AbstractJpaDao {
 		ConnHandler.commit();
 
 		final PojoRes res = new PojoRes();
-		res.setMessage("Success insert UserActivity");
+		res.setMessage("Success Buying this Activity");
 		return res;
 	}
 
@@ -180,7 +180,7 @@ public class UserActivityService extends AbstractJpaDao {
 		ConnHandler.commit();
 
 		final PojoRes res = new PojoRes();
-		res.setMessage("Success Approved UserActivity");
+		res.setMessage("Success Approved Transaction");
 		return res;
 	}
 

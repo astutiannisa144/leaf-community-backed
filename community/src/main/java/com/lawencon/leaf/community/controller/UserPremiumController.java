@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.user.premium.PojoUserPremiumReq;
 import com.lawencon.leaf.community.pojo.user.premium.PojoUserPremiumRes;
+import com.lawencon.leaf.community.pojo.user.premium.PojoUserPremiumResAndTotal;
 import com.lawencon.leaf.community.service.UserPremiumService;
 
 @RestController
@@ -32,7 +33,12 @@ public class UserPremiumController {
 	}
 
 	@GetMapping()
-	public ResponseEntity<List<PojoUserPremiumRes>> getAll(@RequestParam (required = false) String code,@RequestParam int limit,@RequestParam int page) throws Exception {
+	public ResponseEntity<PojoUserPremiumResAndTotal> getAll(@RequestParam (required = false) String code,@RequestParam int limit,@RequestParam int page) throws Exception {
+		final PojoUserPremiumResAndTotal result = userPremiumService.getAllAndTotal(limit,page,code);
+		return new ResponseEntity<PojoUserPremiumResAndTotal>(result, HttpStatus.OK);
+	}
+	@GetMapping("/non")
+	public ResponseEntity<List<PojoUserPremiumRes>> getAllNonTotal(@RequestParam (required = false) String code,@RequestParam int limit,@RequestParam int page) throws Exception {
 		final List<PojoUserPremiumRes> result = userPremiumService.getAll(limit,page,code);
 		return new ResponseEntity<List<PojoUserPremiumRes>>(result, HttpStatus.OK);
 	}

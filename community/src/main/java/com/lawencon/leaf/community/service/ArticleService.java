@@ -195,7 +195,7 @@ public class ArticleService extends AbstractJpaDao{
 		}
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Comment Deleted");
+		pojoRes.setMessage("Article Deleted");
 		return pojoRes;
 	}
 

@@ -16,8 +16,6 @@ import com.lawencon.leaf.community.model.Activity;
 import com.lawencon.leaf.community.model.Voucher;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.voucher.PojoVoucherReq;
-import com.lawencon.leaf.community.pojo.voucher.PojoVoucherReq;
-import com.lawencon.leaf.community.pojo.voucher.PojoVoucherReq;
 import com.lawencon.leaf.community.pojo.voucher.PojoVoucherRes;
 import com.lawencon.security.principal.PrincipalServiceImpl;
 
@@ -92,7 +90,7 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 			
 			Activity activity = activityDao.getById(activityId).get();
 			if(voucher.getMinimumPurchase().compareTo(activity.getPrice())>0 ) {
-				pojoVoucherRes.setCodeWarning("Minimum pembelian melewati harga ");			
+				pojoVoucherRes.setCodeWarning("Minimum purchase for this voucher surpassess this "+activity.getActivityType().getActivityTypeName()+" Price");			
 				throw new RuntimeException(new ObjectMapper().writeValueAsString(pojoVoucherRes));
 			}
 			pojoVoucherRes.setVoucherCode(voucher.getVoucherCode());
@@ -103,7 +101,7 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 			pojoVoucherRes.setVer(voucher.getVer());
 			pojoVoucherRes.setIsActive(voucher.getIsActive());
 		}else {
-			pojoVoucherRes.setCodeWarning("Voucher Tidak Ditemukan");			
+			pojoVoucherRes.setCodeWarning("Voucher Cannot Be Found");			
 			throw new RuntimeException(new ObjectMapper().writeValueAsString(pojoVoucherRes));
 		}
 		
