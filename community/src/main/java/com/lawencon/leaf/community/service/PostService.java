@@ -80,7 +80,7 @@ public class PostService {
 			throw new RuntimeException("Form cannot be empty");
 		}
 		if(post.getId()!=null ) {
-			throw new RuntimeException("Id cannot be filled");
+			throw new RuntimeException("Id must be empty");
 		}
 	}
 
@@ -117,7 +117,7 @@ public class PostService {
 	
 	private void valIdExist(String id) {
 		if(postDao.getById(id).isEmpty()) {
-			throw new RuntimeException("Id cannot be empty in database");
+			throw new RuntimeException("Id cannot be empty");
 		}
 	}
 	public PojoRes insert(final PojoPostReqInsert data) {
@@ -248,7 +248,7 @@ public class PostService {
 			
 			ConnHandler.commit();
 			
-			pojoRes.setMessage("Post Deleted");
+			pojoRes.setMessage("Post deleted");
 			
 		} catch (Exception e) {
 			

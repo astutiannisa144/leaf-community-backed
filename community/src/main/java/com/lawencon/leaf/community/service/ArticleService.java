@@ -42,15 +42,10 @@ public class ArticleService extends AbstractJpaDao{
 
 	private void valBkNull(PojoArticleReqInsert article) {
 		if (article.getArticleCode() != null) {
-			throw new RuntimeException("Article Code Should Be Empty");
+			throw new RuntimeException("Article Code Must Be Empty");
 
 		}
 	}
-//	private void valBkNotExist(Article article) {
-//		if (articleDao.getByBk(article.getArticleCode()).isPresent()) {
-//			throw new RuntimeException("Article Code Already Exist");
-//		}
-//	}
 
 	private void valNonBk(PojoArticleReqInsert article) {
 		if (article.getContent() == null) {
@@ -109,7 +104,7 @@ public class ArticleService extends AbstractJpaDao{
 		ConnHandler.commit();
 		
 		final PojoRes res = new PojoRes();
-		res.setMessage("Success insert Article");
+		res.setMessage("Success Create Article");
 		return res;
 
 	}
@@ -195,7 +190,7 @@ public class ArticleService extends AbstractJpaDao{
 		}
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Comment Deleted");
+		pojoRes.setMessage("Article Deleted");
 		return pojoRes;
 	}
 

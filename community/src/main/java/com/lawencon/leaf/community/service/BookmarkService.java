@@ -34,7 +34,7 @@ public class BookmarkService {
 			throw new RuntimeException("Form cannot be empty");
 		}
 		if(bookmark.getId()!=null ) {
-			throw new RuntimeException("Id cannot be filled");
+			throw new RuntimeException("Id must be empty");
 		}
 	}
 
@@ -49,7 +49,7 @@ public class BookmarkService {
 
 	private void valIdExist(String id) {
 		if(bookmarkDao.getById(id).isEmpty()) {
-			throw new RuntimeException("Id cannot be empty in database");
+			throw new RuntimeException("Id cannot be empty");
 		}
 	}
 	
@@ -87,7 +87,7 @@ public class BookmarkService {
 		}
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Post Removed from Bookmark");
+		pojoRes.setMessage("Post removed from bookmark");
 		return pojoRes;
 	}
 

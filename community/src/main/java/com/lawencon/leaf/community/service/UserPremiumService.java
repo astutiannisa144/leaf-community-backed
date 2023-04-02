@@ -150,7 +150,7 @@ public class UserPremiumService extends BaseService<PojoUserPremiumRes> {
 		ConnHandler.commit();
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Approve UserPremium");
+		pojoRes.setMessage("UserPremium Approved");
 		return pojoRes;
 	}
 
@@ -170,7 +170,7 @@ public class UserPremiumService extends BaseService<PojoUserPremiumRes> {
 
 		}
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Delete User Premium");
+		pojoRes.setMessage("User Premium Deleted");
 		return pojoRes;
 	}
 }

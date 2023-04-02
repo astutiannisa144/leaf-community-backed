@@ -38,7 +38,7 @@ public class CommentService {
 			throw new RuntimeException("Form cannot be empty");
 		}
 		if(comment.getId()!=null ) {
-			throw new RuntimeException("Id cannot be filled");
+			throw new RuntimeException("Id must be empty");
 		}
 	}
 
@@ -64,7 +64,7 @@ public class CommentService {
 	}
 	private void valIdExist(String id) {
 		if(commentDao.getById(id).isEmpty()) {
-			throw new RuntimeException("Id cannot be empty in database");
+			throw new RuntimeException("Id cannot be empty");
 		}
 	}
 	private void valIdNotNull(PojoCommentReqUpdate comment) {
@@ -92,7 +92,7 @@ public class CommentService {
 		ConnHandler.commit();
 
 		final PojoRes res = new PojoRes();
-		res.setMessage("Success comment a post");
+		res.setMessage("Post commented");
 		res.setId(comment.getId());
 		return res;
 	}
@@ -126,7 +126,7 @@ public class CommentService {
 		}
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Comment Deleted");
+		pojoRes.setMessage("Comment deleted");
 		return pojoRes;
 	}
 	

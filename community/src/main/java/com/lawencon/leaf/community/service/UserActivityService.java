@@ -53,29 +53,29 @@ public class UserActivityService extends AbstractJpaDao {
 
 	private void valIdNull(UserActivity userActivity) {
 		if (userActivity.getId() != null) {
-			throw new RuntimeException("Id Harus Kosong");
+			throw new RuntimeException("Id must be empty");
 		}
 	}
 
 	private void valBkNotNull(UserActivity userActivity) {
 		if (userActivity.getInvoiceCode() == null) {
-			throw new RuntimeException("Invoice Code Tidak Boleh Kosong");
+			throw new RuntimeException("Invoice code cannot be empty");
 		}
 	}
 
 
 	private void valNonBk(UserActivity userActivity) {
 		if (userActivity.getMember() == null) {
-			throw new RuntimeException("Member Tidak Boleh Kosong");
+			throw new RuntimeException("Member cannot be empty");
 		}
 		if (userActivity.getTotalPrice() == null) {
-			throw new RuntimeException("Price Tidak Boleh Kosong");
+			throw new RuntimeException("Price cannot be empty");
 		}
 		if (userActivity.getActivity() == null) {
-			throw new RuntimeException("Activity Tidak Boleh Kosong");
+			throw new RuntimeException("Activity cannot be empty");
 		}
 		if ((userActivity.getIsActive() == null)) {
-			throw new RuntimeException("Active Tidak Boleh Kosong");
+			throw new RuntimeException("Active cannot be empty");
 
 		}
 
@@ -83,13 +83,13 @@ public class UserActivityService extends AbstractJpaDao {
 
 	private void valIdNotNull(UserActivity userActivity) {
 		if (userActivity.getId() == null) {
-			throw new RuntimeException("Id Tidak Boleh Kosong");
+			throw new RuntimeException("Id  cannot be empty");
 		}
 	}
 
 	private void valIdExist(String id) {
 		if (userActivityDao.getById(id).isEmpty()) {
-			throw new RuntimeException("Id Tidak Boleh Kosong");
+			throw new RuntimeException("Id cannot be empty");
 		}
 	}
 
@@ -133,7 +133,7 @@ public class UserActivityService extends AbstractJpaDao {
 		ConnHandler.commit();
 
 		final PojoRes res = new PojoRes();
-		res.setMessage("Success insert UserActivity");
+		res.setMessage(activity.getActivityType().getActivityTypeName() + " purchased");
 		return res;
 	}
 
@@ -145,13 +145,13 @@ public class UserActivityService extends AbstractJpaDao {
 				userActivity.setIsApproved(false);
 				userActivityDao.save(userActivity);
 				final PojoRes res = new PojoRes();
-				res.setMessage("Success Reject Transaction");
+				res.setMessage("Transaction rejected");
 				return res;
 			}
 		}
 		
 		if (userActivity.getVer() > 0) {
-			throw new RuntimeException("Anda Sudah Approve Transaksi ini TIdak bisa approve lagi");
+			throw new RuntimeException("This transaction already approved");
 		}
 		User admin = userDao.getUserByRole(EnumRole.SY.getCode()).get();
 		final Activity activity = activityDao.getByIdAndDetach(Activity.class, userActivity.getActivity().getId());
@@ -180,7 +180,7 @@ public class UserActivityService extends AbstractJpaDao {
 		ConnHandler.commit();
 
 		final PojoRes res = new PojoRes();
-		res.setMessage("Success Approved UserActivity");
+		res.setMessage(activity.getActivityType().getActivityTypeName() + " Approved");
 		return res;
 	}
 
@@ -263,7 +263,7 @@ public class UserActivityService extends AbstractJpaDao {
 
 		}
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Delete Transaction");
+		pojoRes.setMessage("Transaction deleted");
 		return pojoRes;
 	}
 	
