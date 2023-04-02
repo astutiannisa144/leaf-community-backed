@@ -93,7 +93,7 @@ public class IndustryService extends BaseService<PojoIndustryRes> {
 		ConnHandler.commit();
 		
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Build Industry");
+		pojoRes.setMessage("Succes Create Industry");
 		return pojoRes;
 	}
 	
@@ -109,7 +109,7 @@ public class IndustryService extends BaseService<PojoIndustryRes> {
 		ConnHandler.commit();
 		
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Update Industry");
+		pojoRes.setMessage("Industry updated");
 		return pojoRes;
 	}
 	
@@ -124,7 +124,7 @@ public class IndustryService extends BaseService<PojoIndustryRes> {
 			
 		}
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Delete Industry");
+		pojoRes.setMessage("Industry deleted");
 		return pojoRes;
 	}
 

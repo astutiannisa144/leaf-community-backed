@@ -94,7 +94,7 @@ public class VerificationService extends BaseService<PojoVerificationRes> {
 		ConnHandler.commit();
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Code sent to your email");
+		pojoRes.setMessage("Code sent to email");
 
 		new Thread(() -> {
 			try {

@@ -144,7 +144,7 @@ public class SocialMediaService extends BaseService<PojoSocialMediaRes> {
 		ConnHandler.commit();
 		
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Update SocialMedia");
+		pojoRes.setMessage("SocialMedia updated");
 		return pojoRes;
 	}
 	
@@ -159,7 +159,7 @@ public class SocialMediaService extends BaseService<PojoSocialMediaRes> {
 			
 		}
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Delete SocialMedia");
+		pojoRes.setMessage("SocialMedia deleted");
 		return pojoRes;
 	}
 

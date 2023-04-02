@@ -21,13 +21,13 @@ public class CategoryService extends BaseService<PojoCategoryRes> {
 	private CategoryDao categoryDao;
 	private void valIdNull(PojoCategoryReq category) {
 		if (category.getId() != null) {
-			throw new RuntimeException("Id Harus Kosong");
+			throw new RuntimeException("Id must be empty");
 		}
 	}
 
 	private void valNonBk(PojoCategoryReq category) {
 		if (category.getCategoryName() == null) {
-			throw new RuntimeException("Content Tidak Boleh Kosong");
+			throw new RuntimeException("Content cannot be empty");
 		}
 
 
@@ -35,13 +35,13 @@ public class CategoryService extends BaseService<PojoCategoryRes> {
 
 	private void valIdNotNull(PojoCategoryReq category) {
 		if (category.getId() == null) {
-			throw new RuntimeException("Id Tidak Boleh Kosong");
+			throw new RuntimeException("Id cannot be empty");
 		}
 	}
 
 	private void valIdExist(String id) {
 		if (categoryDao.getById(id).isEmpty()) {
-			throw new RuntimeException("Id Tidak Boleh Kosong");
+			throw new RuntimeException("Id cannot be empty");
 		}
 	}
 	@Override
@@ -86,7 +86,7 @@ public class CategoryService extends BaseService<PojoCategoryRes> {
 		ConnHandler.commit();
 		
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Build Category");
+		pojoRes.setMessage("Succes Create Category");
 		return pojoRes;
 	}
 	
@@ -102,7 +102,7 @@ public class CategoryService extends BaseService<PojoCategoryRes> {
 		ConnHandler.commit();
 		
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Update Category");
+		pojoRes.setMessage("Category Updated");
 		return pojoRes;
 	}
 	
@@ -117,7 +117,7 @@ public class CategoryService extends BaseService<PojoCategoryRes> {
 			
 		}
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Delete Category");
+		pojoRes.setMessage("Category Deleted");
 		return pojoRes;
 	}
 

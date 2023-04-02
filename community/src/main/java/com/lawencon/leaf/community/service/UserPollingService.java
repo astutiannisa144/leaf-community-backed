@@ -37,7 +37,7 @@ public class UserPollingService {
 	
 	private void valIdNull(PojoUserPollingReqInsert userPolling) {
 		if (userPolling.getId() != null) {
-			throw new RuntimeException("Id Cannot Be Filled");
+			throw new RuntimeException("Id must be empty");
 		}
 	}
 
@@ -69,7 +69,7 @@ public class UserPollingService {
 
 		final PojoRes res = new PojoRes();
 		res.setId(userPolling.getId());
-		res.setMessage("Success insert UserPolling");
+		res.setMessage("Vote success");
 		return res;
 	}
 
