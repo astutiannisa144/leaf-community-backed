@@ -94,8 +94,8 @@ public class UserActivityDao extends BaseDao<UserActivity> {
 		str.append("FROM t_user_activity a ");
 		str.append("INNER JOIN t_activity b ON a.activity_id=b.id ");
 		str.append("INNER JOIN t_activity_type c ON b.activity_type_id=c.id ");
-		str.append("WHERE c.activity_type_code =:typeCode");
-
+		str.append("WHERE c.activity_type_code =:typeCode ");
+		str.append("ORDER BY a.created_at DESC ");
 		final List<UserActivity> userActivitys = ConnHandler.getManager()
 				.createNativeQuery(str.toString(), UserActivity.class).setParameter("typeCode", typeCode)
 				.setFirstResult(offset)
@@ -130,7 +130,8 @@ public class UserActivityDao extends BaseDao<UserActivity> {
 		str.append("INNER JOIN t_activity b ON a.activity_id=b.id ");
 		str.append("INNER JOIN t_activity_type c ON b.activity_type_id=c.id ");
 		str.append("WHERE c.activity_type_code =:typeCode ");
-		str.append("AND a.member_id =:memberId");
+		str.append("AND a.member_id =:memberId ");
+		str.append("ORDER BY a.created_at DESC ");
 		final List<UserActivity> userActivitys = ConnHandler.getManager()
 				.createNativeQuery(str.toString(), UserActivity.class).setParameter("typeCode", typeCode)
 				.setFirstResult(offset)
@@ -145,6 +146,8 @@ public class UserActivityDao extends BaseDao<UserActivity> {
 		str.append("SELECT * ");
 		str.append("FROM t_user_activity a ");
 		str.append("AND a.member_id =:memberId ");
+		str.append("ORDER BY a.created_at DESC ");
+
 		final List<UserActivity> userActivitys = ConnHandler.getManager()
 				.createNativeQuery(str.toString(), UserActivity.class).setParameter("memberId", memberId)
 				.setFirstResult(offset)

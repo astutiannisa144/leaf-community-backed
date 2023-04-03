@@ -80,7 +80,13 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 	
 	}
 
+	private void valBkNotExist(PojoUserReq user) {
+		if(userDao.getEmail(user.getEmail()).isPresent()) {
+			throw new RuntimeException("This Email AAlready Registered");
+		}
+		
 	
+	}
 	private void valNonBk(PojoUserReq user) {
 		if(user.getPass()==null) {
 			throw new RuntimeException("Password cannot be empty");
@@ -165,7 +171,7 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 		ConnHandler.begin();
 		valIdNull(data);
 		valBkNotNull(data);
-
+		valBkNotExist(data);
 		valNonBk(data);
 		final User system = userDao.getUserByRole(EnumRole.SY.getCode()).get();
 		try {
@@ -271,7 +277,9 @@ public class UserService extends AbstractJpaDao implements UserDetailsService {
 
 
 		final PojoRes pojoRes = new PojoRes();
+
 		pojoRes.setMessage("Password updated");
+
 
 		ConnHandler.commit();
 

@@ -23,6 +23,7 @@ import com.lawencon.leaf.community.model.UserPremium;
 import com.lawencon.leaf.community.pojo.PojoRes;
 import com.lawencon.leaf.community.pojo.user.premium.PojoUserPremiumReq;
 import com.lawencon.leaf.community.pojo.user.premium.PojoUserPremiumRes;
+import com.lawencon.leaf.community.pojo.user.premium.PojoUserPremiumResAndTotal;
 import com.lawencon.security.principal.PrincipalService;
 
 @Service
@@ -115,12 +116,12 @@ public class UserPremiumService extends BaseService<PojoUserPremiumRes> {
 		file.setFileExtension(data.getFile().getFileExtension());
 		File fileInsert = fileDao.save(file);
 		userPremium.setFile(fileInsert);
-		userPremium.setIsActive(true);
+		userPremium.setIsActive(null);
 		userPremiumDao.save(userPremium);
 		ConnHandler.commit();
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("Succes Build UserPremium");
+		pojoRes.setMessage("Success Buying Premium Wait For Approval");
 		return pojoRes;
 	}
 
@@ -142,7 +143,9 @@ public class UserPremiumService extends BaseService<PojoUserPremiumRes> {
 			userPremiumDao.save(userPremiumPurchased);
 		} else {
 			userPremium.setExpireDate(LocalDate.now().plusDays(userPremium.getPremium().getDuration()));
+			
 		}
+		userPremium.setIsActive(true);
 		userPremiumDao.save(userPremium);
 
 		profileAdmin.setBalance(profileAdmin.getBalance().add(userPremium.getPremium().getPrice()));
@@ -150,7 +153,9 @@ public class UserPremiumService extends BaseService<PojoUserPremiumRes> {
 		ConnHandler.commit();
 
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("UserPremium Approved");
+
+		pojoRes.setMessage("Succes Approve Transaction");
+
 		return pojoRes;
 	}
 
@@ -170,7 +175,41 @@ public class UserPremiumService extends BaseService<PojoUserPremiumRes> {
 
 		}
 		final PojoRes pojoRes = new PojoRes();
-		pojoRes.setMessage("User Premium Deleted");
+
+		pojoRes.setMessage("Succes Delete Transaction");
+
 		return pojoRes;
+	}
+
+	public PojoUserPremiumResAndTotal getAllAndTotal(int limit, int page, String code) {
+		PojoUserPremiumResAndTotal resAndTotal = new PojoUserPremiumResAndTotal();
+		List<UserPremium> userPremiums = new ArrayList<>();
+		
+		if(code==null) {
+			userPremiums = userPremiumDao.getAll(limit,page);
+
+		}
+		else if (code.equals("non")) {
+			userPremiums = userPremiumDao.getAllNonApproved(limit,page);
+
+		} 
+		List<PojoUserPremiumRes> userPremiumRes = new ArrayList<>();
+		for (int i = 0; i < userPremiums.size(); i++) {
+			PojoUserPremiumRes userPremium = new PojoUserPremiumRes();
+			userPremium.setId(userPremiums.get(i).getId());
+			userPremium.setMemberName(userPremiums.get(i).getMember().getProfile().getFullName());
+			if (userPremiums.get(i).getExpireDate() != null) {
+				userPremium.setExpireDate(userPremiums.get(i).getExpireDate());
+			}
+			userPremium.setIsActive(userPremiums.get(i).getIsActive());
+			userPremium.setMemberId(userPremiums.get(i).getMember().getId());
+			userPremium.setVer(userPremiums.get(i).getVer());
+			userPremium.setPremiumId(userPremiums.get(i).getPremium().getId());
+			userPremium.setPremiumName(userPremiums.get(i).getPremium().getPremiumName());
+			userPremiumRes.add(userPremium);
+		}
+		resAndTotal.setData(userPremiumRes);
+		resAndTotal.setTotal(userPremiumDao.countUserPremium());
+		return resAndTotal;
 	}
 }

@@ -90,8 +90,10 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 			}
 
 			Activity activity = activityDao.getById(activityId).get();
+
 			if (voucher.getMinimumPurchase().compareTo(activity.getPrice()) > 0) {
 				pojoVoucherRes.setCodeWarning("Minimum purchase for this voucher is Rp. " + voucher.getMinimumPurchase());
+
 				throw new RuntimeException(new ObjectMapper().writeValueAsString(pojoVoucherRes));
 			}
 			pojoVoucherRes.setVoucherCode(voucher.getVoucherCode());
@@ -101,8 +103,10 @@ public class VoucherService extends BaseService<PojoVoucherRes> {
 			pojoVoucherRes.setId(voucher.getId());
 			pojoVoucherRes.setVer(voucher.getVer());
 			pojoVoucherRes.setIsActive(voucher.getIsActive());
+
 		} else {
 			pojoVoucherRes.setCodeWarning("Voucher not found");
+
 			throw new RuntimeException(new ObjectMapper().writeValueAsString(pojoVoucherRes));
 		}
 

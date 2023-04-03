@@ -16,8 +16,8 @@ public class UserPremiumDao extends BaseDao<UserPremium> {
 	public List<UserPremium> getAll(int limit, int offset) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("SELECT * ");
-		sql.append("FROM t_user_premium");
-
+		sql.append("FROM t_user_premium ");
+		sql.append("ORDER BY created_at DESC");
 		final List<UserPremium> activities = ConnHandler.getManager().createNativeQuery(sql.toString(), UserPremium.class)
 				.setFirstResult(offset)
 				.setMaxResults(limit)
@@ -32,6 +32,7 @@ public class UserPremiumDao extends BaseDao<UserPremium> {
 		sql.append("FROM t_user_premium ");
 		sql.append("WHERE expire_date IS NULL ");
 		sql.append("AND is_active =true ");
+		sql.append("ORDER BY created_at DESC");
 
 		final List<UserPremium> activities = ConnHandler.getManager().createNativeQuery(sql.toString(), UserPremium.class)
 				.setFirstResult(offset)
@@ -115,6 +116,16 @@ public class UserPremiumDao extends BaseDao<UserPremium> {
 	List<UserPremium> getAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public Long countUserPremium() {
+		final StringBuilder sql = new StringBuilder();
+		sql.append("SELECT COUNT(a.id) ");
+		sql.append("FROM t_user_premium a ");
+		final Long count = Long.valueOf(ConnHandler.getManager()
+				.createNativeQuery(sql.toString())
+				.getSingleResult().toString());
+		return count;
 	}
 
 }
